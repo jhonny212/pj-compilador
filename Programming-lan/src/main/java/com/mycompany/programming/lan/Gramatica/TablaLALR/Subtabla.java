@@ -8,12 +8,16 @@ public class Subtabla {
     public boolean checkeado;
     public int num;
     ArrayList<FilaSub> listado;
-    public String hrefTablas;
+    public boolean haveCheck=false;
+    
+    public boolean delete=false;
+    public int hrefTablas;
+    public int numOfColumn=0;
     public Subtabla(int num) {
         checkeado = false;
         this.num = num;
         listado = new ArrayList<>();
-        hrefTablas="";
+        hrefTablas=-1;
     }
 
     public void addContents(ArrayList<Produccion> prs, String pr,
@@ -29,7 +33,6 @@ public class Subtabla {
                 this.listado.add(tmp);
             } else {
                 this.listado.get(ps).addSiguiente(sig);
-                //this.listado.get(ps).siguientes += "," + sig;
             }
             }
         }

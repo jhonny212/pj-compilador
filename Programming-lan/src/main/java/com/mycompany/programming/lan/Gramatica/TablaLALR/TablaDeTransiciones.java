@@ -24,23 +24,21 @@ public final class TablaDeTransiciones {
         this.href = null;
         this.ingresados.clear();
         this.ingresados = null;
-        tablasLL1.clear();
     }
 
-     void GenerarPrimeros() {
+    void GenerarPrimeros() {
         for (TablaDeProduccion x : href.values()) {
             if (!Contains(x.produccion)) {
                 isLambda = false;
                 first(x, x);
                 x.isLambda = isLambda;
-                System.out.println(x.produccion+" "+x.primeros);
                 pila.clear();
             }
         }
 
     }
 
-     void GenerarTabla() {
+    void GenerarTabla() {
         Subtabla tb = new Subtabla(0);
         ArrayList<SymToken> syms = new ArrayList<>();
         syms.add(new SymToken(inicio.produccion));
@@ -48,7 +46,7 @@ public final class TablaDeTransiciones {
         tb.addContents(new Produccion(syms, ""), "begun", "?", href);
         generar(tb);
         this.tablasLL1.add(tb);
-       
+
         int contador = 0;
         for (int i = 0; i < this.tablasLL1.size(); i++) {
             Subtabla w = this.tablasLL1.get(i);
@@ -66,7 +64,7 @@ public final class TablaDeTransiciones {
                         if (nextoken.equals("$")) {
                             continue;
                         }
-                        if(nextoken.equals("LAMMBDAAAAA")){
+                        if (nextoken.equals("LAMMBDAAAAA")) {
                             break;
                         }
                         if (!ingresados.containsKey(nextoken)) {
@@ -77,15 +75,9 @@ public final class TablaDeTransiciones {
                                     generarSubtabla(x, contador, nextoken);
                                 } else {
                                     contador++;
-                                    //System.out.println((posicionHref)+" href "+(contador));
-                                    if(this.tablasLL1.get(posicionHref).hrefTablas.isEmpty()){
-                                        this.tablasLL1.get(posicionHref).hrefTablas=""+posicionHref;
-                                    }else{
-                                        this.tablasLL1.get(posicionHref).hrefTablas=","+posicionHref;
-                                    
-                                    }
-                                    
                                     generarSubtabla(x, contador, nextoken);
+                                     this.tablasLL1.get(contador).hrefTablas = this.posicionHref;
+
                                 }
                             } else {
                                 ingresados.put(nextoken, pos);
@@ -106,8 +98,7 @@ public final class TablaDeTransiciones {
                     }
                 }
             }
-            System.out.println("\n*************"+w.num);
-            w.printTable();
+            
         }
 
     }
@@ -132,13 +123,17 @@ public final class TablaDeTransiciones {
     int existSub(String key, String sig) {
         int retorno = -1;
         posicionHref = 0;
-        for (int i = 0; i < this.tablasLL1.size(); i++) {
+        boolean v=true;
+        for (int i = this.tablasLL1.size()-1; i >=0 ; i--) {
             if (this.tablasLL1.get(i).getLLave().equals(key)) {
                 Subtabla w = this.tablasLL1.get(i);
                 if (w.listado.get(0).siguientes.equals(sig)) {
                     return i;
                 } else {
+                    if(v){
                     posicionHref = i;
+                    v=false;
+                    }
                     retorno = -2;
                 }
             }
@@ -226,11 +221,11 @@ public final class TablaDeTransiciones {
             //Validar mientras una produccion sea terminar o no terminal y no tenga lambda
             for (int i = href.posPunto + 1; i < href.producionData.SimbolosProduccion.size(); i++) {
                 String token = href.getNext(i);
-                
+
                 if (!token.equals(token.toUpperCase()) || token.equals("$")) {
                     return token;
                 } else {
-                    System.out.println("BUSCANDO "+token);
+                    System.out.println("BUSCANDO " + token);
                     TablaDeProduccion tbl = this.href.get(token);
                     list += tbl.primeros;
 
@@ -249,4 +244,12 @@ public final class TablaDeTransiciones {
         return list;
     }
 
+    /*void sameSubtabla(int x, int cnt) {
+        if (this.tablasLL1.get(x).hrefTablas.isEmpty()) {
+            this.tablasLL1.get(x).hrefTablas = "" + cnt;
+        } else {
+            this.tablasLL1.get(x).hrefTablas = "," + cnt;
+
+        }
+    }*/
 }

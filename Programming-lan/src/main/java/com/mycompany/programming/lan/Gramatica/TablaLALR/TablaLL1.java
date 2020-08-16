@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,10 +39,16 @@ public class TablaLL1 {
         tabla.init();
         terminales_noTerminales();
         llenarTabla();
-
-        //generarPrs();
-        //saveProductions(this.listado, "listado.bin");
-        //saveProductions(this.trans, "tabla.bin");
+        tabla.clean();
+        var x=new TablaLALR(trans,tabla.tablasLL1,columnas,filas);
+        x.saveDatas(this.listado, "listadoDeProducciones.bin");
+        this.listado=null;
+        x.saveDatas(obtenerFila(), "listadoDeFilas.bin");
+        this.tablaDeTerminales.clear();
+        x.init();
+        this.tablaDeTerminales=null;
+        tabla.tablasLL1.clear();
+      
     }
 
     public void clean() {
@@ -58,16 +64,7 @@ public class TablaLL1 {
     }
 
     void llenarTabla() {
-        /*textoPila += "void methodPila(int numOfPila,String dato){\n"
-                + "     switch (numOfPila){\n";*/
-
         this.tabla.tablasLL1.forEach((tbl) -> {
-            /*textoPila += "    case " + tbl.num + ":\n"
-                    + "     caso" + tbl.num + "(dato);\n"
-                    + "     break;\n";
-            textoLL1 += "void caso" + tbl.num + " (String nameOfToken)\n"
-                    + "{\n"
-                    + "     switch(nameOfToken){\n";*/
             tbl.listado.forEach((sub) -> {
 
                 if (sub.haveNext()) {
@@ -78,20 +75,12 @@ public class TablaLL1 {
                         reduce(sub, tbl);
                     } else if (!tk.token.equals(tk.token.toLowerCase())) {
                         if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            /*textoLL1
-                                    += "           case \"" + tk.token + "\":\n"
-                                    + "            int numOfTrans$$_" + tk.token + "=" + transicion + ";\n "
-                                    + "         break;\n";*/
                             trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(tk, "Go-to", transicion);
 
                         }
 
                     } else {
                         if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            /*textoLL1
-                                    += "           case \"" + tk.token + "\":\n"
-                                    + "            int numOfTrans$$_" + tk.token + "=" + transicion + ";\n "
-                                    + "         break;\n";*/
                             trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(tk, "Switch", transicion);
 
                         }
@@ -100,7 +89,6 @@ public class TablaLL1 {
                     reduce(sub, tbl);
                 }
             });
-            //textoLL1 += "}\n}\n";
         });
     }
 
@@ -129,30 +117,6 @@ public class TablaLL1 {
 
     }
 
-    public void saveProductions(Object obj, String name) {
-        try {
-            FileOutputStream file = new FileOutputStream(name);
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(obj);
-            out.close();
-            file.close();
-        } catch (FileNotFoundException ex) {
-        } catch (IOException ex) {
-            Logger.getLogger(TablaLL1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    void generarPrs() {
-        tabla.href.values().forEach((x) -> {
-            x.listado.stream().map((y) -> {
-                this.listado[y.num] = y;
-                return y;
-            }).forEachOrdered((y) -> {
-                this.listado[y.num].setDad(x.produccion);
-            });
-        });
-    }
 
     public String[] obtenerFila() {
         String FILA[];
@@ -180,4 +144,15 @@ public class TablaLL1 {
         return celdas;
     }
 
+    
+    void generarPrs() {
+        tabla.href.values().forEach((x) -> {
+            x.listado.stream().map((y) -> {
+                this.listado[y.num] = y;
+                return y;
+            }).forEachOrdered((y) -> {
+                this.listado[y.num].setDad(x.produccion);
+            });
+        });
+    }
 }

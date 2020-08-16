@@ -5,8 +5,7 @@
  */
 package com.mycompany.programming.lan.Interfaz.Configs;
 
-import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaDeTransiciones;
-import com.mycompany.programming.lan.Gramatica.parser;
+
 import com.mycompany.programming.lan.Interfaz.Contenido;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +29,7 @@ public class crearEditor {
         this.Content = Content;
     }
 
+    
     public void create(String title) {
         Contenido t = new Contenido();
         t.name = title;

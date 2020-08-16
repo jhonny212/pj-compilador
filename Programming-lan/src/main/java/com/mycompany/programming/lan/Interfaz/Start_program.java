@@ -14,9 +14,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import javax.swing.JOptionPane;
 
@@ -269,7 +267,7 @@ public class Start_program extends javax.swing.JFrame {
                     if (lan.listadoDeErrores.haveErrors()) {
                         TablaLL1 tbl = new TablaLL1(lan.tablaLALR, lan.tablaDeTerminales, lan.contador_____2);
                         tbl.init();
-                        edit.addTable("tablaLL1", tbl.obtenerFila(), tbl.getCeldas());
+                        //edit.addTable("tablaLL1", tbl.obtenerFila(), tbl.getCeldas());
                     }
                 }
             } catch (FileNotFoundException ex) {
