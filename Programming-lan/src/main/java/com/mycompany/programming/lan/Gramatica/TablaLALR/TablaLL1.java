@@ -5,14 +5,8 @@
  */
 package com.mycompany.programming.lan.Gramatica.TablaLALR;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  *
@@ -39,14 +33,16 @@ public class TablaLL1 {
         tabla.init();
         terminales_noTerminales();
         llenarTabla();
+        generarPrs();
         tabla.clean();
         var x=new TablaLALR(trans,tabla.tablasLL1,columnas,filas);
         x.saveDatas(this.listado, "listadoDeProducciones.bin");
-        this.listado=null;
         x.saveDatas(obtenerFila(), "listadoDeFilas.bin");
+        this.listado=null;
         this.tablaDeTerminales.clear();
-        x.init();
         this.tablaDeTerminales=null;
+        x.init();
+       
         tabla.tablasLL1.clear();
       
     }
@@ -75,13 +71,13 @@ public class TablaLL1 {
                         reduce(sub, tbl);
                     } else if (!tk.token.equals(tk.token.toLowerCase())) {
                         if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(tk, "Go-to", transicion);
+                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Go-to", transicion);
 
                         }
 
                     } else {
                         if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(tk, "Switch", transicion);
+                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Switch", transicion);
 
                         }
                     }

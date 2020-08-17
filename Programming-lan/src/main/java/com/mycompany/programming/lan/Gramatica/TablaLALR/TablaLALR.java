@@ -13,11 +13,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -54,13 +50,13 @@ public class TablaLALR {
         saveDatas(print(), "tablaLALR.bin");
         this.tablasLL1.clear();
         this.tablasLL1 = null;
-        
+
     }
 
     boolean unirTablas(int i, int j, int k) {
         Transicion t1 = trans[i][k];
         Transicion t2 = trans[j][k];
-
+        
         if (t1 == null && t2 == null) {
             if (unirCeldas(k + 1)) {
                 return unirTablas(i, j, k + 1);
@@ -116,7 +112,16 @@ public class TablaLALR {
                                 return v;
                             }
                         } else {
-                            return unirTablas(x1, x2, this.tablasLL1.get(x2).numOfColumn);
+                            boolean v = unirTablas(x1, x2, this.tablasLL1.get(x2).numOfColumn);
+                            if(v){
+                                if (unirCeldas(k + 1)) {
+                                    return unirTablas(i, j, k + 1);
+                                } else {
+                                    return true;
+                                }
+                            }else{
+                            return v;
+                            }
                         }
                     }
                 }
@@ -152,9 +157,9 @@ public class TablaLALR {
 
     HashMap<Integer, Transicion[]> print() {
         HashMap<Integer, Transicion[]> transicions = new HashMap<>();
-        String csv="";
+        String csv = "";
         for (int i = 0; i < filas; i++) {
-            String datas="No."+i;
+            String datas = "No." + i;
             if (this.tablasLL1.get(i).delete) {
                 continue;
             }
@@ -164,17 +169,17 @@ public class TablaLALR {
                 if (tr != null) {
                     {
                         x[j] = tr;
-                        datas+=","+tr.tipo+":"+tr.transicion;
-                    
+                        datas += "," + tr.tipo + ":" + tr.transicion;
+
                     }
                 } else {
-                    datas+=", ";
+                    datas += ", ";
                 }
             }
             transicions.put(i, x);
-            csv+=datas+"\n";
+            csv += datas + "\n";
         }
-        write(new File("LALR.csv"),csv);
+        write(new File("LALR.csv"), csv);
         return transicions;
     }
 
@@ -192,7 +197,7 @@ public class TablaLALR {
         }
 
     }
-    
+
     public void write(File path, String texto) {
         FileWriter fichero = null;
         PrintWriter pw = null;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.*;
 import java_cup.runtime.Symbol;
 import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
-
+import com.mycompany.programming.lan.Gramatica.AND.*;
 parser code {:
     public  Object [] getInfos(int num, String value){
        Object x[]={num,value};
@@ -26,6 +26,24 @@ parser code {:
        }
        
     }
+     public Nodo getSPS(String e1,Nodo e){
+       NodoDAD retorno=null;
+      
+       switch(e1){
+         case "*":
+            retorno=new NodoDAD("*",null,e,true);
+            retorno.addNext(this.listadoDeNodos);
+          break;
+         case "?":
+            retorno=new NodoDAD("|",null,e,true);
+          break;
+         case "+":
+             retorno=new NodoDAD("+", null, e, e.isLambda());
+             retorno.addNext(this.listadoDeNodos);
+          break;
+          }
+          return retorno;
+    }
     
     public void addError(int opc,int fila,int columna,String token,String extra){
       listadoDeErrores.AddError(opc,fila,columna,token,extra);
@@ -38,8 +56,10 @@ parser code {:
     public HashMap<String,TablaDeProduccion> tablaDeProducciones=new HashMap<>();
     public HashMap<String,String> tablaDeTerminales=new HashMap<>();
     public ArrayList<String> tablaDeExpresionesRegulares=new ArrayList();
+    public ArrayList<Nodo> listadoDeNodos=new ArrayList();
     public int contador_____=0;
     public int contador_____2=0;
+    public int contador_____3=0;
     public ErrorClass listadoDeErrores=new ErrorClass();
     public  void compararInfo( ArrayList <dato>list){
        for (int i = 0; i < list.size(); i++) {
@@ -97,13 +117,14 @@ terminal Float FLOAT;
 
 
 non-terminal inicio,begin,regulares,codJava,terms,reg, java;
-non-terminal values, params,expr,specials,params2;
+non-terminal String specials;
+non-terminal Nodo expr,values,X1,X2;
 non-terminal ArrayList<dato> informacion;
 non-terminal String ver;
 non-terminal Object[] info;
 non-terminal gramatica,terminales,Term,NoTerm,non_terminales;
 non-terminal gramars;
-non-terminal  H;
+non-terminal  H,X3,X4;
 non-terminal  TablaDeProduccion G;
 non-terminal   A;
 non-terminal  String D;
@@ -315,33 +336,74 @@ regulares::= reg PNTCOMA
 | error:e PNTCOMA:e1 
 ;
 
-reg::= ID:e IGUAL expr
+reg::= ID: e IGUAL expr:e1
 {:
    this.parser.addExpresionReg(e,"",eleft,eright);
+   generarAFD x=new generarAFD(this.parser.listadoDeNodos,e1);
+   x.init();
 :};
-expr::= expr values
-| expr values specials;
-expr::= values
-| values specials;
+
+expr::= expr:e OR X1:e2
+{:
+if(e!=null && e2!=null){
+RESULT=new NodoDAD("|",e,e2,(e.isLambda() || e2.isLambda()));
+}else if(e==null && e2!=null){
+RESULT=new NodoDAD("|",null,e2,true);
+}else if(e!=null && e2==null){
+ RESULT=new NodoDAD("|",e,null,true);
+}  
+
+:}
+| X1:e {:RESULT=e;:};
+
+
+X1::= values:e {:RESULT=e;:} |  ;
+values::= values:e X2:e1
+{:
+NodoDAD x=new NodoDAD(".",e,e1,(e.isLambda() && e1.isLambda()));
+x.addNext(this.parser.listadoDeNodos);
+RESULT=x;
+:};
+values::= values:e X2:e1 specials:e2
+{:
+Nodo x=this.parser.getSPS(e2,e1);
+NodoDAD y=new NodoDAD(".",e,x,(e.isLambda() && x.isLambda()));
+y.addNext(this.parser.listadoDeNodos);
+RESULT=y;
+:};
+values::= X2:e {:RESULT=e;:};
+values::= X2:e specials:e1
+{:
+RESULT=this.parser.getSPS(e1,e);
+:};
+
+
+X2::= NUMC:e
+|UPC:e
+|LWC:e
+|CADENA:e
+{:
+Nodo x=new NodoVal(this.parser.contador_____3,e);
+this.parser.listadoDeNodos.add(x);
+this.parser.contador_____3++;
+RESULT=x;
+:}
+|ABRECOR expr:e CIERRACOR
+{:RESULT=e;:}
+| ABREPAREN expr:e CIERRAPAREN 
+{:RESULT=e;:};
 
 
 
-values::= 
-  UPC:e
-| LWC:e
-| NUMC:e
-| params:e expr:e2 params2:e3 
-| CADENA:e
-;
 
-params::= ABREPAREN:e 
-| ABRECOR;
-params2::= CIERRAPAREN:e | CIERRACOR:e;
 specials::= ASTERIS:e 
+{:RESULT=e;:}
 | QUESTION:e
+{:RESULT=e;:}
 | PLUS:e
-| OR:e
+{:RESULT=e;:}
 ;
+
 //----------------->
 
 //Seccion codigo java
@@ -384,7 +446,7 @@ inicio::= informacion:list
 {:
 try{
 compararInfo(list);
-}catch(NullPointerException ex){}
+}catch(Exception ex){}
 
 :}
 |error;
@@ -392,7 +454,7 @@ informacion::=  informacion:list info:obj PNTCOMA
 {:
 try{
 list.add(new dato(objleft,objright,obj));
-}catch(NullPointerException ex){
+}catch(Exception ex){
 if(list==null){
    list=new ArrayList();
 }

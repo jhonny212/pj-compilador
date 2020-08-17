@@ -1,25 +1,27 @@
 package com.mycompany.programming.lan;
 
-import com.mycompany.programming.lan.Gramatica.TablaLALR.test;
+import com.mycompany.programming.lan.Gramatica.TablaLALR.Compilador;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
 import com.mycompany.programming.lan.Interfaz.Start_program;
 import com.mycompany.programming.lan.programming.language.Tokenizer;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.StringReader;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class inicio {
 
     public static void main(String[] args) {
-        // generarCompilador();
-       Start_program f=new Start_program();
-       f.setVisible(true);
-        //probarCompilador();
         //generarCompilador();
-        
-        
+        probarCompilador();
+        //Start_program f=new Start_program();
+        //f.setVisible(true);
+        //var x=new Compilador();
+        //x.init();
+
     }
 
     private static void generarCompilador() {
@@ -35,40 +37,43 @@ public class inicio {
     }
 
     public static void probarCompilador() {
-        String texto = "nombre: juan ; \n version: 2 ;\n extension: com;"
-                + "%% public static void terminal(){} %%"
-                + "palabra  = [a-z]+; "
-                + "palabra = [a-z]+; "
-                + "%%"
-                + "terminal sum,mul,num;"
-                + "no terminal E,T,F;"
-                + "E:: T sum E"
-                + "| T;"
-                + "T:: F mul T"
-                + "| F;"
-                + "F:: num;"
-                
-                + " \n";
-       // String java[]=texto.split("%%");
-       // System.out.println(java[1]);
-
-        var scan = new lexer(new BufferedReader(new StringReader(texto)));
-        var parser = new parser(scan);
-        try {
+            String texto = ""
+                    + "nombre: juan ; \n"
+                    + "version: 2 ;\n"
+                    + "extension: com;\n"
+                    + "%% public static void terminal(){} %%\n"
+                    + "palabra  = (\"num\"(\".\"\"num\")?)\"$\";\n"
+                    + "%%\n"
+                    + "terminal num,mul,sum,ap,cp;\n"
+                    + "no terminal E,T,F;\n"
+                    + "E:: T sum E;\n"
+                    + "E:: T;\n"
+                    + "T:: F mul T;\n"
+                    + "T:: F;\n"
+                    + "F:: num;\n"
+                    + "F:: ap E cp;";
+           
+            
+            var scan = new lexer(new BufferedReader(new StringReader(texto)));
+            
+            
+            var parser = new parser(scan);
+            try {
             parser.parse();
-
-
-        } catch (NullPointerException ex) {
-        } catch (Exception ex) {
-        }
+            
+            } catch (Exception ex) {
+            System.out.println("ex"+ex.getMessage());
+            }
+        
+        
 
     }
 
     static void lexer() {
         Tokenizer tokenizer = new Tokenizer();
-      
+
         tokenizer.add("[0-9]+((.)[0-9]+)?", 8, "ID ");
-      
+
         //tokenizer.add("\\b(program|var|const|begin|end|Writeln|if|then|else|end|Mayor|Menor)\\b", 1, "Palabra Reservada");
         //tokenizer.add("[0-2]+", 6, "Numero");
         /*tokenizer.add("((?:[a-z][a-z0-9_]*))", 2, "Identificador");
@@ -90,6 +95,5 @@ public class inicio {
         }
 
     }
-
 
 }
