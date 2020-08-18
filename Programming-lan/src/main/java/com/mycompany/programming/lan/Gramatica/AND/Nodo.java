@@ -15,10 +15,7 @@ public interface Nodo {
     
     public void recorrer(Nodo href);
     
-    public void serNum(int x);
-    
-    public int getNum();
-
+   
     public String getFirst();
     public String getLast();
     public boolean isLambda();
@@ -28,4 +25,6 @@ public interface Nodo {
     
     public boolean check();
     public void setChech(boolean f);
+    public boolean compare(Nodo x);
+   
 }

@@ -28,11 +28,11 @@ public class NodoVal implements Nodo, Cloneable {
     public void recorrer(Nodo href) {
         System.out.println(this.value + " xd");
     }
-
+/*
     @Override
     public int getNum() {
         return this.num;
-    }
+    }*/
 
     @Override
     public Nodo clone() {
@@ -43,11 +43,11 @@ public class NodoVal implements Nodo, Cloneable {
         }
         return null;
     }
-
+/*
     @Override
     public void serNum(int x) {
         this.num = x;
-    }
+    }*/
 
     @Override
     public String getFirst() {
@@ -78,15 +78,28 @@ public class NodoVal implements Nodo, Cloneable {
     public String getSiguientes() {
         return this.siguientes;
     }
-     @Override
+
+    @Override
     public boolean check() {
         return this.check;
     }
 
     @Override
     public void setChech(boolean f) {
-        check=f;
+        check = f;
     }
+
+    boolean check = false;
+
+    @Override
+    public boolean compare(Nodo x) {
+       
+        if (x instanceof NodoSPS) {
+            return x.compare(this);
+        } else {
+            return x.getValue().equals(this.value);
+        }
+    }
+
     
-    boolean check=false;
 }

@@ -57,7 +57,7 @@ public class NodoDAD implements Nodo {
         }*/
 
     }
-
+/*
     @Override
     public int getNum() {
 
@@ -67,7 +67,7 @@ public class NodoDAD implements Nodo {
     @Override
     public void serNum(int x) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    }*/
 
     public void addFirst() {
         switch (this.tipo) {
@@ -164,5 +164,12 @@ public class NodoDAD implements Nodo {
     public void setChech(boolean f) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public boolean compare(Nodo x) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+   
 
 }

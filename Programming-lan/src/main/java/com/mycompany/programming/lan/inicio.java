@@ -15,13 +15,16 @@ import java.util.logging.Logger;
 public class inicio {
 
     public static void main(String[] args) {
+        //String texto="12 mundoXd hola mundoXd";
+        //var x=texto.startsWith("[0-9]+");
+        //System.out.println(x);
         //generarCompilador();
-        probarCompilador();
+        //probarCompilador();
         //Start_program f=new Start_program();
         //f.setVisible(true);
         //var x=new Compilador();
         //x.init();
-
+       
     }
 
     private static void generarCompilador() {
@@ -42,7 +45,9 @@ public class inicio {
                     + "version: 2 ;\n"
                     + "extension: com;\n"
                     + "%% public static void terminal(){} %%\n"
-                    + "palabra  = (\"num\"(\".\"\"num\")?)\"$\";\n"
+                    + "letra   = \"num\"\"X\";\n"
+                    + "numero  = (\"num\")+(\".\")(\"num\")+;\n"
+                    + "real    = (\"num\")+;\n"
                     + "%%\n"
                     + "terminal num,mul,sum,ap,cp;\n"
                     + "no terminal E,T,F;\n"
