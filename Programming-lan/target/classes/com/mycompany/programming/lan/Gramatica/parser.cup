@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.*;
 import java_cup.runtime.Symbol;
 import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
-import com.mycompany.programming.lan.Gramatica.AND.*;
+import com.mycompany.programming.lan.Gramatica.AFD.*;
 parser code {:
     public  Object [] getInfos(int num, String value){
        Object x[]={num,value};
@@ -89,6 +89,9 @@ parser code {:
                         }
                         
     }
+
+ 
+
     } 
      public void addExpresionReg(String dato,String regex,int fila,int columna){
       for(String d: tablaDeExpresionesRegulares){
@@ -362,7 +365,7 @@ NodoVal acept=new NodoVal(this.parser.contador_____3, "$");
 this.parser.listadoDeNodos.add(acept);
 NodoDAD tmp=new NodoDAD(".", e, acept, (e.isLambda() && acept.isLambda()));
 tmp.addNext(this.parser.listadoDeNodos);
-generarAFD x=new generarAFD(this.parser.listadoDeNodos,tmp);
+generarAFD x=new generarAFD(this.parser.listadoDeNodos,tmp,String.valueOf(e1));
 x.init();
 this.parser.listadoDeNodos=new ArrayList();
 this.parser.contador_____3=0;

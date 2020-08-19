@@ -5,12 +5,17 @@
 
 package com.mycompany.programming.lan.Gramatica;
 
+import com.mycompany.programming.lan.Gramatica.AFD.NodoSPS;
+import com.mycompany.programming.lan.Gramatica.AFD.Nodo;
+import com.mycompany.programming.lan.Gramatica.AFD.generarAFD;
+import com.mycompany.programming.lan.Gramatica.AFD.NodoVal;
+import com.mycompany.programming.lan.Gramatica.AFD.NodoDAD;
+import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.*;
 import java_cup.runtime.Symbol;
 import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
-import com.mycompany.programming.lan.Gramatica.AND.*;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20150326 (SVN rev 63) generated parser.
@@ -643,10 +648,8 @@ class CUP$parser$actions {
 		ArrayList<generarAFD> e = (ArrayList<generarAFD>)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
 		
 //this.parser.tablaLALR=new TablaDeTransiciones(this.parser.tablaDeProducciones,this.parser.inicio);
-            for(generarAFD x: e){
-                System.out.println("\n");
-                x.print();
-            }
+             analizadorLexico t=new analizadorLexico(e);
+             t.init("LMBaa");
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("begin",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-5)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -1166,7 +1169,7 @@ NodoVal acept=new NodoVal(this.parser.contador_____3, "$");
 this.parser.listadoDeNodos.add(acept);
 NodoDAD tmp=new NodoDAD(".", e, acept, (e.isLambda() && acept.isLambda()));
 tmp.addNext(this.parser.listadoDeNodos);
-generarAFD x=new generarAFD(this.parser.listadoDeNodos,tmp);
+generarAFD x=new generarAFD(this.parser.listadoDeNodos,tmp,String.valueOf(e1));
 x.init();
 this.parser.listadoDeNodos=new ArrayList();
 this.parser.contador_____3=0;

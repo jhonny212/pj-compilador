@@ -1,5 +1,6 @@
 package com.mycompany.programming.lan;
 
+import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.Compilador;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
@@ -19,12 +20,13 @@ public class inicio {
         //var x=texto.startsWith("[0-9]+");
         //System.out.println(x);
         //generarCompilador();
-        //probarCompilador();
+        probarCompilador();
         //Start_program f=new Start_program();
         //f.setVisible(true);
         //var x=new Compilador();
         //x.init();
        
+        
     }
 
     private static void generarCompilador() {
@@ -33,7 +35,7 @@ public class inicio {
             String opcFlex[] = {ruta + "lexer.Jflex", "-d", ruta};
             jflex.Main.generate(opcFlex);
             String opcCUP[] = {"-destdir", ruta, "-parser", "parser", ruta + "parser.cup"};
-            java_cup.Main.main(opcCUP);
+            //java_cup.Main.main(opcCUP);
         } catch (Exception ex) {
         }
 
@@ -45,9 +47,8 @@ public class inicio {
                     + "version: 2 ;\n"
                     + "extension: com;\n"
                     + "%% public static void terminal(){} %%\n"
-                    + "letra   = \"num\"\"X\";\n"
-                    + "numero  = (\"num\")+(\".\")(\"num\")+;\n"
-                    + "real    = (\"num\")+;\n"
+                    + "idsps= ([A-Z])+|([a-z])+;"
+                 
                     + "%%\n"
                     + "terminal num,mul,sum,ap,cp;\n"
                     + "no terminal E,T,F;\n"
@@ -65,6 +66,7 @@ public class inicio {
             var parser = new parser(scan);
             try {
             parser.parse();
+               
             
             } catch (Exception ex) {
             System.out.println("ex"+ex.getMessage());

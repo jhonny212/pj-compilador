@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.programming.lan.Gramatica.AND;
+package com.mycompany.programming.lan.Gramatica.AFD;
 
 /**
  *
@@ -50,10 +50,14 @@ public class NodoSPS implements Nodo, Cloneable {
         return null;
     }
 
-    /*@Override
-    public void serNum(int x) {
-        this.num = x;
-    }*/
+    public int getMin()
+    {
+        return this.min;
+    }
+     public int getMax()
+    {
+        return this.max;
+    }
 
     @Override
     public String getFirst() {
