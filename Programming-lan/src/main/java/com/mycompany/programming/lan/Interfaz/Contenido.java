@@ -5,14 +5,18 @@
  */
 package com.mycompany.programming.lan.Interfaz;
 
+import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaDeTransiciones;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaLL1;
 import com.mycompany.programming.lan.Gramatica.parser;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JButton;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  *
@@ -41,6 +45,7 @@ public class Contenido extends javax.swing.JPanel {
     JTable tabla;
 
     public void initTable(String [][]celdas,String[]titulos) {
+           bool=true;
         this.tabla = new JTable(celdas, titulos);
         this.scroll.setRowHeader(null);
         this.scroll.setViewportView(this.tabla);
@@ -48,10 +53,32 @@ public class Contenido extends javax.swing.JPanel {
     }
 
     public void initPrs(String [][] array) {
+           bool=true;
         String title[] = {"No", "produccion", "Regla de produccion"};
         tabla = new JTable(array, title);
         this.scroll.setViewportView(this.tabla);
 
+    }
+    boolean bool=false;
+    
+    public void addError(ArrayList<ErrorClass.errorProduced> listado){
+       
+        bool=true;
+        DefaultTableModel model=new DefaultTableModel();
+        model.addColumn("Fila");
+        model.addColumn("Columna");
+        model.addColumn("Token");
+        model.addColumn("Extra");
+        
+        for(ErrorClass.errorProduced x: listado){
+            Object vector[]={x.fila,x.columna,x.token,x.dato};
+            model.addRow(vector);
+        }
+        
+        tabla =new JTable();
+        this.tabla.setModel(model);
+        this.scroll.setRowHeader(null);
+        this.scroll.setViewportView(this.tabla);
     }
 
     /**

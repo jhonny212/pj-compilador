@@ -12,6 +12,7 @@ import java_cup.runtime.Symbol;
 %char
 %public
 %{
+  public ErrorClass error=new ErrorClass(); 
  StringBuffer string = new StringBuffer();
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline+1, yycolumn+1, value);
@@ -43,6 +44,7 @@ Identifier = [:jletter:] [:jletterdigit:]*
 {
 string = new StringBuffer();
 yybegin(STRING);}    
+("entero"|"real"|"cadena")                                                  {return symbol(sym.TIPO_VAR,new String(yytext()));}
 "::"                                                                        {return symbol(sym.BOTHPOINT,new String(yytext()));}
 "terminal"                                                                  {return symbol(sym.TERM,new String(yytext()));}
 "no"                                                                        {return symbol(sym.NO,new String(yytext()));}
@@ -75,7 +77,9 @@ yybegin(STRING);}
 {WhiteSpace}                                                                {}
 {Comment}                                                                   {}
 .                                                                           
-{return symbol(sym.ERROR,new String(yytext()));}    
+{
+  this.error.AddError(0,yyline+1,yycolumn+1,yytext(),"Es lexema no esta definido");
+  return symbol(sym.ERROR,new String(yytext()));}    
 
 }
 

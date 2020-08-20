@@ -33,7 +33,7 @@ public class TablaLALR {
         this.filas = filas;
     }
 
-    public void init() {
+    public void init(String path,String nombre) {
         for (int i = tablasLL1.size() - 1; i >= 0; i--) {
             Subtabla sub = tablasLL1.get(i);
             if (sub.hrefTablas != -1) {
@@ -47,7 +47,7 @@ public class TablaLALR {
                 }
             }
         }
-        saveDatas(print(), "tablaLALR.bin");
+        saveDatas(print(path,nombre),path, nombre+"_tablaLALR.bin");
         this.tablasLL1.clear();
         this.tablasLL1 = null;
 
@@ -155,7 +155,7 @@ public class TablaLALR {
 
     }
 
-    HashMap<Integer, Transicion[]> print() {
+    HashMap<Integer, Transicion[]> print(String path,String nombre) {
         HashMap<Integer, Transicion[]> transicions = new HashMap<>();
         String csv = "";
         for (int i = 0; i < filas; i++) {
@@ -179,13 +179,13 @@ public class TablaLALR {
             transicions.put(i, x);
             csv += datas + "\n";
         }
-        write(new File("LALR.csv"), csv);
+        write(new File(path+"/"+nombre+"_LALR.csv"), csv);
         return transicions;
     }
 
-    public void saveDatas(Object obj, String name) {
+    public void saveDatas(Object obj,String path, String name) {
         try {
-            FileOutputStream file = new FileOutputStream(name);
+            FileOutputStream file = new FileOutputStream(path+"/"+name);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(obj);
             out.close();

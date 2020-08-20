@@ -4,6 +4,7 @@
 
 package com.mycompany.programming.lan.Gramatica;
 
+import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 import java_cup.runtime.Symbol;
 
 
@@ -325,6 +326,7 @@ public class lexer implements java_cup.runtime.Scanner {
   private boolean zzEOFDone;
 
   /* user code: */
+  public ErrorClass error=new ErrorClass(); 
  StringBuffer string = new StringBuffer();
     private Symbol symbol(int type, Object value) {
         return new Symbol(type, yyline+1, yycolumn+1, value);
@@ -738,7 +740,8 @@ public class lexer implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1:
-            { return symbol(sym.ERROR,new String(yytext()));
+            { this.error.AddError(0,yyline+1,yycolumn+1,yytext(),"Es lexema no esta definido");
+  return symbol(sym.ERROR,new String(yytext()));
             }
             // fall through
           case 36: break;

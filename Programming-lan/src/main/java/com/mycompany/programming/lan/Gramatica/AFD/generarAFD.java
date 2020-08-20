@@ -13,10 +13,11 @@ import java.util.HashMap;
  *
  * @author jhonny
  */
-public class generarAFD {
+public class generarAFD implements Serializable{
+     private static final long serialversionUID = 
+                                 129348938L; 
 
     ArrayList<Nodo> listado;
-    Nodo inicio;
     int numState = 0;
     HashMap<String, estado> AFD = new HashMap<String, estado>();
     ArrayList<String> pila = new ArrayList<>();
@@ -24,7 +25,6 @@ public class generarAFD {
 
     public generarAFD(ArrayList<Nodo> listado, Nodo inicio, String name) {
         this.listado = listado;
-        this.inicio = inicio;
         this.token = name;
         this.estadoInicial = inicio.getFirst();
         AFD.put(inicio.getFirst(), new estado(inicio.getFirst(), "inicio", numState, inicio.getFirst().contains(String.valueOf((this.listado.size() - 1))), name));
@@ -120,7 +120,8 @@ public class generarAFD {
     }
 
     public class estado implements Serializable {
-
+ private static final long serialversionUID = 
+                                 129348938L; 
         public String llave, nombreToken;
         public String valor;
         public int num;
@@ -150,7 +151,8 @@ public class generarAFD {
     }
 
     public class referencia implements Serializable {
-
+ private static final long serialversionUID = 
+                                 129348938L; 
         private String val;
         estado y;
 

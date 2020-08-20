@@ -12,14 +12,14 @@ public class ErrorClass {
         this.sintactico = new ArrayList<>();
     }
 
-    private class errorProduced {
+    public  class errorProduced {
 
         public final int fila, columna;
         public final String token, dato;
 
         private errorProduced(String tk, String dt, int f, int c) {
             this.columna = c;
-            this.fila = f;
+            this.fila = f-1;
             this.dato = dt;
             this.token = tk;
         }
@@ -35,7 +35,7 @@ public class ErrorClass {
     public void AddError(int opc, int fila, int columna, String token) {
         switch (opc) {
             case 0:
-                this.lexico.add(new errorProduced(token, fila, columna));
+                this.lexico.add(new errorProduced(token, fila+1, columna+1));
                 break;
             case 1:
                this.sintactico.add(new errorProduced(token, fila, columna));
@@ -50,7 +50,7 @@ public class ErrorClass {
     public void AddError(int opc, int fila, int columna, String token, String solucion) {
         switch (opc) {
             case 0:
-                this.lexico.add(new errorProduced(token,solucion, fila, columna));
+                this.lexico.add(new errorProduced(token,solucion, fila+1, columna+1));
                 break;
             case 1:
                this.sintactico.add(new errorProduced(token,solucion, fila, columna));
@@ -62,7 +62,7 @@ public class ErrorClass {
     }
     
     public boolean haveErrors(){
-    return this.lexico.isEmpty() || this.semantico.isEmpty() || this.sintactico.isEmpty();
+    return this.lexico.isEmpty() && this.semantico.isEmpty() && this.sintactico.isEmpty();
     }
     
     public void erroresSintacticos(){

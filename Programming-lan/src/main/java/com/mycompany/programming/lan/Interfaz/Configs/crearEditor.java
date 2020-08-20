@@ -6,6 +6,7 @@
 package com.mycompany.programming.lan.Interfaz.Configs;
 
 
+import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 import com.mycompany.programming.lan.Interfaz.Contenido;
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
@@ -105,7 +107,7 @@ public class crearEditor {
     }
 
    
-
+    //Get selected component
     public Contenido getCl() {
         try {
             return (Contenido) Content.getSelectedComponent();
@@ -171,5 +173,11 @@ public class crearEditor {
         } catch (Exception ex) {
         }
 
+    }
+    
+    public void addError(ArrayList<ErrorClass.errorProduced> listado,String name){
+     Contenido t=new Contenido();
+     t.addError(listado);
+     Content.add(name, t);
     }
 }

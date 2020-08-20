@@ -5,6 +5,10 @@
  */
 package com.mycompany.programming.lan.Gramatica.TablaLALR;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 
 
@@ -29,27 +33,38 @@ public class TablaLL1 {
 
     }
 
-    public void init() {
+    public void init(String path,String nombre) {
         tabla.init();
         terminales_noTerminales();
         llenarTabla();
         generarPrs();
         tabla.clean();
         var x=new TablaLALR(trans,tabla.tablasLL1,columnas,filas);
-        x.saveDatas(this.listado, "listadoDeProducciones.bin");
-        x.saveDatas(obtenerFila(), "listadoDeFilas.bin");
+        x.saveDatas(this.listado,path, nombre+"_Producciones.bin");
+        x.saveDatas(obtenerFila(),path, nombre+"_Filas.bin");
         this.listado=null;
         this.tablaDeTerminales.clear();
         this.tablaDeTerminales=null;
-        x.init();
-       
+        x.init(path,nombre);
         tabla.tablasLL1.clear();
       
     }
 
+   public void saveDatas(Object obj,String path, String name) {
+        try {
+            FileOutputStream file = new FileOutputStream(path+"/"+name);
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(obj);
+            out.close();
+            file.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("no here");
+        } catch (IOException ex) {
+            System.out.println("no"+ ex.getMessage());
+        }
+
+    }
     public void clean() {
-        tabla.clean();
-        tablaDeTerminales.clear();
         trans = null;
     }
 
@@ -142,12 +157,14 @@ public class TablaLL1 {
 
     
     void generarPrs() {
+        System.out.println("entro");
         tabla.href.values().forEach((x) -> {
             x.listado.stream().map((y) -> {
                 this.listado[y.num] = y;
                 return y;
             }).forEachOrdered((y) -> {
                 this.listado[y.num].setDad(x.produccion);
+                this.listado[y.num].setTipo(x.tipo);
             });
         });
     }

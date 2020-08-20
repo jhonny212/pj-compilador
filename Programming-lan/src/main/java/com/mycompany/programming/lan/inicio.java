@@ -2,16 +2,15 @@ package com.mycompany.programming.lan;
 
 import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.Compilador;
+import com.mycompany.programming.lan.Gramatica.lenguaje;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
 import com.mycompany.programming.lan.Interfaz.Start_program;
 import com.mycompany.programming.lan.programming.language.Tokenizer;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class inicio {
 
@@ -20,12 +19,16 @@ public class inicio {
         //var x=texto.startsWith("[0-9]+");
         //System.out.println(x);
         //generarCompilador();
-        probarCompilador();
-        //Start_program f=new Start_program();
-        //f.setVisible(true);
+        //probarCompilador();
+        Start_program f=new Start_program();
+        f.setVisible(true);
         //var x=new Compilador();
         //x.init();
        
+        /*lenguaje l=new lenguaje();
+        l.cargarLenguaje("/home/jhonny/Escritorio/6To.Semestre/Compi2/LabCompi/Proyecto1/Programming-lan/src"
+                + "/main/java/com/mycompany/programming/lan/Interfaz/repositorios/juan");
+        */
         
     }
 
@@ -33,9 +36,9 @@ public class inicio {
         try {
             String ruta = "src/main/java/com/mycompany/programming/lan/Gramatica/"; //ruta donde tenemos los archivos con extension .jflex y .cup
             String opcFlex[] = {ruta + "lexer.Jflex", "-d", ruta};
-            jflex.Main.generate(opcFlex);
+            //jflex.Main.generate(opcFlex);
             String opcCUP[] = {"-destdir", ruta, "-parser", "parser", ruta + "parser.cup"};
-            //java_cup.Main.main(opcCUP);
+            java_cup.Main.main(opcCUP);
         } catch (Exception ex) {
         }
 
@@ -52,7 +55,7 @@ public class inicio {
                     + "%%\n"
                     + "terminal num,mul,sum,ap,cp;\n"
                     + "no terminal E,T,F;\n"
-                    + "E:: T sum E;\n"
+                    + "S:: T sum E;\n"
                     + "E:: T;\n"
                     + "T:: F mul T;\n"
                     + "T:: F;\n"

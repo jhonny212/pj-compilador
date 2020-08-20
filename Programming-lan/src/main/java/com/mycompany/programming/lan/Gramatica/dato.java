@@ -8,4 +8,10 @@ public class dato {
         this.columna=columna;
         this.value=value;
     }
+    public String getValue(){
+        return String.valueOf(value[1]);
+    }
+    public int tipo(){
+        return (int)value[0];
+    }
 }

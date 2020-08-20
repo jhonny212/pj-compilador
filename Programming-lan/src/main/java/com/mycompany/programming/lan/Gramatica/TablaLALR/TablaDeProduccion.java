@@ -9,12 +9,13 @@ public class TablaDeProduccion {
     public String produccion;
     public String primeros;
     public boolean isLambda;
-    public TablaDeProduccion(ArrayList<Produccion> listado, String produccion) {
+    public int tipo;
+    public TablaDeProduccion(ArrayList<Produccion> listado, String produccion,int tipo) {
         this.listado = listado;
         this.produccion = produccion;
         this.primeros="";
         this.isLambda=false;
-     
+        this.tipo=tipo;
     }
 
       

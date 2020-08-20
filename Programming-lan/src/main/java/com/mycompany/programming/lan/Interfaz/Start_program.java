@@ -5,18 +5,30 @@
  */
 package com.mycompany.programming.lan.Interfaz;
 
+import com.mycompany.programming.lan.Gramatica.AFD.generarAFD;
+import com.mycompany.programming.lan.Gramatica.TablaLALR.Produccion;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaLL1;
+import com.mycompany.programming.lan.Gramatica.TablaLALR.Transicion;
+import com.mycompany.programming.lan.Gramatica.lenguaje;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
 import com.mycompany.programming.lan.Interfaz.Configs.crearEditor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.JMenuItem;
 
 import javax.swing.JOptionPane;
+import javax.swing.MenuElement;
 
 /**
  *
@@ -33,7 +45,17 @@ public class Start_program extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(this);
         edit = new crearEditor(this.Content);
-
+        init();
+        
+    }
+    String path="";
+    void init(){
+        File file=new File("");
+        path=file.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios";
+        File files []=new File(path).listFiles();
+        for(File archivo: files){
+            addMenu(archivo.getName());
+        }
     }
 
     /**
@@ -58,7 +80,7 @@ public class Start_program extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenuItem5 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        lans = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -129,12 +151,17 @@ public class Start_program extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Lenguajes");
-        jMenuBar1.add(jMenu2);
+        lans.setText("Lenguajes");
+        jMenuBar1.add(lans);
 
         jMenu3.setText("Ejecutar");
 
         jMenuItem6.setText("Compilar lenguaje");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem6);
 
         jMenuItem7.setText("Cargar lenguaje");
@@ -207,9 +234,19 @@ public class Start_program extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton1ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        final int opc = JOptionPane.showConfirmDialog(this, "¿Desea guardar el documento?");
+        try{
+            Contenido cn=edit.getCl();
+            if(cn.bool){
+                this.Content.remove(cn);
+                return;
+            }
+            final int opc = JOptionPane.showConfirmDialog(this, "¿Desea guardar el documento?");
         if (opc != 2)
             edit.save(opc);
+        }catch(Exception ex){
+            
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jMenuItem3ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -265,9 +302,20 @@ public class Start_program extends javax.swing.JFrame {
                 parser lan = CargarLenguaje(f);
                 if (lan != null) {
                     if (lan.listadoDeErrores.haveErrors()) {
-                        TablaLL1 tbl = new TablaLL1(lan.tablaLALR, lan.tablaDeTerminales, lan.contador_____2);
-                        tbl.init();
-                        //edit.addTable("tablaLL1", tbl.obtenerFila(), tbl.getCeldas());
+                        addMenu(lan.nameProgram);
+                        this.Lanselected.setText(lan.nameProgram);
+                        
+                    } else {
+                        if (!lan.listadoDeErrores.lexico.isEmpty()) {
+                            edit.addError(lan.listadoDeErrores.lexico, "Errores lexico");
+                        }
+                        if (!lan.listadoDeErrores.semantico.isEmpty()) {
+                            edit.addError(lan.listadoDeErrores.semantico, "Errores semantico");
+                        }
+                        if (!lan.listadoDeErrores.sintactico.isEmpty()) {
+                            edit.addError(lan.listadoDeErrores.sintactico, "Errores sintactico");
+                        }
+
                     }
                 }
             } catch (FileNotFoundException ex) {
@@ -275,18 +323,50 @@ public class Start_program extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+     
+       
+    }//GEN-LAST:event_jMenuItem6ActionPerformed
+
     private parser CargarLenguaje(File file) throws FileNotFoundException {
 
-        var scan = new lexer(new BufferedReader(new FileReader(file)));
-        var parser = new parser(scan);
+        lexer scan = new lexer(new BufferedReader(new FileReader(file)));
+        parser parser = new parser(scan);
         try {
             parser.parse();
+            parser.listadoDeErrores.lexico=scan.error.lexico;
             return parser;
         } catch (Exception ex) {
             System.out.println("ex" + ex.getLocalizedMessage());
         }
         return null;
     }
+    
+    private lenguaje lenguaje=null;
+    
+    private void compilar(){
+        lenguaje=null;
+        File File=new File(path+"/"+this.Lanselected.getText()+"/"+this.Lanselected.getText()+".bin");
+        leerBin(File);
+        if(lenguaje!=null){
+            lenguaje.cargarLenguaje(path);
+        }
+    }
+    
+    private void leerBin(File arch) {
+        try {
+            FileInputStream file = new FileInputStream(arch);
+            ObjectInputStream in = new ObjectInputStream(file);
+            lenguaje= (lenguaje) in.readObject();
+            in.close();
+            file.close();
+        } catch (IOException ex) {
+            System.out.println("IOException is caught" + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("ClassNotFoundException is caught");
+        }
+    }
+    
 
     /**
      * @param args the command line arguments
@@ -323,13 +403,24 @@ public class Start_program extends javax.swing.JFrame {
             }
         });
     }
+    
+    void addMenu(String name){
+       JMenuItem m=new JMenuItem(name);
+       m.addActionListener(new ActionListener() {
+           @Override
+           public void actionPerformed(ActionEvent e) {
+               Lanselected.setText(m.getText());
+               compilar();
+           }
+       });
+       this.lans.add(m);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane Content;
     private javax.swing.JLabel Lanselected;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
@@ -346,5 +437,6 @@ public class Start_program extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JMenu lans;
     // End of variables declaration//GEN-END:variables
 }

@@ -25,17 +25,18 @@ public class sym {
   public static final int SEPARATOR = 15;
   public static final int ID = 28;
   public static final int NUMC = 13;
-  public static final int NUM = 32;
+  public static final int NUM = 33;
   public static final int BEGIN = 31;
   public static final int CIERRAPAREN = 7;
   public static final int COMA = 25;
-  public static final int FLOAT = 33;
+  public static final int FLOAT = 34;
   public static final int EXTENS = 21;
   public static final int EXT_ID = 18;
   public static final int EOF = 0;
   public static final int ABREKEY = 22;
   public static final int BOTHPOINT = 17;
   public static final int error = 1;
+  public static final int TIPO_VAR = 32;
   public static final int ABRECOR = 8;
   public static final int UPC = 11;
   public static final int NO = 30;
@@ -75,6 +76,7 @@ public class sym {
   "TERM",
   "NO",
   "BEGIN",
+  "TIPO_VAR",
   "NUM",
   "FLOAT"
   };

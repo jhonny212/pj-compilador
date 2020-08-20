@@ -1,0 +1,13 @@
+No.0,Switch:4, , ,Switch:6, ,Switch:5,Go-to:1,Go-to:3,Go-to:2, 
+No.1, , , , , , , , , ,ACEPTACION:-1
+No.2, , ,Switch:7, ,reduce:1, , , , ,reduce:1
+No.3, ,Switch:8,reduce:3, ,reduce:3, , , , ,reduce:3
+No.4, ,reduce:4,reduce:4, ,reduce:4, , , , ,reduce:4
+No.5, ,reduce:5,reduce:5, ,reduce:5, , , , ,reduce:5
+No.6,Switch:4, , ,Switch:6, ,Switch:5,Go-to:9,Go-to:3,Go-to:2, 
+No.7,Switch:4, , ,Switch:6, ,Switch:5,Go-to:15,Go-to:3,Go-to:2, 
+No.8,Switch:4, , ,Switch:6, ,Switch:5, ,Go-to:3,Go-to:16, 
+No.9, , , , ,Switch:17, , , , , 
+No.15, , , , ,reduce:0, , , , ,reduce:0
+No.16, , ,reduce:2, ,reduce:2, , , , ,reduce:2
+No.17, ,reduce:6,reduce:6, ,reduce:6, , , , ,reduce:6

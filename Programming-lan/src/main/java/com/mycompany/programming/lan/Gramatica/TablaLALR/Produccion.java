@@ -10,6 +10,7 @@ public class Produccion implements Serializable{
     public ArrayList<SymToken> SimbolosProduccion;
     final public int num; 
     String padre;
+    int tipo=-1;
     final public boolean isLambda;
     public Produccion(ArrayList<SymToken> list,String rules,int numero){
        if(list!=null){
@@ -35,6 +36,9 @@ public class Produccion implements Serializable{
         this.reglasSemanticas=rules;
         this.num=-1;
    }
+    public void setTipo(int x){
+    this.tipo=x;
+    }
    
    
 

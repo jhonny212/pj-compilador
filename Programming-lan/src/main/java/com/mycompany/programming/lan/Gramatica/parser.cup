@@ -58,15 +58,18 @@ parser code {:
     public void addError(int opc,int fila,int columna,String token){
        listadoDeErrores.AddError(opc,fila,columna,token);
     }
-    public TablaDeProduccion inicio;
-    public TablaDeTransiciones tablaLALR=null;
-    public HashMap<String,TablaDeProduccion> tablaDeProducciones=new HashMap<>();
-    public HashMap<String,String> tablaDeTerminales=new HashMap<>();
-    public ArrayList<String> tablaDeExpresionesRegulares=new ArrayList();
-    public ArrayList<Nodo> listadoDeNodos=new ArrayList();
-    public int contador_____=0;
-    public int contador_____2=0;
-    public int contador_____3=0;
+   
+      public String nameProgram="";
+    private TablaDeProduccion inicio;
+    private TablaDeTransiciones tablaLALR=null;
+    private HashMap<String,TablaDeProduccion> tablaDeProducciones=new HashMap<>();
+    private HashMap<String,String> tablaDeTerminales=new HashMap<>();
+    private ArrayList<String> tablaDeExpresionesRegulares=new ArrayList();
+    private ArrayList<Nodo> listadoDeNodos=new ArrayList();
+    private int tipo_var=0;
+    private int contador_____=0;
+    private int contador_____2=0;
+    private int contador_____3=0;
    
     public ErrorClass listadoDeErrores=new ErrorClass();
     public  void compararInfo( ArrayList <dato>list){
@@ -102,6 +105,16 @@ parser code {:
       }
       tablaDeExpresionesRegulares.add(dato);
    }
+   private void create(String path, String autor, String extension, double version, ArrayList<generarAFD> e) {
+         lenguaje lan=new lenguaje(this.nameProgram, autor, extension, version);
+   this.tablaLALR=new TablaDeTransiciones(this.tablaDeProducciones,this.inicio);
+   TablaLL1 tbl = new TablaLL1(this.tablaLALR, this.tablaDeTerminales, this.contador_____2);
+   tbl.init(path,this.nameProgram);
+   tbl.clean();
+   tbl.saveDatas(lan, path, this.nameProgram+".bin");
+   tbl.saveDatas(e, path, this.nameProgram+"_AFD.bin");
+   
+    }
     public void syntax_error(Symbol s){
        addError(1,s.left+1,s.right+1,s.value.toString());
       System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
@@ -121,18 +134,18 @@ parser code {:
 terminal String ASTERIS,QUESTION,PLUS,OR,ABREPAREN,CIERRAPAREN,ABRECOR,CIERRACOR,ERROR;
 terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID;
 terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT;
-terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN;
+terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR;
 terminal Integer NUM;
 terminal Float FLOAT;
 
 
 
-non-terminal inicio,begin,codJava,terms, java;
+non-terminal begin,codJava,terms, java;
 non-terminal String specials;
 non-terminal Nodo expr,values,X1,X2;
 non-terminal ArrayList<generarAFD> regulares;
 non-terminal generarAFD reg;
-non-terminal ArrayList<dato> informacion;
+non-terminal ArrayList<dato> informacion,inicio;
 non-terminal String ver;
 non-terminal Object[] info;
 non-terminal gramatica,terminales,Term,NoTerm,non_terminales;
@@ -150,8 +163,40 @@ start with begin;
 
 begin::= inicio:e1 SEPARATOR codJava regulares:e SEPARATOR gramatica
 {:
-//this.parser.tablaLALR=new TablaDeTransiciones(this.parser.tablaDeProducciones,this.parser.inicio);
- 
+String extension="",autor="";
+double version=0.0;
+for(dato x: e1){
+   switch (x.tipo()){
+      case 1:
+      this.parser.nameProgram=x.getValue();
+      break;
+      case 2:
+       version=Double.valueOf(x.getValue());
+      break;
+      case 3:
+      autor=x.getValue();
+      break;
+      case 4:
+       extension=x.getValue();
+      break;
+   }
+}
+
+if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty()){
+   File f=new File("");
+   String path=f.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios/"+this.parser.nameProgram;
+   f=new File(path);
+   if(f.exists()){
+      this.parser.create(path, autor, extension, version,e);
+    }else{
+   if(f.mkdir()){
+       this.parser.create(path, autor, extension, version,e);
+   }
+   }
+}else if(this.parser.nameProgram.isEmpty()){
+    this.parser.addError(1, -1,-1, "El nombre no ha sido declarado", "Declarar el nombre del lenguaje");
+}
+
 :}
 |error
  ;
@@ -162,61 +207,100 @@ begin::= inicio:e1 SEPARATOR codJava regulares:e SEPARATOR gramatica
 gramatica::= Term NoTerm A;
 
 //%%%%%%%%%%%%%%%
-Term::= Term TERM terminales PNTCOMA;
-Term::= TERM terminales PNTCOMA;
+Term::= Term TERM H terminales PNTCOMA;
+Term::= TERM H terminales PNTCOMA;
 terminales::= terminales COMA ID:e
 {:
+try{
 chetCase(e,eleft,eright,1);
 if(this.parser.tablaDeTerminales.containsKey(e)){
    this.parser.addError(2,eleft,eright,e,"El terminal ya ha sido declarado");
 }else{
-this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e);
+this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e+":"+this.parser.tipo_var);
 this.parser.contador_____++;
 }
+}catch(Exception ex){
+
+}
+
 :}
 ;
 terminales::= ID:e
 {:
+try{
 chetCase(e,eleft,eright,1);
 if(this.parser.tablaDeTerminales.containsKey(e)){
    this.parser.addError(2,eleft,eright,e,"El terminal ya ha sido declarado");
 }else{
-this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e);
+this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e+":"+this.parser.tipo_var);
 this.parser.contador_____++;
 }
+}catch(Exception ex){
+
+}
+
 :}
 ;
 //------------------end of terminales
-NoTerm::= NoTerm NO TERM non_terminales PNTCOMA;
-NoTerm::= NO TERM non_terminales PNTCOMA;
+NoTerm::= NoTerm NO TERM H non_terminales PNTCOMA;
+NoTerm::= NO TERM H non_terminales PNTCOMA;
 non_terminales::= non_terminales COMA ID:e
 {:
+try{
 chetCase(e,eleft,eright,2);
 if(this.parser.tablaDeProducciones.containsKey(e)){
    this.parser.addError(2,eleft,eright,e,"La produccion ya ha sido declarada");
 }else{
 this.parser.tablaDeProducciones.put(e,null);
-this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e);
+this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e+":"+this.parser.tipo_var);
 this.parser.contador_____++;
 }
+}catch(Exception ex){
+
+}
+
 :}
 ;
 non_terminales::= ID:e
 {:
+try{
 chetCase(e,eleft,eright,2);
 
 if(this.parser.tablaDeProducciones.containsKey(e)){
    this.parser.addError(2,eleft,eright,e,"La produccion ya ha sido declarada");
 }else{
 this.parser.tablaDeProducciones.put(e,null);
-this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e);
+this.parser.tablaDeTerminales.put(e,this.parser.contador_____+":"+e+":"+this.parser.tipo_var);
 this.parser.contador_____++;
 }
+}catch(Exception ex){}
 
+
+:};
+H::= TIPO_VAR:e 
+{:
+switch(e){
+   case "cadena" :
+   this.parser.tipo_var=1;
+   break;
+   case "entero" :
+   this.parser.tipo_var=2;
+   break;
+   case "real" :
+   this.parser.tipo_var=3;
+   
+   break;
+}
+
+:} 
+| 
+{:
+this.parser.tipo_var=0;
 :};
 //%%%%%%%%%%%%
 A::=A G:e  PNTCOMA
 {:
+try{
 if(this.parser.tablaDeProducciones.containsKey(e.produccion)){
 TablaDeProduccion href=this.parser.tablaDeProducciones.get(e.produccion);
 if(href==null){
@@ -229,12 +313,16 @@ if(href==null){
 }else{
   this.parser.addError(2,eleft,eright,e.produccion,"La produccion no ha sido declarada ");
 }
+}catch(Exception ex){
+
+}
+
 
 :}
 | error ;
 A::= G:e PNTCOMA 
 {:
-
+try{
 if(this.parser.tablaDeProducciones.containsKey(e.produccion)){
 this.parser.inicio=e;
 TablaDeProduccion href=this.parser.tablaDeProducciones.get(e.produccion);
@@ -245,27 +333,45 @@ if(href==null){
     href.listado.add(x);
     }
 }
-}else{
-  this.parser.addError(2,eleft,eright,e.produccion,"La produccion no ha sido declarada ");
 }
+}catch(Exception ex){
+
+}
+
 
 
 :}
 | error PNTCOMA;
 G::= ID:e BOTHPOINT B:e1 D:e2 E:e3
 {:
+
 Produccion tmp=new Produccion(e1,e2,this.parser.contador_____2);
 e3.add(tmp);
-RESULT=new TablaDeProduccion(e3,e);
+try{
+String vect[]=this.parser.tablaDeTerminales.get(e).split(":");
+int x=Integer.valueOf(vect[vect.length-1]);
+RESULT=new TablaDeProduccion(e3,e,x);
 this.parser.contador_____2++;
+}catch(Exception ex){
+     this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
+}
+
 :};
 G::=   ID:e BOTHPOINT B:e1 D:e2
 {:
+
 Produccion tmp=new Produccion(e1,e2,this.parser.contador_____2);
 ArrayList<Produccion> list=new ArrayList();
 list.add(tmp);
-RESULT=new TablaDeProduccion(list,e);
+try{
+String vect[]=this.parser.tablaDeTerminales.get(e).split(":");
+int x=Integer.valueOf(vect[vect.length-1]);
+RESULT=new TablaDeProduccion(list,e,x);
 this.parser.contador_____2++;
+}catch(Exception ex){
+        this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
+}
+
 :};
 
 B::= B:list C:simbolo
@@ -296,17 +402,24 @@ RESULT=new SymToken(e);
 | EXT_ID:e 
 {:
 String data[]=e.split(":");
-
+int tipo=-1;
 if(data[0].equals(data[0].toLowerCase())){
 if(!this.parser.tablaDeTerminales.containsKey(data[0])){
    this.parser.addError(2,eleft,eright,e,"El token terminal no ha sido declarado");
+}else{
+    String vect[]=this.parser.tablaDeTerminales.get(data[0]).split(":");
+    tipo=Integer.valueOf(vect[vect.length-1]);
 }
 }else{
    if(!this.parser.tablaDeProducciones.containsKey(data[0])){
    this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarado");
+}else{
+    String vect[]=this.parser.tablaDeTerminales.get(data[0]).split(":");
+    tipo=Integer.valueOf(vect[vect.length-1]);    
+   }
 }
-}
- RESULT=new SymToken(data[0],data[1]);
+ RESULT=new SymToken(data[0],data[1],tipo);
+
 :};
 
 D::= ABREKEY CIERRAKEY
@@ -346,21 +459,28 @@ this.parser.contador_____2++;
 //Seccion expresiones regulares
 regulares::= regulares:e reg:e1 PNTCOMA
 {:
+try{
 e.add(e1);
 RESULT=e;
+}catch(Exception ex){}
+
 :}
 | error reg ;
 regulares::= reg:e PNTCOMA
 {:
+try{
 ArrayList<generarAFD> listado=new ArrayList();
 listado.add(e);
 RESULT=listado;
+}catch(Exception ex){}
+
 :}
 | error:e PNTCOMA:e1 
 ;
 
 reg::= X3:e1 expr:e
 {: 
+try{
 NodoVal acept=new NodoVal(this.parser.contador_____3, "$");
 this.parser.listadoDeNodos.add(acept);
 NodoDAD tmp=new NodoDAD(".", e, acept, (e.isLambda() && acept.isLambda()));
@@ -371,6 +491,8 @@ this.parser.listadoDeNodos=new ArrayList();
 this.parser.contador_____3=0;
 
 RESULT=x;
+}catch(Exception ex){}
+
 :};
 
 X3::= ID:e IGUAL
@@ -381,6 +503,7 @@ X3::= ID:e IGUAL
 
 expr::= expr:e OR X1:e2
 {:
+try{
 if(e!=null && e2!=null){
 RESULT=new NodoDAD("|",e,e2,(e.isLambda() || e2.isLambda()));
 }else if(e==null && e2!=null){
@@ -388,6 +511,8 @@ RESULT=new NodoDAD("|",null,e2,true);
 }else if(e!=null && e2==null){
  RESULT=new NodoDAD("|",e,null,true);
 }  
+}catch(Exception ex){}
+
 
 :}
 | X1:e {:RESULT=e;:};
@@ -396,51 +521,84 @@ RESULT=new NodoDAD("|",null,e2,true);
 X1::= values:e {:RESULT=e;:} |  ;
 values::= values:e X2:e1
 {:
+try{
 NodoDAD x=new NodoDAD(".",e,e1,(e.isLambda() && e1.isLambda()));
 x.addNext(this.parser.listadoDeNodos);
 RESULT=x;
+}catch(Exception ex){
+
+}
+
 :};
 values::= values:e X2:e1 specials:e2
 {:
+try{
 Nodo x=this.parser.getSPS(e2,e1);
 NodoDAD y=new NodoDAD(".",e,x,(e.isLambda() && x.isLambda()));
 y.addNext(this.parser.listadoDeNodos);
 RESULT=y;
+}catch(Exception ex){
+
+}
+
 :};
 values::= X2:e {:RESULT=e;:};
 values::= X2:e specials:e1
 {:
+try{
 RESULT=this.parser.getSPS(e1,e);
+}catch(Exception ex){
+
+}
+
 :};
 
 
 X2::= NUMC:e
 {:
+try{
 Nodo x=this.parser.getND(e);
 RESULT=x;
 this.parser.listadoDeNodos.add(x);
 this.parser.contador_____3++;
+}catch(Exception ex){
+
+}
+
 :}
 |UPC:e
 {:
+try{
 Nodo x=this.parser.getND(e);
 RESULT=x;
 this.parser.listadoDeNodos.add(x);
 this.parser.contador_____3++;
+}catch(Exception ex){
+
+}
+
 :}
 |LWC:e
 {:
+try{
 Nodo x=this.parser.getND(e);
 RESULT=x;
 this.parser.listadoDeNodos.add(x);
 this.parser.contador_____3++;
+}catch(Exception ex){}
+
 :}
 |CADENA:e
 {:
+try{
 Nodo x=new NodoVal(this.parser.contador_____3,e);
 this.parser.listadoDeNodos.add(x);
 this.parser.contador_____3++;
 RESULT=x;
+}catch(Exception ex){
+
+}
+
 :}
 |ABRECOR expr:e CIERRACOR
 {:RESULT=e;:}
@@ -500,6 +658,7 @@ inicio::= informacion:list
 {:
 try{
 compararInfo(list);
+RESULT=list;
 }catch(Exception ex){}
 
 :}
