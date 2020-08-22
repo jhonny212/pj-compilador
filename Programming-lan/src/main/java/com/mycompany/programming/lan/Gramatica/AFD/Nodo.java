@@ -27,4 +27,8 @@ public interface Nodo {
     public void setChech(boolean f);
     public boolean compare(Nodo x);
    
+    public void setNameToken(String name);
+    
+    public String getToken();
+    public void setToken();
 }

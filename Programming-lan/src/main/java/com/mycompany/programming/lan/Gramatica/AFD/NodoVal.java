@@ -103,5 +103,24 @@ public class NodoVal implements Nodo, Cloneable {
         }
     }
 
+    @Override
+    public void setNameToken(String name) {
+        this.token=name;
+    }
+
+      @Override
+    public String getToken() {
+        return token;
+    }
+
+    public String token="";
+
+    @Override
+    public void setToken() {
+        this.token="";
+       
+        
+    }
+
     
 }

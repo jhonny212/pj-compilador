@@ -25,15 +25,17 @@ public class TablaLALR {
     private ArrayList<Subtabla> tablasLL1 = null;
     final int columnas;
     final int filas;
-
-    TablaLALR(Transicion[][] trans, ArrayList<Subtabla> tablasLL1, int columnas, int filas) {
+    boolean exit=true;
+    TablaLALR(Transicion[][] trans, ArrayList<Subtabla> tablasLL1, int columnas, int filas,boolean exit) {
         this.trans = trans;
         this.tablasLL1 = tablasLL1;
         this.columnas = columnas;
         this.filas = filas;
+        this.exit=exit;
     }
 
     public void init(String path,String nombre) {
+        
         for (int i = tablasLL1.size() - 1; i >= 0; i--) {
             Subtabla sub = tablasLL1.get(i);
             if (sub.hrefTablas != -1) {
@@ -47,12 +49,13 @@ public class TablaLALR {
                 }
             }
         }
+        
         saveDatas(print(path,nombre),path, nombre+"_tablaLALR.bin");
         this.tablasLL1.clear();
         this.tablasLL1 = null;
 
     }
-
+   
     boolean unirTablas(int i, int j, int k) {
         Transicion t1 = trans[i][k];
         Transicion t2 = trans[j][k];
@@ -184,6 +187,7 @@ public class TablaLALR {
     }
 
     public void saveDatas(Object obj,String path, String name) {
+        if(exit){
         try {
             FileOutputStream file = new FileOutputStream(path+"/"+name);
             ObjectOutputStream out = new ObjectOutputStream(file);
@@ -195,7 +199,7 @@ public class TablaLALR {
         } catch (IOException ex) {
             System.out.println("no");
         }
-
+        }
     }
 
     public void write(File path, String texto) {

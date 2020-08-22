@@ -116,5 +116,21 @@ public class NodoSPS implements Nodo, Cloneable {
         }
     }
 
+    @Override
+    public void setNameToken(String name) {
+        this.token=name;
+    }
+
+     @Override
+    public String getToken() {
+        return token;
+    }
+    @Override
+    public void setToken() {
+        this.token="";
+    }
+
+
+    public String token="";
   
 }

@@ -5,7 +5,9 @@
  */
 package com.mycompany.programming.lan.Interfaz;
 
+import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
 import com.mycompany.programming.lan.Gramatica.AFD.generarAFD;
+import com.mycompany.programming.lan.Gramatica.TablaLALR.Compilador;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.Produccion;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaLL1;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.Transicion;
@@ -23,12 +25,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
 import javax.swing.JMenuItem;
 
 import javax.swing.JOptionPane;
-import javax.swing.MenuElement;
+
 
 /**
  *
@@ -286,9 +286,10 @@ public class Start_program extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        //lenguaje=(Compilar());
-        //lenguaje.tablaLALR.init();
-        //edit.addTable("Tabla LALR", lenguaje);
+       if(lenguaje!=null){
+           edit.addTable("Tabla LALR", this.path+"/"+lenguaje.nombre+"/"+lenguaje.nombre+"_LALR.csv",lenguaje.fila);
+           
+       }
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
@@ -324,7 +325,30 @@ public class Start_program extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-     
+        if(lenguaje==null){
+            return;
+        }
+        if(!lenguaje.exito){
+            JOptionPane.showMessageDialog(this, "No es posible compilar con este lenguaje, verifique la tabla LALR");
+        }
+        try{
+            if(this.Content.getComponentCount()==0){
+                JOptionPane.showMessageDialog(this, "No hay un campo de texto disponible");
+            }else{
+             Contenido cn=edit.getCl();
+                if(!cn.bool){
+                    String texto=cn.getTexto();
+                    analizadorLexico lexer=new analizadorLexico(lenguaje.tablaAFD);
+                    lexer.init(texto);
+                    Compilador cmp=new Compilador(lexer, lenguaje);
+                    
+                    cmp.init();
+                }
+            
+            }
+        }catch(Exception ex){
+             
+        }
        
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
@@ -349,7 +373,11 @@ public class Start_program extends javax.swing.JFrame {
         File File=new File(path+"/"+this.Lanselected.getText()+"/"+this.Lanselected.getText()+".bin");
         leerBin(File);
         if(lenguaje!=null){
+            
             lenguaje.cargarLenguaje(path);
+            if(!lenguaje.exito){
+                JOptionPane.showMessageDialog(this, "Posible confusion en tabla LALR, verificar");
+            }
         }
     }
     

@@ -19,9 +19,9 @@ public class inicio {
         //var x=texto.startsWith("[0-9]+");
         //System.out.println(x);
         //generarCompilador();
-        //probarCompilador();
-        Start_program f=new Start_program();
-        f.setVisible(true);
+        probarCompilador();
+        //Start_program f=new Start_program();
+        //f.setVisible(true);
         //var x=new Compilador();
         //x.init();
        
@@ -29,6 +29,7 @@ public class inicio {
         l.cargarLenguaje("/home/jhonny/Escritorio/6To.Semestre/Compi2/LabCompi/Proyecto1/Programming-lan/src"
                 + "/main/java/com/mycompany/programming/lan/Interfaz/repositorios/juan");
         */
+       
         
     }
 
@@ -46,21 +47,16 @@ public class inicio {
 
     public static void probarCompilador() {
             String texto = ""
-                    + "nombre: juan ; \n"
+                    + "nombre: test ; \n"
                     + "version: 2 ;\n"
                     + "extension: com;\n"
                     + "%% public static void terminal(){} %%\n"
-                    + "idsps= ([A-Z])+|([a-z])+;"
-                 
+                    + "num= [0-9]+;"
                     + "%%\n"
-                    + "terminal num,mul,sum,ap,cp;\n"
-                    + "no terminal E,T,F;\n"
-                    + "S:: T sum E;\n"
-                    + "E:: T;\n"
-                    + "T:: F mul T;\n"
-                    + "T:: F;\n"
-                    + "F:: num;\n"
-                    + "F:: ap E cp;";
+                    + "terminal sum,id,igual,ap,cp;\n"
+                    + "no terminal E;\n"
+                    + "E:: sum id;"
+                    + "E:: ;";
            
             
             var scan = new lexer(new BufferedReader(new StringReader(texto)));

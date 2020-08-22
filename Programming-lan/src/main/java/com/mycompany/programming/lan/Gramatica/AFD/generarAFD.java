@@ -7,27 +7,29 @@ package com.mycompany.programming.lan.Gramatica.AFD;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  *
  * @author jhonny
  */
-public class generarAFD implements Serializable{
-     private static final long serialversionUID = 
-                                 129348938L; 
+public class generarAFD implements Serializable {
+
+    private static final long serialversionUID
+            = 129348938L;
 
     ArrayList<Nodo> listado;
     int numState = 0;
     HashMap<String, estado> AFD = new HashMap<String, estado>();
     ArrayList<String> pila = new ArrayList<>();
-    String token, estadoInicial;
+    String estadoInicial;
 
-    public generarAFD(ArrayList<Nodo> listado, Nodo inicio, String name) {
+    public generarAFD(ArrayList<Nodo> listado, Nodo inicio) {
         this.listado = listado;
-        this.token = name;
         this.estadoInicial = inicio.getFirst();
-        AFD.put(inicio.getFirst(), new estado(inicio.getFirst(), "inicio", numState, inicio.getFirst().contains(String.valueOf((this.listado.size() - 1))), name));
+
+        AFD.put(inicio.getFirst(), new estado(inicio.getFirst(), "inicio", numState, inicio.getFirst().contains(String.valueOf((this.listado.size() - 1))), getToken(inicio.getFirst())));
         this.numState++;
         pila.add(this.estadoInicial);
 
@@ -36,6 +38,7 @@ public class generarAFD implements Serializable{
     public void init() {
         for (int i = 0; i < this.pila.size(); i++) {
             String llave = pila.get(i);
+
             String refs[] = llave.split(",");
             for (int k = 0; k < refs.length; k++) {
                 String y = refs[k];
@@ -73,7 +76,7 @@ public class generarAFD implements Serializable{
                         }
                         if (!AFD.containsKey(estado)) {
 
-                            estado es = new estado(estado, x.getValue(), this.numState, (estado.contains(String.valueOf((this.listado.size() - 1)))), this.token);
+                            estado es = new estado(estado, x.getValue(), this.numState, (estado.contains(String.valueOf((this.listado.size() - 1)))), getToken(estado));
                             AFD.put(estado, es);
                             if (min < 0 || max < 0) {
                                 this.AFD.get(llave).addHref(x.getValue(), es);
@@ -98,7 +101,8 @@ public class generarAFD implements Serializable{
 
             }
         }
-        //print();
+
+        print();
         this.pila.clear();
         this.pila = null;
         listado.clear();
@@ -113,27 +117,61 @@ public class generarAFD implements Serializable{
         System.out.println("\n");
         for (estado x : this.AFD.values()) {
             System.out.println("Estado Numero " + x.num + " REFERENCIAS: " + x.aceptacion);
-            for (referencia y : x.referencias) {
-                System.out.println("    CON " + y.getVal() + " IR A   " + y.y.num);
+            for (int i = 0; i < x.referencias.size(); i++) {
+                referencia y = x.referencias.get(i);
+                System.out.print("    CON " + y.getVal() + " IR A   " + y.y.num);
+                if (y.y.aceptacion) {
+                    System.out.println(" TOKEN " + x.tokens[i]);
+                } else {
+                    System.out.println();
+                }
             }
+            /*for (referencia y : x.referencias) {
+                
+            }*/
         }
+        System.out.println("\n");
+    }
+
+    private String[] getToken(String llave) {
+        String retorno[];
+        String tmp = "";
+        String vector[] = llave.split(",");
+        for (String x : vector) {
+            Nodo nd = this.listado.get(Integer.valueOf(x));
+            if (!nd.getToken().isEmpty()) {
+                if (tmp.isEmpty()) {
+                    tmp = nd.getToken();
+                } else {
+                    tmp += "," + nd.getToken();
+                }
+            }
+
+        }
+        if (tmp.isEmpty()) {
+            return null;
+        }
+        retorno = tmp.split(",");
+        return retorno;
     }
 
     public class estado implements Serializable {
- private static final long serialversionUID = 
-                                 129348938L; 
-        public String llave, nombreToken;
+
+        private static final long serialversionUID
+                = 129348938L;
+        public String llave;
         public String valor;
+        public String tokens[];
         public int num;
         public boolean aceptacion;
         ArrayList<referencia> referencias = new ArrayList<>();
 
-        public estado(String key, String val, int num, boolean acpt, String tkn) {
+        public estado(String key, String val, int num, boolean acpt, String tokens[]) {
             this.llave = key;
             this.valor = val;
             this.num = num;
             this.aceptacion = acpt;
-            this.nombreToken = tkn;
+            this.tokens = tokens;
         }
 
         public estado() {
@@ -151,8 +189,9 @@ public class generarAFD implements Serializable{
     }
 
     public class referencia implements Serializable {
- private static final long serialversionUID = 
-                                 129348938L; 
+
+        private static final long serialversionUID
+                = 129348938L;
         private String val;
         estado y;
 
@@ -164,7 +203,7 @@ public class generarAFD implements Serializable{
 
         public referencia(estado x, int min, int max) {
             this.y = x;
-            
+
             this.max = max;
             this.min = min;
         }
@@ -175,11 +214,11 @@ public class generarAFD implements Serializable{
 
         public boolean compare(String dato) {
             if (min >= 0 || max >= 0) {
-                int index=String.valueOf(dato.charAt(0)).hashCode();
-                if(index>= min && index<=max){
-                    this.val=String.valueOf((char)index);
+                int index = String.valueOf(dato.charAt(0)).hashCode();
+                if (index >= min && index <= max) {
+                    this.val = String.valueOf((char) index);
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             } else {

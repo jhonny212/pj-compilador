@@ -9,8 +9,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.HashMap;
-
+import jdk.nashorn.api.tree.ContinueTree;
 
 /**
  *
@@ -33,26 +34,28 @@ public class TablaLL1 {
 
     }
 
-    public void init(String path,String nombre) {
+    public void init(String path, String nombre) {
         tabla.init();
         terminales_noTerminales();
         llenarTabla();
         generarPrs();
         tabla.clean();
-        var x=new TablaLALR(trans,tabla.tablasLL1,columnas,filas);
-        x.saveDatas(this.listado,path, nombre+"_Producciones.bin");
-        x.saveDatas(obtenerFila(),path, nombre+"_Filas.bin");
-        this.listado=null;
+        var x = new TablaLALR(trans, tabla.tablasLL1, columnas, filas, exito);
+        x.saveDatas(this.listado, path, nombre + "_Producciones.bin");
+        saveDatas(obtenerFila(), path, nombre + "_Filas.bin");
+        this.listado = null;
         this.tablaDeTerminales.clear();
-        this.tablaDeTerminales=null;
-        x.init(path,nombre);
+        this.tablaDeTerminales = null;
+        x.init(path, nombre);
         tabla.tablasLL1.clear();
-      
+
     }
 
-   public void saveDatas(Object obj,String path, String name) {
+    boolean exito = true;
+
+    public void saveDatas(Object obj, String path, String name) {
         try {
-            FileOutputStream file = new FileOutputStream(path+"/"+name);
+            FileOutputStream file = new FileOutputStream(path + "/" + name);
             ObjectOutputStream out = new ObjectOutputStream(file);
             out.writeObject(obj);
             out.close();
@@ -60,10 +63,11 @@ public class TablaLL1 {
         } catch (FileNotFoundException ex) {
             System.out.println("no here");
         } catch (IOException ex) {
-            System.out.println("no"+ ex.getMessage());
+            System.out.println("no" + ex.getMessage());
         }
 
     }
+
     public void clean() {
         trans = null;
     }
@@ -77,25 +81,56 @@ public class TablaLL1 {
     void llenarTabla() {
         this.tabla.tablasLL1.forEach((tbl) -> {
             tbl.listado.forEach((sub) -> {
-
                 if (sub.haveNext()) {
                     SymToken tk = sub.producionData.SimbolosProduccion.get(sub.posPunto);
                     int transicion = sub.transicion;
-                    String datos[] = tablaDeTerminales.get(tk.token).split(":");
-                    if (tk.token.equals("$")) {
-                        reduce(sub, tbl);
-                    } else if (!tk.token.equals(tk.token.toLowerCase())) {
-                        if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Go-to", transicion);
-
-                        }
-
-                    } else {
-                        if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
-                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Switch", transicion);
-
-                        }
+                    String datos[] = null;
+                    boolean valid = true;
+                    if (!tk.token.equals("LAMMBDAAAAA")) {
+                        datos = tablaDeTerminales.get(tk.token).split(":");
+                        valid = false;
                     }
+
+                    if (!valid) {
+                        if (tk.token.equals("$")) {
+                            reduce(sub, tbl);
+                        } else if (!tk.token.equals(tk.token.toLowerCase())) {
+                            if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
+                                trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Go-to", transicion);
+                            } else {
+                                if (trans[tbl.num][Integer.valueOf(datos[0])].tipo.equals("Go-to")) {
+                                    if (trans[tbl.num][Integer.valueOf(datos[0])].transicion != transicion) {
+                                        trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|Go-to" + transicion;
+                                        this.exito = false;
+                                    }
+                                } else {
+                                    trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|Go-to" + transicion;
+                                    this.exito = false;
+
+                                }
+
+                            }
+
+                        } else {
+                            if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
+                                trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "Switch", transicion);
+                            } else {
+                                if (trans[tbl.num][Integer.valueOf(datos[0])].tipo.equals("Switch")) {
+                                    if (trans[tbl.num][Integer.valueOf(datos[0])].transicion != transicion) {
+                                        trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|Switch" + transicion;
+                                        this.exito = false;
+                                    }
+                                } else {
+                                    trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|Switch" + transicion;
+                                    this.exito = false;
+                                }
+
+                            }
+                        }
+                    }else{
+                        reduce(sub,tbl);
+                    }
+
                 } else {
                     reduce(sub, tbl);
                 }
@@ -106,14 +141,28 @@ public class TablaLL1 {
     void reduce(FilaSub sub, Subtabla tbl) {
         TablaDeProduccion tb = tabla.href.get(sub.padre);
         if (tb != null) {
-            int cnt = 0;
+            int cnt=0;
             String produccion = sub.getPr();
             for (Produccion x : tb.listado) {
+                
                 if (x.getKey().equals(produccion)) {
                     String sig[] = sub.siguientes.split(",");
                     for (String d : sig) {
                         String datos[] = tablaDeTerminales.get(d).split(":");
-                        trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "reduce", x.num);
+                        if (trans[tbl.num][Integer.valueOf(datos[0])] == null) {
+                            trans[tbl.num][Integer.valueOf(datos[0])] = new Transicion(null, "reduce", x.num);
+                        } else {
+                            if (trans[tbl.num][Integer.valueOf(datos[0])].tipo.equals("reduce")) {
+                                if (trans[tbl.num][Integer.valueOf(datos[0])].transicion != x.num) {
+                                    trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|reduce" + x.num;
+                                    this.exito = false;
+                                }
+                            } else {
+                                trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|reduce" + x.num;
+                                this.exito = false;
+                            }
+
+                        }
 
                     }
                     break;
@@ -128,7 +177,6 @@ public class TablaLL1 {
 
     }
 
-
     public String[] obtenerFila() {
         String FILA[];
         FILA = new String[this.tablaDeTerminales.size() + 1];
@@ -137,6 +185,7 @@ public class TablaLL1 {
             String dato[] = d.split(":");
             FILA[Integer.valueOf(dato[0]) + 1] = dato[1];
         }
+        System.out.println(Arrays.toString(FILA));
         return FILA;
     }
 
@@ -146,7 +195,7 @@ public class TablaLL1 {
             celdas[i][0] = i + "";
             for (int j = 0; j < columnas; j++) {
                 try {
-                  celdas[i][j + 1] = trans[i][j].tipo + " " + trans[i][j].transicion;
+                    celdas[i][j + 1] = trans[i][j].tipo + " " + trans[i][j].transicion;
                 } catch (Exception ex) {
                     celdas[i][j + 1] = "";
                 }
@@ -155,17 +204,19 @@ public class TablaLL1 {
         return celdas;
     }
 
-    
     void generarPrs() {
-        System.out.println("entro");
+       
         tabla.href.values().forEach((x) -> {
-            x.listado.stream().map((y) -> {
-                this.listado[y.num] = y;
-                return y;
-            }).forEachOrdered((y) -> {
-                this.listado[y.num].setDad(x.produccion);
-                this.listado[y.num].setTipo(x.tipo);
-            });
+            if (x != null) {
+                x.listado.stream().map((y) -> {
+                    this.listado[y.num] = y;
+                    return y;
+                }).forEachOrdered((y) -> {
+                    this.listado[y.num].setDad(x.produccion);
+                    this.listado[y.num].setTipo(x.tipo);
+                });
+            }
         });
+        
     }
 }

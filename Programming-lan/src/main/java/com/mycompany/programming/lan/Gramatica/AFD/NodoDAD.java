@@ -38,23 +38,22 @@ public class NodoDAD implements Nodo {
 
     @Override
     public void recorrer(Nodo href) {
-        System.out.println(href.getFirst());
-        return;
-        //System.out.println("Nodo padre VAL: " + href.getValue());
-        /*if (href instanceof NodoDAD) {
+        
+        System.out.println("Nodo padre VAL: " + href.getValue());
+        if (href instanceof NodoDAD) {
             if (((NodoDAD) href).izq != null) {
-                // System.out.println("    izq:" + ((NodoDAD) href).izq.getValue());
+                System.out.println("    izq:" + ((NodoDAD) href).izq.getValue()+"********** TOKEN "+((NodoDAD) href).izq.getToken());
                 if (((NodoDAD) href).izq instanceof NodoDAD) {
                     recorrer(((NodoDAD) href).izq);
                 }
             }
             if (((NodoDAD) href).der != null) {
-                //System.out.println("    der:" + ((NodoDAD) href).der.getValue());
+                System.out.println("    der:" + ((NodoDAD) href).der.getValue()+"********** TOKEN "+((NodoDAD) href).der.getToken());
                 if (((NodoDAD) href).der instanceof NodoDAD) {
                     recorrer(((NodoDAD) href).der);
                 }
             }
-        }*/
+        }
 
     }
 /*
@@ -168,6 +167,20 @@ public class NodoDAD implements Nodo {
     @Override
     public boolean compare(Nodo x) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setNameToken(String name) {
+            this.der.setNameToken(name);
+    }
+
+    @Override
+    public String getToken() {
+        return "";
+    }
+
+    @Override
+    public void setToken() {
     }
 
    

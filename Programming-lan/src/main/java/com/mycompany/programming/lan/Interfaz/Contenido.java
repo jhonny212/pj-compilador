@@ -9,10 +9,14 @@ import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaDeTransiciones;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaLL1;
 import com.mycompany.programming.lan.Gramatica.parser;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -44,12 +48,58 @@ public class Contenido extends javax.swing.JPanel {
 
     JTable tabla;
 
-    public void initTable(String [][]celdas,String[]titulos) {
+    public void initTable(String path,String[]titulos) {
            bool=true;
-        this.tabla = new JTable(celdas, titulos);
+          
+        this.tabla = new JTable(getCeldas(path,titulos.length), titulos);
         this.scroll.setRowHeader(null);
         this.scroll.setViewportView(this.tabla);
        
+    }
+    
+    Object[][] getCeldas(String path,int x){
+        String texto=read(new File(path));
+        String vect[]=texto.split("\n");
+        Object [][] celdas = new String[vect.length][x];
+        for (int i = 0; i < vect.length; i++) {
+            String celda[] = vect[i].split(",");
+            for (int j = 0; j < celda.length; j++) {
+                 celdas[i][j]=celda[j];
+            }
+        }
+        
+        return celdas;
+    }
+    
+    
+     String read(File file) {
+        FileReader fr = null;
+        String retorno = "";
+        BufferedReader br = null;
+        try {
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
+
+            // Lectura del fichero
+            String linea = "";
+            while ((linea = br.readLine()) != null) {
+                if(retorno.isEmpty()){
+                    retorno = linea;
+                }else{
+                    retorno +="\n"+linea;
+            
+                }
+            }
+        } catch (IOException e) {
+        } finally {
+            try {
+                if (null != fr) {
+                    fr.close();
+                }
+            } catch (IOException e2) {
+            }
+        }
+        return retorno;
     }
 
     public void initPrs(String [][] array) {

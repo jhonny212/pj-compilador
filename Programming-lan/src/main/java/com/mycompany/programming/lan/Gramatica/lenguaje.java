@@ -28,7 +28,7 @@ public class lenguaje implements Serializable {
 
     public String nombre, autor, extension;
     public double version;
-
+    public boolean exito=true;
     public lenguaje(String name, String autor, String ext, double vers) {
         this.nombre = name;
         this.autor = autor;
@@ -36,7 +36,7 @@ public class lenguaje implements Serializable {
         this.version = vers;
     }
     public HashMap<Integer, Transicion[]> tablaLALR = null;
-    public ArrayList<generarAFD> tablaAFD=null;
+    public generarAFD tablaAFD=null;
     public String[] fila=null;
     public Produccion[] producciones = null;
 
@@ -70,15 +70,17 @@ public class lenguaje implements Serializable {
                     tablaLALR= (HashMap<Integer, Transicion[]>) in.readObject();
                     break;
                 case 4:
-                    tablaAFD= (ArrayList<generarAFD>) in.readObject();
+                    tablaAFD= (generarAFD)in.readObject();
                     break;
             }
             in.close();
             file.close();
         } catch (IOException ex) {
             System.out.println("IOException is caught" + ex.getMessage());
+            exito=false;
         } catch (ClassNotFoundException ex) {
             System.out.println("ClassNotFoundException is caught");
+            exito=false;
         }
     }
     

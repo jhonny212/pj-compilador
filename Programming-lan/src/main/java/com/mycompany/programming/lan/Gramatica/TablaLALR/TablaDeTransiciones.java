@@ -28,11 +28,13 @@ public final class TablaDeTransiciones {
 
     void GenerarPrimeros() {
         for (TablaDeProduccion x : href.values()) {
+            if(x!=null){
             if (!Contains(x.produccion)) {
                 isLambda = false;
                 first(x, x);
                 x.isLambda = isLambda;
                 pila.clear();
+            }
             }
         }
 
@@ -65,7 +67,7 @@ public final class TablaDeTransiciones {
                             continue;
                         }
                         if (nextoken.equals("LAMMBDAAAAA")) {
-                            break;
+                            continue;
                         }
                         if (!ingresados.containsKey(nextoken)) {
                             int pos = existSub(llave, x.siguientes);
@@ -98,7 +100,8 @@ public final class TablaDeTransiciones {
                     }
                 }
             }
-            
+            System.out.println("\n*************"+w.num);
+            w.printTable();
         }
 
     }

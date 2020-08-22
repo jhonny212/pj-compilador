@@ -117,13 +117,12 @@ public class crearEditor {
         return null;
     }
 
-    public void addTable(String titulo,String titles[], String array[][]) {
+    public void addTable(String titulo,String path,String titles[]) {
         Contenido tabla = new Contenido();
-        //Contenido producciones = new Contenido();
-        tabla.initTable(array, titles);
+        Contenido producciones = new Contenido();
+        tabla.initTable(path, titles);
         Content.add(titulo, tabla);
-        /*Content.add(titulo, producciones);*/
-
+        
     }
 
     void obtenerRuta(String name, String texto) {

@@ -15,7 +15,7 @@ public class Transicion implements Serializable{
     private static final long serialversionUID = 
                                  129348938L; 
     public final SymToken tk;
-    public final String tipo;
+    public  String tipo;
     public boolean unir;
     int transicion;
     Transicion(SymToken tk, String aGoto, int transicion) {

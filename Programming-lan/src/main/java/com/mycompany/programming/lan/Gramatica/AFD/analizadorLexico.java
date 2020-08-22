@@ -7,7 +7,6 @@ package com.mycompany.programming.lan.Gramatica.AFD;
 
 import com.mycompany.programming.lan.Gramatica.AFD.generarAFD.estado;
 import com.mycompany.programming.lan.Gramatica.AFD.generarAFD.referencia;
-import java.util.ArrayList;
 
 /**
  *
@@ -15,99 +14,116 @@ import java.util.ArrayList;
  */
 public class analizadorLexico {
 
-    ArrayList<generarAFD> listado;
+    generarAFD afd;
 
-    public analizadorLexico(ArrayList<generarAFD> listado) {
-        this.listado = listado;
+    public analizadorLexico(generarAFD afd) {
+        this.afd = afd;
     }
 
     String tmp;
 
     public void init(String cadena) {
         this.tmp = cadena;
-
-        analizar();
-        analizar();
+     
     }
 
     Token analizar() {
-        for (int i = 0; i < this.listado.size(); i++) {
-            generarAFD afd = this.listado.get(i);
-            estado es = afd.AFD.get(afd.estadoInicial);
-            for (referencia ref : es.referencias) {
-                if (ref.compare(tmp)) {
-                    String tmps = tmp.replaceFirst(ref.getVal(), "");
-                    analizar(ref.y, ref.getVal(), tmps);
+        Token retorno = null;
+        int prev = 0;
+        referencia refer = null;
+        estado es = afd.AFD.get(afd.estadoInicial);
+        int j = 0;
+        for (int i = 0; i < es.referencias.size(); i++) {
+            referencia ref = es.referencias.get(i);
+            if (ref.compare(tmp)) {
+                if (ref.getVal().length() > prev) {
+                    prev = ref.getVal().length();
+                    refer = ref;
+                    j = i;
                 }
-
-            }
-
-            if (!this.tokens.isEmpty()) {
-                String prev = "";
-                for (String x : this.tokens) {
-                    if (x.length() > prev.length()) {
-                        prev = x;
-                    }
-                }
-                this.tokens.clear();
-                String dato = tmp.replaceFirst(prev, "");
-                this.tmp = dato;
-                return new Token(prev,es.nombreToken);
-                //System.out.println("se acepta " + es.nombreToken + " value: " + prev + " -> " + tmp);
-                /*if (!dato.isEmpty()) {
-                    i = -1;
-                } else {
-                    return;
-                }*/
             }
         }
-
-        /*if (!this.tmp.isEmpty()) {
-            char error = this.tmp.charAt(0);
-            System.out.println("error en " + error);
-            String t = tmp.replaceFirst(String.valueOf(error), "");
-            tmp = t;
-            if (!this.tmp.isEmpty()) {
-                analizar();
+        if (refer != null) {
+            
+            String tmps = "";
+            try{
+            tmps=tmp.replaceFirst(refer.getVal(), "");
+            }catch(java.util.regex.PatternSyntaxException ex){
+                tmps=tmp.replaceFirst("\\"+refer.getVal(), "");
             }
-        }*/
-        return new Token(String.valueOf(this.tmp.charAt(0)),"Error");
+            this.tmp = tmps;
+            try {
+                analizar(refer.y, refer.getVal(), tmp, es.tokens[j]);
+            } catch (Exception ex) {
+                analizar(refer.y, refer.getVal(), tmp, "");
+            }
+            return new Token(this.value, this.token);
+        }
+        retorno = new Token(String.valueOf(this.tmp.charAt(0)), "Error");
+        String cadena = tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
+        this.tmp = cadena;
+        return retorno;
     }
 
-    ArrayList<String> tokens = new ArrayList<>();
-
-    void analizar(estado es, String href, String texto) {
+    void analizar(estado es, String href, String texto, String token) {
 
         if (es.aceptacion) {
-            tokens.add(href);
+            this.token = token;
+            this.value = href;
         }
         if (texto.isEmpty()) {
             return;
         }
-        for (referencia ref : es.referencias) {
+        referencia refer = null;
+        int prev = 0;
+        int j = 0;
+        for (int i = 0; i < es.referencias.size(); i++) {
+            referencia ref = es.referencias.get(i);
             if (ref.compare(texto)) {
-                String tmp = texto.replaceFirst(ref.getVal(), "");
-                String tmp1 = href;
-                href += ref.getVal();
-                analizar(ref.y, href, tmp);
-                href = tmp1;
+                if (ref.getVal().length() > prev) {
+                    refer = ref;
+                    j = i;
+                    prev = ref.getVal().length();
+                }
             }
 
         }
 
+        if (refer != null) {
+            String tmps =""; 
+            try{
+            tmps=texto.replaceFirst(refer.getVal(), "");
+            }catch(java.util.regex.PatternSyntaxException ex){
+                tmps=texto.replaceFirst("\\"+refer.getVal(), "");
+            }
+            this.tmp = tmps;
+            href += refer.getVal();
+            try {
+                analizar(refer.y, href, tmp, es.tokens[j]);
+            } catch (Exception ex) {
+                analizar(refer.y, href, tmp, "");
+            }
+        }
     }
+    
+    private String value, token;
 
     public Token nextToken() {
+        if(this.tmp.isEmpty()){
+            return new Token("$","$");
+        }
         Token tkn = analizar();
-        if(tkn.getToken().equals("Error")){
-            char error=this.tmp.charAt(0);
-            String t=tmp.replaceFirst(String.valueOf(error), "");
-            this.tmp=t;
+        if (tkn.getToken().equals("Error")) {
+            char error = this.tmp.charAt(0);
+            String t = tmp.replaceFirst(String.valueOf(error), "");
+            this.tmp = t;
         }
         return tkn;
     }
-    
-    public boolean hashMoreTokens(){
+
+    private boolean hashMoreTokens() {
         return this.tmp.isEmpty();
     }
+    
+    
 }
