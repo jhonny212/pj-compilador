@@ -107,8 +107,8 @@ parser code {:
       }
       tablaDeExpresionesRegulares.add(dato);
    }
-   private void create(String path, String autor, String extension, double version, generarAFD e) {
-   lenguaje lan=new lenguaje(this.nameProgram, autor, extension, version);
+   private void create(String path, String autor, String extension, double version, generarAFD e,String c) {
+   lenguaje lan=new lenguaje(this.nameProgram, autor, extension, version,c);
    this.tablaLALR=new TablaDeTransiciones(this.tablaDeProducciones,this.inicio);
    TablaLL1 tbl = new TablaLL1(this.tablaLALR, this.tablaDeTerminales, this.contador_____2);
    tbl.init(path,this.nameProgram);
@@ -142,8 +142,8 @@ terminal Float FLOAT;
 
 
 
-non-terminal begin,codJava,terms, java;
-non-terminal String specials;
+non-terminal begin;
+non-terminal String specials,codJava,terms, java;
 non-terminal Nodo expr,values,X1,X2;
 non-terminal Nodo regulares;
 non-terminal Nodo reg;
@@ -163,7 +163,7 @@ non-terminal  ArrayList<Produccion> E;
 start with begin;
 
 
-begin::= inicio:e1 SEPARATOR codJava regulares:e SEPARATOR gramatica
+begin::= inicio:e1 SEPARATOR codJava:c regulares:e SEPARATOR gramatica
 {:
 NodoVal ac=new NodoVal(this.parser.contador_____3,"$");
 this.parser.listadoDeNodos.add(ac);
@@ -196,10 +196,10 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
    String path=f.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios/"+this.parser.nameProgram;
    f=new File(path);
    if(f.exists()){
-      this.parser.create(path, autor, extension, version,xx);
+      this.parser.create(path, autor, extension, version,xx,c);
     }else{
    if(f.mkdir()){
-       this.parser.create(path, autor, extension, version,xx);
+       this.parser.create(path, autor, extension, version,xx,c);
    }
    }
 }else if(this.parser.nameProgram.isEmpty()){
@@ -212,7 +212,7 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
 
 
 //Seccion de la gramatica
-gramatica::= Term NoTerm A;
+gramatica::= Term NoTerm SEPARATOR A;
 
 //%%%%%%%%%%%%%%%
 Term::= Term TERM H terminales PNTCOMA;
@@ -396,8 +396,7 @@ this.parser.contador_____2++;
         this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
 }
 :};
-//0 E LAMMBDAAAAA 
-//1 E sum id 
+
 
 B::= B:list C:simbolo
 {:
@@ -447,10 +446,14 @@ if(!this.parser.tablaDeTerminales.containsKey(data[0])){
 
 :};
 
-D::= ABREKEY CIERRAKEY
+D::= ABREKEY java:e CIERRAKEY 
 {:
-RESULT="{}";
+RESULT=e;
 :} 
+| ABREKEY CIERRAKEY
+{:
+RESULT="";
+:}
 | 
 {:
 RESULT="";
@@ -485,8 +488,7 @@ this.parser.contador_____2++;
 regulares::= regulares:e reg:e1 PNTCOMA
 {:
 try{
-//e.add(e1);
-//RESULT=e;
+
 boolean v=(e==null || e1==null);
 RESULT=new NodoDAD("|",e,e1,v);
 
@@ -498,9 +500,6 @@ regulares::= reg:e PNTCOMA
 {:
 try{
 
-//ArrayList<generarAFD> listado=new ArrayList();
-//listado.add(e);
-//RESULT=listado;
 RESULT=e;
 }catch(Exception ex){}
 
@@ -511,15 +510,7 @@ RESULT=e;
 reg::= X3:e1 expr:e
 {: 
 try{
-//NodoVal acept=new NodoVal(this.parser.contador_____3, "$");
-//this.parser.listadoDeNodos.add(acept);
-//NodoDAD tmp=new NodoDAD(".", e, acept, (e.isLambda() && acept.isLambda()));
-//tmp.addNext(this.parser.listadoDeNodos);
-//generarAFD x=new generarAFD(this.parser.listadoDeNodos,tmp,String.valueOf(e1));
-//x.init();
-//this.parser.listadoDeNodos=new ArrayList();
-//this.parser.contador_____3=0;
-//RESULT=x;
+
 RESULT=e;
 }catch(Exception ex){
    this.parser.addError(1,eleft,eright,";","Se debe definir una expresion regular");
@@ -659,37 +650,83 @@ specials::= ASTERIS:e
 
 //Seccion codigo java
 
-codJava::= java SEPARATOR | SEPARATOR | error SEPARATOR | error java SEPARATOR;
-java::= java terms:e2
-| terms;
+codJava::= java:e SEPARATOR 
+{:RESULT=e;:}
+| SEPARATOR | error SEPARATOR | error java SEPARATOR;
 
-terms::= ASTERIS
-| QUESTION
-| PLUS
-| OR
-|ABREPAREN
-| CIERRAPAREN;
 
-terms::= ABRECOR
-| CIERRACOR
-| ERROR;
+java::= java:e terms:e1 
+{:
+String retorno="";
 
-terms::= UPC
-| LWC
-| NUMC
-| IGUAL
-| NAME
-| BOTHPOINT
-| EXT_ID
+try{
+String tmp=e.substring(e.length()-1,e.length());
+   if(tmp.matches(".*[a-z]|[0-9]|[_].*")){
+      tmp=e1.substring(0,1);
+       if(tmp.matches(".*[a-z]|[0-9]|[_].*")){
+         retorno=e+" "+e1;
+       }else{
+           retorno=e+e1;
+       }
+}else{
+  retorno=e+e1;
+}
+tmp=retorno.substring(retorno.length()-1,retorno.length());
+if(tmp.equals(";")||tmp.equals("}")){
+   retorno+="\n";
+}
+}catch(Exception ex){}
+
+RESULT=retorno;
+:}
+| terms:e {:
+
+RESULT=e;
+:};
+
+terms::= ASTERIS:e {:RESULT=e;:}
+| QUESTION:e {:RESULT=e;:}
+| PLUS:e {:RESULT=e;:}
+| OR:e {:RESULT=e;:}
+|ABREPAREN:e {:RESULT=e;:}
+| CIERRAPAREN:e {:RESULT=e;:};
+
+terms::= ABRECOR:e {:RESULT=e;:}
+| CIERRACOR:e {:RESULT=e;:}
+| ERROR:e {:RESULT=e;:};
+
+terms::= UPC:e {:RESULT=e;:}
+| LWC:e {:RESULT=e;:}
+| NUMC:e {:RESULT=e;:}
+| IGUAL:e {:RESULT=e;:}
+| NAME:e {:RESULT=e;:}
+| BOTHPOINT:e {:RESULT=e;:}
+| EXT_ID:e {:RESULT=e;:}
 ;
 
-terms::= VER
-| AUTHOR
-| EXTENS
-| ABREKEY
-| CIERRAKEY
-| TWOPOINT;
-terms::= COMA | PNTCOMA | CADENA | TERM | NO | BEGIN | ID | NUM | FLOAT;
+terms::= VER:e {:RESULT=e;:}
+| AUTHOR:e {:RESULT=e;:}
+| EXTENS:e {:RESULT=e;:}
+| ABREKEY java:e CIERRAKEY
+{:RESULT="{\n"+e+"\n}";:}
+| ABREKEY CIERRAKEY 
+{:
+RESULT="{}";
+:}
+| TWOPOINT:e {:RESULT=e;:};
+
+terms::= COMA:e {:RESULT=e;:}
+| PNTCOMA:e {:RESULT=e;:}
+| CADENA:e {:RESULT="\""+e+"\"";:}
+| TERM:e {:RESULT=e;:}
+| NO:e {:RESULT=e;:}
+| BEGIN:e {:RESULT=e;:}
+| ID:e {:RESULT=e;:}
+| NUM:e {:RESULT=String.valueOf(e);:}
+| FLOAT:e {:RESULT=String.valueOf(e);:}
+| TIPO_VAR:e {:RESULT=(e);:};
+
+
 //---------------_>
 //Seccion de la informacion del lenguaje 4 parametros
 

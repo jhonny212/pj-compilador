@@ -185,7 +185,7 @@ public class TablaLL1 {
             String dato[] = d.split(":");
             FILA[Integer.valueOf(dato[0]) + 1] = dato[1];
         }
-        System.out.println(Arrays.toString(FILA));
+       
         return FILA;
     }
 

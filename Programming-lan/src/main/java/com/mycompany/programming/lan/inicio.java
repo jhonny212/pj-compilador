@@ -11,7 +11,6 @@ import com.mycompany.programming.lan.programming.language.Tokenizer;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
-
 public class inicio {
 
     public static void main(String[] args) {
@@ -19,18 +18,10 @@ public class inicio {
         //var x=texto.startsWith("[0-9]+");
         //System.out.println(x);
         //generarCompilador();
-        probarCompilador();
-        //Start_program f=new Start_program();
-        //f.setVisible(true);
-        //var x=new Compilador();
-        //x.init();
-       
-        /*lenguaje l=new lenguaje();
-        l.cargarLenguaje("/home/jhonny/Escritorio/6To.Semestre/Compi2/LabCompi/Proyecto1/Programming-lan/src"
-                + "/main/java/com/mycompany/programming/lan/Interfaz/repositorios/juan");
-        */
-       
-        
+        //probarCompilador();
+        Start_program f = new Start_program();
+        f.setVisible(true);
+
     }
 
     private static void generarCompilador() {
@@ -46,51 +37,63 @@ public class inicio {
     }
 
     public static void probarCompilador() {
-            String texto = ""
-                    + "nombre: test ; \n"
-                    + "version: 2 ;\n"
-                    + "extension: com;\n"
-                    + "%% public static void terminal(){} %%\n"
-                    + "num= [0-9]+;"
-                    + "%%\n"
-                    + "terminal sum,id,igual,ap,cp;\n"
-                    + "no terminal E;\n"
-                    + "E:: sum id;"
-                    + "E:: ;";
-           
-            
-            var scan = new lexer(new BufferedReader(new StringReader(texto)));
-            
-            
-            var parser = new parser(scan);
-            try {
+        String texto = ""
+                + "nombre: test ; \n"
+                + "version: 2 ;\n"
+                + "extension: com;\n"
+                + "%% public class tester(){"
+                + "     public void saludar(){"
+                + "     System.out.println(\"hola mundo\");"
+                + "}"
+                + "} %%\n"
+                + "num= [0-9]+;"
+                + "sum= \"+\";"
+                + "mul= \"*\";"
+                + "ap= \"(\";"
+                + "cp= \")\";"
+                + "%%\n"
+                + "terminal sum,mul,ap,cp;"
+                + "terminal entero num;\n"
+                + "no terminal entero S,E,T,F;"
+                + "%%\n"
+                + "S:: E:e {System.out.println(e);};"
+                + "E:: T:e sum E:e1 {RESULT=e+e1;};"
+                + "E:: T:e {RESULT=e;};"
+                + "T:: F:e mul T:e1 {RESULT=e*e1;};"
+                + "T:: F:e {RESULT=e;};"
+                + "F:: num:e {RESULT=e;};"
+                + "F:: ap E:e cp {RESULT=e;};";
+
+        texto = "nombre: test2 ;\n"
+                + "version: 2 ;\n"
+                + "extension: com;\n"
+                + "%% public static void terminal(){} %%\n"
+                + "id    = [a-z]+;\n"
+                + "coma  = \",\";\n"
+                + "%%\n"
+                + "terminal cadena id;\n"
+                + "terminal coma;\n"
+                + "no terminal S;\n"
+                + "no terminal cadena E;\n"
+                + "%%\n"
+                + "S:: E:e {System.out.println(\"la cadena ingresada es \"+e);};\n"
+                + "E:: E:e coma id:e1 {RESULT= e+\",\"+e1;};\n"
+                + "E:: id:e {RESULT=e;};";
+        var scan = new lexer(new BufferedReader(new StringReader(texto)));
+
+        var parser = new parser(scan);
+        try {
             parser.parse();
-               
-            
-            } catch (Exception ex) {
-            System.out.println("ex"+ex.getMessage());
-            }
-        
-        
+
+        } catch (Exception ex) {
+            System.out.println("ex" + ex.getMessage());
+        }
 
     }
 
     static void lexer() {
         Tokenizer tokenizer = new Tokenizer();
-
         tokenizer.add("[0-9]+((.)[0-9]+)?", 8, "ID ");
-
-        //tokenizer.add("\\b(program|var|const|begin|end|Writeln|if|then|else|end|Mayor|Menor)\\b", 1, "Palabra Reservada");
-        //tokenizer.add("[0-2]+", 6, "Numero");
-        /*tokenizer.add("((?:[a-z][a-z0-9_]*))", 2, "Identificador");
-        tokenizer.add("(;|,)", 3, "Puntos y Coma");
-        tokenizer.add("(:)", 4, "Dos Puntos");
-        tokenizer.add("(=|<|>)", 5, "Simbolos");
-        tokenizer.add("(INTEGER|Integer|BOOLEAN|DOUBLE|REAL|CHAR)", 7, "Tipos Datos");
-        tokenizer.add("(\\()", 8, "Simbolos '(' ");
-        tokenizer.add("(\\))", 9, "Simbolos ')' ");
-        tokenizer.add("(')", 10, "Comillas Simples");
-        tokenizer.add("(\\.)", 11, "Punto final");*/
         try {
             tokenizer.tokenize("2.2", true);
             for (Tokenizer.Token tok : tokenizer.getTokens()) {

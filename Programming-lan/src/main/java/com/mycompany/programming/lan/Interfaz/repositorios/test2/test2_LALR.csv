@@ -1,0 +1,6 @@
+No.0,Switch:3, ,Go-to:1,Go-to:2, 
+No.1, , , , ,ACEPTACION:-1
+No.2, ,Switch:4, , ,reduce:0
+No.3, ,reduce:2, , ,reduce:2
+No.4,Switch:5, , , , 
+No.5, ,reduce:1, , ,reduce:1

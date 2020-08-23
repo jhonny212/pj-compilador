@@ -8,12 +8,16 @@ public class SymToken implements Serializable{
     public String valor;
     public String token;
     public String IdToken;
-    public SymToken(String tk){
+    public int tipo;
+   
+      public SymToken(String tk){
         this.token=tk;
+        this.tipo=tipo;
     }
     public SymToken(String tk,String Id,int tipo){
         this.token=tk;
         this.IdToken=Id;
+        this.tipo=tipo;
     }
 
 

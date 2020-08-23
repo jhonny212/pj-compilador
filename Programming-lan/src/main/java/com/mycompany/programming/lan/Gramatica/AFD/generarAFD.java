@@ -102,7 +102,7 @@ public class generarAFD implements Serializable {
             }
         }
 
-        print();
+        
         this.pila.clear();
         this.pila = null;
         listado.clear();

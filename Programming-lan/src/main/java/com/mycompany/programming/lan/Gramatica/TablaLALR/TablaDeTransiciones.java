@@ -100,8 +100,8 @@ public final class TablaDeTransiciones {
                     }
                 }
             }
-            System.out.println("\n*************"+w.num);
-            w.printTable();
+            //System.out.println("\n*************"+w.num);
+            //w.printTable();
         }
 
     }
