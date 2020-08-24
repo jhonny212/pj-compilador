@@ -31,7 +31,8 @@ public class Compilador {
     String moves = "";
     Token prev = null;
     Object claseCompilada = null;
-    public boolean compilado=false;
+    public boolean compilado = false;
+
     public Compilador(analizadorLexico lexer, lenguaje lan) {
         this.LISTADOOFPRODUCTIONS = lan.producciones;
         this.FILA = lan.fila;
@@ -41,18 +42,23 @@ public class Compilador {
     }
 
     public void init() {
+        
         Token tk = lexer.nextToken();
         this.pilaDetransiciones.add(0);
-
         moves = "START{";
         moves += "\nPILA_TOKENS ADD: empty";
         moves += "\nPILA_TRANS  ADD: " + 0;
         moves += "\nPILA_ENTRADA CHECK: " + tk.getToken();
         moves += "\n}\n";
-        pila(0, tk);
+        try {
+            pila(0, tk);
+        } catch (Exception ex) {
+            System.out.println(moves);
+        }
     }
 
     private void pila(int i, Token tk) {
+        
         int busqueda[] = buscar(i, tk.getToken());
         if (busqueda != null) {
             switch (busqueda[1]) {
@@ -89,7 +95,7 @@ public class Compilador {
 
     int[] buscar(int i, String dato) {
         if (dato.equals("$") && i == 1) {
-            this.compilado=true;
+            this.compilado = true;
             return null;
         }
         int[] res = new int[2];
@@ -139,20 +145,24 @@ public class Compilador {
         Token tkn = new Token(x.padre);
 
         if (!x.isLambda) {
-            switch (x.tipo) {
-                case 0:
-                    tkn.addValue(getObjReduc(x.num));
-                    break;
-                case 1:
-                    tkn.addValue(getStrReduc(x.num)); 
-                    break;
-                case 2:
-                    tkn.addValue(getIntReduc(x.num));
-                    break;
-                case 3:
-                    tkn.addValue(getFloatReduc(x.num));
-                    break;
+            try {
+                switch (x.tipo) {
+                    case 0:
+                        tkn.addValue(getObjReduc(x.num));
+                        break;
+                    case 1:
+                        tkn.addValue(getStrReduc(x.num));
+                        break;
+                    case 2:
+                        tkn.addValue(getIntReduc(x.num));
+                        break;
+                    case 3:
+                        tkn.addValue(getFloatReduc(x.num));
+                        break;
+                }
+            } catch (Exception ex) {
             }
+
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
                 int tm = this.pilaDetokens.size() - 1;
                 int tm2 = this.pilaDetransiciones.size() - 1;
@@ -173,6 +183,7 @@ public class Compilador {
     }
 
     void goTo_(int i, Token tk) {
+
         moves += "GO_TO{";
         moves += "\n    ADD TRANS: " + i;
         moves += "\n}\n";
@@ -181,13 +192,13 @@ public class Compilador {
     }
 
     int getIntReduc(int x) {
-      
+
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x,partypes);
-            Object obj[]=new Object[1];
-            obj[0]=this.pilaDetokens;
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Object obj[] = new Object[1];
+            obj[0] = this.pilaDetokens;
             return (int) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -195,13 +206,14 @@ public class Compilador {
         }
         return -1;
     }
+
     Object getObjReduc(int x) {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x,partypes);
-            Object obj[]=new Object[1];
-            obj[0]=this.pilaDetokens;
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Object obj[] = new Object[1];
+            obj[0] = this.pilaDetokens;
             return m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
@@ -209,32 +221,34 @@ public class Compilador {
         }
         return null;
     }
+
     double getFloatReduc(int x) {
-        double resultado=0.0;
+        double resultado = 0.0;
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x,partypes);
-            Object obj[]=new Object[1];
-            obj[0]=this.pilaDetokens;
-            resultado=(double) m1.invoke(claseCompilada, obj);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Object obj[] = new Object[1];
+            obj[0] = this.pilaDetokens;
+            resultado = (double) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 
         }
         return resultado;
     }
+
     String getStrReduc(int x) {
-        String resultado="";
+        String resultado = "";
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x,partypes);
-            Object obj[]=new Object[1];
-            obj[0]=this.pilaDetokens;
-            resultado=(String) m1.invoke(claseCompilada, obj);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Object obj[] = new Object[1];
+            obj[0] = this.pilaDetokens;
+            resultado = (String) m1.invoke(claseCompilada, obj);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-
+            ex.printStackTrace();
         }
         return resultado;
     }

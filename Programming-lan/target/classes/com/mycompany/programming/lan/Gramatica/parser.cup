@@ -108,13 +108,15 @@ parser code {:
       tablaDeExpresionesRegulares.add(dato);
    }
    private void create(String path, String autor, String extension, double version, generarAFD e,String c) {
-   lenguaje lan=new lenguaje(this.nameProgram, autor, extension, version,c);
-   this.tablaLALR=new TablaDeTransiciones(this.tablaDeProducciones,this.inicio);
-   TablaLL1 tbl = new TablaLL1(this.tablaLALR, this.tablaDeTerminales, this.contador_____2);
-   tbl.init(path,this.nameProgram);
-   tbl.clean();
-   tbl.saveDatas(lan, path, this.nameProgram+".bin");
-   tbl.saveDatas(e, path, this.nameProgram+"_AFD.bin");
+   try{
+        lenguaje lan = new lenguaje(this.nameProgram, autor, extension, version, c);
+        this.tablaLALR = new TablaDeTransiciones(this.tablaDeProducciones, this.inicio);
+        TablaLL1 tbl = new TablaLL1(this.tablaLALR, this.tablaDeTerminales, this.contador_____2);
+        tbl.init(path, this.nameProgram);
+        tbl.clean();
+        tbl.saveDatas(lan, path, this.nameProgram + ".bin");
+        tbl.saveDatas(e, path, this.nameProgram + "_AFD.bin");
+        }catch(Exception ex){}
    
     }
     public void syntax_error(Symbol s){
@@ -136,7 +138,7 @@ parser code {:
 terminal String ASTERIS,QUESTION,PLUS,OR,ABREPAREN,CIERRAPAREN,ABRECOR,CIERRACOR,ERROR;
 terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID;
 terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT;
-terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR;
+terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR,GUIONBAJO,POINT;
 terminal Integer NUM;
 terminal Float FLOAT;
 
@@ -165,6 +167,7 @@ start with begin;
 
 begin::= inicio:e1 SEPARATOR codJava:c regulares:e SEPARATOR gramatica
 {:
+try{
 NodoVal ac=new NodoVal(this.parser.contador_____3,"$");
 this.parser.listadoDeNodos.add(ac);
 NodoDAD dad=new NodoDAD(".",e,ac,false);
@@ -205,6 +208,11 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
 }else if(this.parser.nameProgram.isEmpty()){
     this.parser.addError(1, -1,-1, "El nombre no ha sido declarado", "Declarar el nombre del lenguaje");
 }
+
+
+}catch(Exception ex){}
+
+
 :}
 |error
  ;
@@ -633,7 +641,28 @@ RESULT=x;
 |ABRECOR expr:e CIERRACOR
 {:RESULT=e;:}
 | ABREPAREN expr:e CIERRAPAREN 
-{:RESULT=e;:};
+{:RESULT=e;:}
+| POINT:e 
+{:
+try{
+Nodo x=new NodoVal(this.parser.contador_____3,e);
+this.parser.listadoDeNodos.add(x);
+this.parser.contador_____3++;
+RESULT=x;
+}catch(Exception ex){
+}
+:}
+|GUIONBAJO:e
+{:
+try{
+Nodo x=new NodoVal(this.parser.contador_____3,e);
+this.parser.listadoDeNodos.add(x);
+this.parser.contador_____3++;
+RESULT=x;
+}catch(Exception ex){
+}
+:}
+;
 
 
 
@@ -702,6 +731,8 @@ terms::= UPC:e {:RESULT=e;:}
 | NAME:e {:RESULT=e;:}
 | BOTHPOINT:e {:RESULT=e;:}
 | EXT_ID:e {:RESULT=e;:}
+| GUIONBAJO:e {:RESULT=e;:}
+| POINT:e   {:RESULT=e;:}
 ;
 
 terms::= VER:e {:RESULT=e;:}

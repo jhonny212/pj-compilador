@@ -21,6 +21,32 @@ public class inicio {
         //probarCompilador();
         Start_program f = new Start_program();
         f.setVisible(true);
+        /*
+        String x = "package  sda.sda \b ;"
+                + "public class java \t extends xd{ SYstem}";
+        int z = x.indexOf("package");
+        int w = x.indexOf(";");
+        String tmp = x.substring(z + 7, w).strip();
+        System.out.println(":" + tmp + ":");
+        z = x.indexOf("class");
+        int y=0;
+        w = x.indexOf("{");
+        y=w;
+        tmp = x.substring(z + 5, w).strip();
+        if (tmp.contains("implements")) {
+            z = tmp.indexOf("implements");
+
+        } else if (tmp.contains("extends")) {
+            z = tmp.indexOf("extends");
+        }
+        String tmp2 = tmp.substring(0, z).strip();
+        tmp=tmp2;
+        System.out.println(":" + tmp + ":");
+        tmp=x.substring(0,y);
+        System.out.println("\n:" + tmp + ":");
+        tmp=x.substring(y,x.length());
+        System.out.println("\n:" + tmp + ":");
+         */
 
     }
 
@@ -41,7 +67,8 @@ public class inicio {
                 + "nombre: test ; \n"
                 + "version: 2 ;\n"
                 + "extension: com;\n"
-                + "%% public class tester(){"
+                + "%%  "
+                + "     public class tester(){"
                 + "     public void saludar(){"
                 + "     System.out.println(\"hola mundo\");"
                 + "}"

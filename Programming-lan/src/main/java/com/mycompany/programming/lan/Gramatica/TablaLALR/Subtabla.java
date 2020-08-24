@@ -72,7 +72,7 @@ public class Subtabla {
     public void printTable() {
         for (FilaSub w : listado) {
             String data = w.getPrint();
-            System.out.println(w.padre + "-> " + data + "  SIG:" + w.siguientes+" MOVER A: "+w.transicion);
+            System.out.println(w.padre + "-> " + data + "  SIG:" + w.siguientes+" MOVER A: "+w.transicion+" HREFS"+ this.hrefTablas);
         }
     }
 

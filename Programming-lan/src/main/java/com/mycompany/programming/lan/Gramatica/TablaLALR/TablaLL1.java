@@ -77,8 +77,10 @@ public class TablaLL1 {
         columnas = tablaDeTerminales.size();
         trans = new Transicion[filas][columnas];
     }
+   
 
     void llenarTabla() {
+
         this.tabla.tablasLL1.forEach((tbl) -> {
             tbl.listado.forEach((sub) -> {
                 if (sub.haveNext()) {
@@ -123,28 +125,35 @@ public class TablaLL1 {
                                 } else {
                                     trans[tbl.num][Integer.valueOf(datos[0])].tipo += "|Switch" + transicion;
                                     this.exito = false;
+                                  
                                 }
 
                             }
                         }
-                    }else{
-                        reduce(sub,tbl);
+                    } else {
+                        reduce(sub, tbl);
                     }
 
                 } else {
                     reduce(sub, tbl);
                 }
+             
             });
-        });
+           
+        }
+        
+        );
+          
+     
     }
 
     void reduce(FilaSub sub, Subtabla tbl) {
         TablaDeProduccion tb = tabla.href.get(sub.padre);
         if (tb != null) {
-            int cnt=0;
+            int cnt = 0;
             String produccion = sub.getPr();
             for (Produccion x : tb.listado) {
-                
+
                 if (x.getKey().equals(produccion)) {
                     String sig[] = sub.siguientes.split(",");
                     for (String d : sig) {
@@ -185,7 +194,7 @@ public class TablaLL1 {
             String dato[] = d.split(":");
             FILA[Integer.valueOf(dato[0]) + 1] = dato[1];
         }
-       
+
         return FILA;
     }
 
@@ -205,7 +214,7 @@ public class TablaLL1 {
     }
 
     void generarPrs() {
-       
+
         tabla.href.values().forEach((x) -> {
             if (x != null) {
                 x.listado.stream().map((y) -> {
@@ -217,6 +226,6 @@ public class TablaLL1 {
                 });
             }
         });
-        
+
     }
 }

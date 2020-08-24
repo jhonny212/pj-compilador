@@ -18,13 +18,11 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
@@ -96,10 +94,10 @@ public class lenguaje implements Serializable {
             exito = false;
         }
     }
+
     String methods = "";
 
     public void testProducciones() {
-        methods = "";
         for (Produccion x : producciones) {
             switch ((x.tipo())) {
                 case 0:
@@ -142,32 +140,95 @@ public class lenguaje implements Serializable {
 
     public String createStringClass() {
         testProducciones();
-        String package_ = "package " + this.getClass().getPackageName();
-        String clase = package_ + ";\n";
-        clase += "import com.mycompany.programming.lan.Gramatica.AFD.Token;\n"
-                + "import java.util.ArrayList;";
-        clase += "public class " + this.nombre + "{\n";
-        clase += methods;
-        clase += "\n}";
+        String clase = "";
+
+        if (this.codjava == null) {
+            String package_ = "package " + this.getClass().getPackageName();
+            clase = package_ + ";\n";
+            clase += "import com.mycompany.programming.lan.Gramatica.AFD.Token;\n"
+                    + "import java.util.ArrayList;";
+            clase += "public class " + this.nombre + "{\n";
+            clase += methods;
+            clase += "\n}";
+            this.Name = this.getClass().getPackageName() + "." + nombre;
+        } else {
+            String package_ = "";
+            if (this.codjava.contains("package")) {
+                int x = this.codjava.indexOf("package");
+                int y = this.codjava.indexOf(";");
+                package_ = this.codjava.substring(x + 7, y);
+                String tmp = package_.strip();
+                package_ = tmp;
+            }
+            String imports = "import com.mycompany.programming.lan.Gramatica.AFD.Token;\n"
+                    + "import java.util.ArrayList;";
+            int w = 0, ww;
+            int x = this.codjava.indexOf("class");
+            ww = x;
+            int y = this.codjava.indexOf("{");
+            w = y;
+            String tmp = this.codjava.substring(x + 5, y).strip();
+            if (tmp.contains("implements")) {
+                y = tmp.indexOf("implements");
+                String tmp2 = tmp.substring(0, y).strip();
+                tmp = tmp2;
+
+            } else if (tmp.contains("extends")) {
+                y = tmp.indexOf("extends");
+                String tmp2 = tmp.substring(0, y).strip();
+                tmp = tmp2;
+            }
+            if (package_.isEmpty()) {
+                this.Name = tmp;
+            } else {
+                this.Name = package_ + "." + tmp;
+            }
+            String data = "";
+            boolean valid = false;
+            if (this.codjava.contains("public")) {
+                x = this.codjava.indexOf("public");
+                data = this.codjava.substring(0, x) + imports;
+                if (x > ww) {
+                    valid = true;
+                }
+            }
+            if (this.codjava.contains("class") && valid) {
+                x = ww;
+                data = this.codjava.substring(0, x) + imports;
+            }
+            tmp = this.codjava.substring(x, w + 1);
+            clase = data + tmp + methods;
+            tmp = this.codjava.substring(w + 1, this.codjava.length() - 1);
+            clase += tmp;
+
+            return clase;
+
+        }
+
         return clase;
     }
-    public Object claseCompilada=null;
+    public Object claseCompilada = null;
+    String Name = "";
+
     public void compilar() {
-        String name = this.getClass().getPackageName() + "." + this.nombre;
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        JavaFileManager manager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
-        List<JavaFileObject> files = new ArrayList<>();
-        files.add(new CharSequenceJavaFileObject(name, createStringClass()));
-        compiler.getTask(new StringWriter(), manager, null, null, null, files).call();
+
+        String clase = createStringClass();
+
         try {
-            Class cl = manager.getClassLoader(null).loadClass(name);
+
+            JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+            JavaFileManager manager = new ClassFileManager(compiler.getStandardFileManager(null, null, null));
+            List<JavaFileObject> files = new ArrayList<>();
+            files.add(new CharSequenceJavaFileObject(this.Name, clase));
+            compiler.getTask(new StringWriter(), manager, null, null, null, files).call();
+
+            Class cl = manager.getClassLoader(null).loadClass(this.Name);
             Constructor ct = cl.getConstructor();
             claseCompilada = ct.newInstance();
-            //Method m1 = obj.getClass().getDeclaredMethod("saludar");
-            //m1.invoke(obj);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e) {
-            System.out.println(" ex -> " + e.getMessage());
-            //e.printStackTrace();
-        }
+            e.printStackTrace();
+
+        }catch(java.lang.IllegalArgumentException ex){}
     }
+
 }

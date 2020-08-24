@@ -45,6 +45,8 @@ Identifier = [:jletter:] [:jletterdigit:]*
 string = new StringBuffer();
 yybegin(STRING);}    
 ("entero"|"real"|"cadena")                                                  {return symbol(sym.TIPO_VAR,new String(yytext()));}
+"."                                                                         {return symbol(sym.POINT,new String(yytext()));}
+"_"                                                                         {return symbol(sym.GUIONBAJO,new String(yytext()));}
 "::"                                                                        {return symbol(sym.BOTHPOINT,new String(yytext()));}
 "terminal"                                                                  {return symbol(sym.TERM,new String(yytext()));}
 "no"                                                                        {return symbol(sym.NO,new String(yytext()));}

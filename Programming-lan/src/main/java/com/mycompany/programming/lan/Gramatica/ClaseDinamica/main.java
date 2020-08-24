@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -15,10 +17,10 @@ import javax.tools.ToolProvider;
 
 public class main {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // Definir la clase
         String[] sources = new String[]{""
-            + "package com.mycompany.programming.lan.Gramatica.ClaseDinamica;"
+            + ""
             + "import java.util.ArrayList;",
             "public class AppConfiguracion  {",
             "public void saludar(ArrayList<String> x){"
@@ -28,22 +30,60 @@ public class main {
             + "}",
             "}"};
 
-        
+        String test = "import com.mycompany.programming.lan.Gramatica.AFD.Token;\n"
+                + "import java.util.ArrayList;public class aritmetica{public int method0 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "System.out.println(e);\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method1 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e1 = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-2).getVal();\n"
+                + "RESULT=e+e1;\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method2 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "RESULT=e;\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method3 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e1 = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-2).getVal();\n"
+                + "RESULT=e*e1;\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method4 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "RESULT=e;\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method5 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-0).getVal();\n"
+                + "RESULT=e;\n"
+                + "\n"
+                + "return RESULT;}\n"
+                + "public int method6 (ArrayList<Token> pDeTkns_$_$_){\n"
+                + "int RESULT=-1;\n"
+                + "int e = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-1).getVal();\n"
+                + "RESULT=e;\n"
+                + "\n"
+                + "return RESULT;}"
+                + "public void hola(){"
+                + "System.out.println(\"x\");"
+                + "}\n"
+                + "{}"
+                + "}";
 
-        String source = join(sources);
+        String source = test;
 
-        /*if(source.contains("package")){
-            int x=source.indexOf(";");
-            String _package=source.substring(0,x);
-            String _packName=_package.replace("package","").replace(" ","");
-            System.out.println(_packName);
-            x=source.indexOf("{");
-            int y=source.indexOf("class");
-            _package=source.substring(y+5,x).replace(" ","");
-            String Name=_packName.concat("."+_package);
-            System.out.println(Name);
-        }*/
-        String name = "com.mycompany.programming.lan.Gramatica.ClaseDinamica.AppConfiguracion";
+        String name = "aritmetica";
         // Compilar la clase
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
@@ -53,21 +93,38 @@ public class main {
         compiler.getTask(new StringWriter(), manager, null, null, null, files).call();
         // Cargar e instanciar la clase
         //Configuracion configuracion = (Configuracion) manager.getClassLoader(null).loadClass(name).newInstance();
-        Class cl = manager.getClassLoader(null).loadClass(name);
         //Clas[] vect constructor
         //Object[] datas
-        Constructor ct = cl.getConstructor();
-        Object obj = ct.newInstance();
-        Class partypes[]=new Class[1];
-        partypes[0]=ArrayList.class;
-        Method m1 = obj.getClass().getDeclaredMethod("saludar",partypes);
-        Object vector[]=new Object[1];
-        ArrayList<String> x=new ArrayList();
+        Constructor ct;
+        try {
+            Class cl = manager.getClassLoader(null).loadClass(name);
+            ct = cl.getConstructor();
+            Object obj = ct.newInstance();
+            Method m1 = obj.getClass().getDeclaredMethod("hola");
+            m1.invoke(obj);
+
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+
+        /*Class partypes[] = new Class[1];
+        partypes[0] = ArrayList.class;
+        Object vector[] = new Object[1];
+        ArrayList<String> x = new ArrayList();
         x.add("hasa");
-        vector[0]=x;
-        m1.invoke(obj,vector);
+        vector[0] = x;
+        m1.invoke(obj, vector);*/
         // Invocar un método de la clase
 
+        /*Class partypes[] = new Class[1];
+        partypes[0] = ArrayList.class;
+        Method m1 = obj.getClass().getDeclaredMethod("saludar", partypes);
+        Object vector[] = new Object[1];
+        ArrayList<String> x = new ArrayList();
+        x.add("hasa");
+        vector[0] = x;
+        m1.invoke(obj, vector);*/
+        // Invocar un método de la clase
     }
 
     public static void test() {

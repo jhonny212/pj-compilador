@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+
 /**
  *
  * @author jhonny
@@ -35,7 +36,7 @@ public class TablaLALR {
     }
 
     public void init(String path,String nombre) {
-        
+        // print(path,"tablaLL1.csv");
         for (int i = tablasLL1.size() - 1; i >= 0; i--) {
             Subtabla sub = tablasLL1.get(i);
             if (sub.hrefTablas != -1) {
@@ -59,7 +60,7 @@ public class TablaLALR {
     boolean unirTablas(int i, int j, int k) {
         Transicion t1 = trans[i][k];
         Transicion t2 = trans[j][k];
-        
+        //System.out.println("COMPARANDO TABLAS I1 "+i+" I2 "+j);
         if (t1 == null && t2 == null) {
             if (unirCeldas(k + 1)) {
                 return unirTablas(i, j, k + 1);
@@ -91,7 +92,8 @@ public class TablaLALR {
             if (t1.tipo.equals(t2.tipo)) {
                 int x1 = t1.transicion;
                 int x2 = t2.transicion;
-                if (x1 == x2) {
+                
+                if ((x1 == x2 || (x1==i && x2==j))) {
                     if (unirCeldas(k + 1)) {
                         return unirTablas(i, j, k + 1);
                     } else {
@@ -115,6 +117,8 @@ public class TablaLALR {
                                 return v;
                             }
                         } else {
+                            //System.out.println(":"+i+":"+j+"ENTRO en "+x1+" "+x2+ "en pos "+this.tablasLL1.get(x2).numOfColumn);
+                            this.tablasLL1.get(j).numOfColumn=k+1;
                             boolean v = unirTablas(x1, x2, this.tablasLL1.get(x2).numOfColumn);
                             if(v){
                                 if (unirCeldas(k + 1)) {

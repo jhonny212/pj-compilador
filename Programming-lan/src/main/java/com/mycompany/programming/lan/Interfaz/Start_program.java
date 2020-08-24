@@ -173,6 +173,11 @@ public class Start_program extends javax.swing.JFrame {
         jMenu3.add(jMenuItem7);
 
         jMenuItem8.setText("Borrar lenguaje");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem8);
 
         jMenuBar1.add(jMenu3);
@@ -304,8 +309,9 @@ public class Start_program extends javax.swing.JFrame {
                 parser lan = CargarLenguaje(f);
                 if (lan != null) {
                     if (lan.listadoDeErrores.haveErrors()) {
-                        addMenu(lan.nameProgram);
+                        existe(lan.nameProgram);
                         this.Lanselected.setText(lan.nameProgram);
+                        compilar();
 
                     } else {
                         if (!lan.listadoDeErrores.lexico.isEmpty()) {
@@ -325,6 +331,24 @@ public class Start_program extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    void existe(String name) {
+        int x = this.lans.getComponentCount();
+        
+        try{
+        for (int i = 0; i <= x; i++) {
+            try{
+            JMenuItem m = this.lans.getItem(i);
+            if (m.getText().equals(name)) {
+                return;
+            }
+            }catch(NullPointerException ex){}
+            
+        }
+        }catch(ArrayIndexOutOfBoundsException ex){}
+        
+
+        addMenu(name);
+    }
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         if (lenguaje == null) {
             return;
@@ -352,18 +376,48 @@ public class Start_program extends javax.swing.JFrame {
 
             }
         } catch (Exception ex) {
-
+               
         }
 
     }//GEN-LAST:event_jMenuItem6ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        try{
+        if(lenguaje==null){
+        return;
+        }    
+         lenguaje=null;
+        File carpeta=new File(path+"/"+this.Lanselected.getText());    
+        File[] files=carpeta.listFiles();
+        for(File x: files){
+            x.delete();
+        }
+        carpeta.delete();
+        int x=this.lans.getComponentCount();
+            for (int i = 0; i <= x; i++) {
+                JMenuItem m=this.lans.getItem(i);
+                if(m.getText().equals(this.Lanselected.getText())){
+                    this.lans.remove(i);
+                    return;
+                }
+            }
+        this.Lanselected.setText("Lenguaje seleccionado: none");
+        }catch(Exception ex){}
+     
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private parser CargarLenguaje(File file) throws FileNotFoundException {
 
         lexer scan = new lexer(new BufferedReader(new FileReader(file)));
         parser parser = new parser(scan);
         try {
+            try{
             parser.parse();
-            parser.listadoDeErrores.lexico = scan.error.lexico;
+            }catch(Exception e){}
+            if (!parser.listadoDeErrores.haveErrors()) {
+                parser.listadoDeErrores.lexico = scan.error.lexico;
+            }
+
             return parser;
         } catch (Exception ex) {
             System.out.println("ex" + ex.getLocalizedMessage());
@@ -388,6 +442,8 @@ public class Start_program extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Advertencia, verificar sus reglas semanticas, "
                         + "que este correctamente escrita en codigo java");
             }
+            //enguaje.testFila();
+            
         }
     }
 
