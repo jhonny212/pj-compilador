@@ -12,6 +12,7 @@ public class sym {
   public static final int GUIONBAJO = 33;
   public static final int LWC = 12;
   public static final int ASTERIS = 2;
+  public static final int AND = 35;
   public static final int IGUAL = 14;
   public static final int TWOPOINT = 24;
   public static final int UPC = 11;
@@ -20,7 +21,7 @@ public class sym {
   public static final int TIPO_VAR = 32;
   public static final int SEPARATOR = 15;
   public static final int BEGIN = 31;
-  public static final int NUM = 35;
+  public static final int NUM = 36;
   public static final int BOTHPOINT = 17;
   public static final int PLUS = 4;
   public static final int EXT_ID = 18;
@@ -39,7 +40,7 @@ public class sym {
   public static final int NO = 30;
   public static final int POINT = 34;
   public static final int AUTHOR = 20;
-  public static final int FLOAT = 36;
+  public static final int FLOAT = 37;
   public static final int CIERRAKEY = 23;
   public static final int QUESTION = 3;
   public static final int TERM = 29;
@@ -81,6 +82,7 @@ public class sym {
   "TIPO_VAR",
   "GUIONBAJO",
   "POINT",
+  "AND",
   "NUM",
   "FLOAT"
   };

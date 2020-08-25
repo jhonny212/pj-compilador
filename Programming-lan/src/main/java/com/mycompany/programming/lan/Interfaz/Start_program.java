@@ -14,6 +14,7 @@ import com.mycompany.programming.lan.Gramatica.TablaLALR.Transicion;
 import com.mycompany.programming.lan.Gramatica.lenguaje;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
+import com.mycompany.programming.lan.Gramatica.pilaLALR;
 import com.mycompany.programming.lan.Interfaz.Configs.crearEditor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -25,9 +26,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.StringReader;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JMenuItem;
 
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FilenameUtils;
 
 /**
  *
@@ -193,6 +199,11 @@ public class Start_program extends javax.swing.JFrame {
         jMenu4.add(jMenuItem9);
 
         jMenuItem10.setText("Pila");
+        jMenuItem10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem10ActionPerformed(evt);
+            }
+        });
         jMenu4.add(jMenuItem10);
 
         jMenuBar1.add(jMenu4);
@@ -258,7 +269,16 @@ public class Start_program extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(final java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         try {
             Contenido href = edit.getCl();
-            edit.write(href.f, href.getTexto());
+            if (href.f != null) {
+                if (href.f.exists()) {
+                    edit.write(href.f, href.getTexto());
+                } else {
+                    JOptionPane.showMessageDialog(this, "no existe la ruta del archivo " + href.f.getAbsolutePath());
+                }
+            } else {
+                edit.saveAs(href.name);
+            }
+
         } catch (Exception ex) {
         }
 
@@ -303,53 +323,62 @@ public class Start_program extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-        File f = edit.GetFile();
-        if (f != null) {
-            try {
-                parser lan = CargarLenguaje(f);
-                if (lan != null) {
-                    if (lan.listadoDeErrores.haveErrors()) {
-                        existe(lan.nameProgram);
-                        this.Lanselected.setText(lan.nameProgram);
-                        compilar();
-
-                    } else {
-                        if (!lan.listadoDeErrores.lexico.isEmpty()) {
-                            edit.addError(lan.listadoDeErrores.lexico, "Errores lexico");
-                        }
-                        if (!lan.listadoDeErrores.semantico.isEmpty()) {
-                            edit.addError(lan.listadoDeErrores.semantico, "Errores semantico");
-                        }
-                        if (!lan.listadoDeErrores.sintactico.isEmpty()) {
-                            edit.addError(lan.listadoDeErrores.sintactico, "Errores sintactico");
-                        }
-
-                    }
-                }
-            } catch (FileNotFoundException ex) {
+        try {
+            Contenido cnt = edit.getCl();
+            if (cnt == null) {
+                return;
             }
+            String name = FilenameUtils.getExtension(cnt.name);
+            if (!name.equals("len")) {
+                JOptionPane.showMessageDialog(this, "Solo se puede leer archivos con extension .len");
+                return;
+            }
+            parser lan = CargarLenguaje(cnt.getTexto());
+            if (lan != null) {
+                if (lan.listadoDeErrores.haveErrors()) {
+                    existe(lan.nameProgram);
+                    this.Lanselected.setText(lan.nameProgram);
+                    compilar();
+
+                } else {
+                    if (!lan.listadoDeErrores.lexico.isEmpty()) {
+                        edit.addError(lan.listadoDeErrores.lexico, "Errores lexico");
+                    }
+                    if (!lan.listadoDeErrores.semantico.isEmpty()) {
+                        edit.addError(lan.listadoDeErrores.semantico, "Errores semantico");
+                    }
+                    if (!lan.listadoDeErrores.sintactico.isEmpty()) {
+                        edit.addError(lan.listadoDeErrores.sintactico, "Errores sintactico");
+                    }
+
+                }
+            }
+        } catch (Exception ex) {
         }
+
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     void existe(String name) {
         int x = this.lans.getComponentCount();
-        
-        try{
-        for (int i = 0; i <= x; i++) {
-            try{
-            JMenuItem m = this.lans.getItem(i);
-            if (m.getText().equals(name)) {
-                return;
+
+        try {
+            for (int i = 0; i <= x; i++) {
+                try {
+                    JMenuItem m = this.lans.getItem(i);
+                    if (m.getText().equals(name)) {
+                        return;
+                    }
+                } catch (NullPointerException ex) {
+                }
+
             }
-            }catch(NullPointerException ex){}
-            
+        } catch (ArrayIndexOutOfBoundsException ex) {
         }
-        }catch(ArrayIndexOutOfBoundsException ex){}
-        
 
         addMenu(name);
     }
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
+
         if (lenguaje == null) {
             return;
         }
@@ -361,12 +390,23 @@ public class Start_program extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "No hay un campo de texto disponible");
             } else {
                 Contenido cn = edit.getCl();
+                if (lenguaje.extension != null) {
+                    if (!lenguaje.extension.isEmpty()) {
+                        String ext = FilenameUtils.getExtension(cn.name);
+                        if (!lenguaje.extension.equals(ext)) {
+                            JOptionPane.showMessageDialog(this, "El archivo debe ser extension " + lenguaje.extension);
+                            return;
+                        }
+                    }
+                }
+
                 if (!cn.bool) {
                     String texto = cn.getTexto();
                     analizadorLexico lexer = new analizadorLexico(lenguaje.tablaAFD);
                     lexer.init(texto);
                     Compilador cmp = new Compilador(lexer, lenguaje);
                     cmp.init();
+                    this.pila = cmp.moves;
                     if (cmp.compilado) {
                         JOptionPane.showMessageDialog(this, "La cadena fue aceptada");
                     } else {
@@ -376,44 +416,72 @@ public class Start_program extends javax.swing.JFrame {
 
             }
         } catch (Exception ex) {
-               
+
         }
 
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        try{
-        if(lenguaje==null){
-        return;
-        }    
-         lenguaje=null;
-        File carpeta=new File(path+"/"+this.Lanselected.getText());    
-        File[] files=carpeta.listFiles();
-        for(File x: files){
-            x.delete();
-        }
-        carpeta.delete();
-        int x=this.lans.getComponentCount();
-            for (int i = 0; i <= x; i++) {
-                JMenuItem m=this.lans.getItem(i);
-                if(m.getText().equals(this.Lanselected.getText())){
-                    this.lans.remove(i);
-                    return;
-                }
+        try {
+
+            JComboBox cmp = new JComboBox();
+            for (int i = 0; i <= this.lans.getComponentCount(); i++) {
+                JMenuItem m = this.lans.getItem(i);
+                cmp.addItem(m.getText());
             }
-        this.Lanselected.setText("Lenguaje seleccionado: none");
-        }catch(Exception ex){}
-     
+            Object[] options = new Object[]{};
+            JButton acept = new JButton("Aceptar");
+            JOptionPane jop = new JOptionPane("Seleccione un lenguaje",
+                    JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.DEFAULT_OPTION,
+                    null, options, null);
+            jop.add(cmp);
+            jop.add(acept);
+            JDialog diag = new JDialog(this);
+            diag.getContentPane().add(jop);
+            diag.pack();
+            diag.setVisible(true);
+            acept.addActionListener((e) -> {
+                diag.setVisible(false);
+                int y = cmp.getSelectedIndex();
+                JMenuItem m = this.lans.getItem(y);
+                this.lans.remove(y);
+                File carpeta = new File(path + "/" + m.getText());
+                File[] files = carpeta.listFiles();
+                for (File x : files) {
+                    x.delete();
+                }
+                carpeta.delete();
+                if (m.getText().equals(this.Lanselected.getText())) {
+                    this.lenguaje = null;
+                    this.pila = null;
+                    this.Lanselected.setText("Lenguaje seleccionano none");
+                }
+                m = null;
+
+            });
+        } catch (Exception ex) {
+
+        }
+
     }//GEN-LAST:event_jMenuItem8ActionPerformed
+    pilaLALR pila;
+    private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
+        if (pila == null) {
+            return;
+        }
+        edit.addPila(pila.tm, pila.getMoves());
+    }//GEN-LAST:event_jMenuItem10ActionPerformed
 
-    private parser CargarLenguaje(File file) throws FileNotFoundException {
+    private parser CargarLenguaje(String file) {
 
-        lexer scan = new lexer(new BufferedReader(new FileReader(file)));
+        lexer scan = new lexer(new BufferedReader(new StringReader(file)));
         parser parser = new parser(scan);
         try {
-            try{
-            parser.parse();
-            }catch(Exception e){}
+            try {
+                parser.parse();
+            } catch (Exception e) {
+            }
             if (!parser.listadoDeErrores.haveErrors()) {
                 parser.listadoDeErrores.lexico = scan.error.lexico;
             }
@@ -443,7 +511,7 @@ public class Start_program extends javax.swing.JFrame {
                         + "que este correctamente escrita en codigo java");
             }
             //enguaje.testFila();
-            
+
         }
     }
 

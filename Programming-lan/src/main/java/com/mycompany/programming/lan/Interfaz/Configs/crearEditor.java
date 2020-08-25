@@ -7,7 +7,9 @@ package com.mycompany.programming.lan.Interfaz.Configs;
 
 
 import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
+import com.mycompany.programming.lan.Gramatica.pilaLALR.movimiento;
 import com.mycompany.programming.lan.Interfaz.Contenido;
+import com.mycompany.programming.lan.Interfaz.Content_pila;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -125,18 +127,21 @@ public class crearEditor {
         
     }
 
-    void obtenerRuta(String name, String texto) {
+    File  obtenerRuta(String name, String texto) {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("select folder");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
         chooser.setAcceptAllFileFilterUsed(false);
         int seleccion = chooser.showSaveDialog(Content.getParent());
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             File f = chooser.getCurrentDirectory();
             String path = f.getAbsolutePath() + "/" + name;
-            write(new File(path), texto);
+            File file=new File(path);
+            write(file, texto);
+            return file;
         }
+        return null;
     }
 
     String read(File file) {
@@ -168,7 +173,8 @@ public class crearEditor {
     public void saveAs(String name) {
         try {
             Contenido f = getCl();
-            obtenerRuta(name, f.getTexto());
+            File file=obtenerRuta(name, f.getTexto());
+            f.f=file;
         } catch (Exception ex) {
         }
 
@@ -178,5 +184,11 @@ public class crearEditor {
      Contenido t=new Contenido();
      t.addError(listado);
      Content.add(name, t);
+    }
+    
+    public void addPila(int tm,ArrayList<movimiento> mv){
+        Content_pila x=new Content_pila();
+        x.init(tm, mv);
+        this.Content.add("Pila", x);
     }
 }

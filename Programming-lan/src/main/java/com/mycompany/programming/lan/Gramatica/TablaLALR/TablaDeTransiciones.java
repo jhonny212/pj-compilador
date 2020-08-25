@@ -228,10 +228,8 @@ public final class TablaDeTransiciones {
                 if (!token.equals(token.toUpperCase()) || token.equals("$")) {
                     return token;
                 } else {
-                    System.out.println("BUSCANDO " + token);
                     TablaDeProduccion tbl = this.href.get(token);
                     list += tbl.primeros;
-
                     if (tbl.isLambda) {
                         if (i == (href.producionData.SimbolosProduccion.size() - 1)) {
                             list += "," + href.siguientes;

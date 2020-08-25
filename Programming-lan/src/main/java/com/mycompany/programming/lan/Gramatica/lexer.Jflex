@@ -1,7 +1,7 @@
 package com.mycompany.programming.lan.Gramatica;
 
 import java_cup.runtime.Symbol;
-
+import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 %%
 %class lexer
 %cup
@@ -45,6 +45,10 @@ Identifier = [:jletter:] [:jletterdigit:]*
 string = new StringBuffer();
 yybegin(STRING);}    
 ("entero"|"real"|"cadena")                                                  {return symbol(sym.TIPO_VAR,new String(yytext()));}
+"&"                                                                         
+{
+return symbol(sym.AND,new String(yytext()));
+}
 "."                                                                         {return symbol(sym.POINT,new String(yytext()));}
 "_"                                                                         {return symbol(sym.GUIONBAJO,new String(yytext()));}
 "::"                                                                        {return symbol(sym.BOTHPOINT,new String(yytext()));}

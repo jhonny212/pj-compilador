@@ -8,13 +8,12 @@ package com.mycompany.programming.lan.Gramatica.TablaLALR;
 import com.mycompany.programming.lan.Gramatica.AFD.Token;
 import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
 import com.mycompany.programming.lan.Gramatica.lenguaje;
+import com.mycompany.programming.lan.Gramatica.pilaLALR;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -28,7 +27,8 @@ public class Compilador {
     ArrayList<Integer> pilaDetransiciones = new ArrayList<>();
     ArrayList<Token> pilaDetokens = new ArrayList<>();
     analizadorLexico lexer;
-    String moves = "";
+    public final pilaLALR moves;
+    //String moves = "";
     Token prev = null;
     Object claseCompilada = null;
     public boolean compilado = false;
@@ -39,22 +39,26 @@ public class Compilador {
         this.TRANSICIONES = lan.tablaLALR;
         this.lexer = lexer;
         this.claseCompilada = lan.claseCompilada;
+        moves=new pilaLALR();
     }
-
+    //String movess="";
     public void init() {
         
         Token tk = lexer.nextToken();
         this.pilaDetransiciones.add(0);
-        moves = "START{";
-        moves += "\nPILA_TOKENS ADD: empty";
-        moves += "\nPILA_TRANS  ADD: " + 0;
-        moves += "\nPILA_ENTRADA CHECK: " + tk.getToken();
-        moves += "\n}\n";
+        moves.add(tk.getValue(),0,0);
+        /*movess = "START{";
+        movess += "\nPILA_TOKENS ADD: empty";
+        movess += "\nPILA_TRANS  ADD: " + 0;
+        movess += "\nPILA_ENTRADA CHECK: " + tk.getToken();
+        movess += "\n}\n";*/
         try {
             pila(0, tk);
         } catch (Exception ex) {
-            System.out.println(moves);
+            //System.out.println(moves);
         }
+      
+        //System.out.println(movess);
     }
 
     private void pila(int i, Token tk) {
@@ -129,11 +133,12 @@ public class Compilador {
         this.pilaDetokens.add(tk);
         this.pilaDetransiciones.add(i);
         Token href = lexer.nextToken();
-        moves += "SWITCH{";
-        moves += "\n    ADD TKS: " + tk.getToken();
-        moves += "\n    ADD TRANS: " + i;
-        moves += "\n    PILA_ENTRADA CHECK: " + href.getToken();
-        moves += "\n}\n";
+        this.moves.add(href.getValue(),i,0,0,tk.getToken());
+        /*movess += "SWITCH{";
+        movess += "\n    ADD TKS: " + tk.getToken();
+        movess += "\n    ADD TRANS: " + i;
+        movess += "\n    PILA_ENTRADA CHECK: " + href.getToken();
+        movess += "\n}\n";*/
 
         pila(i, href);
 
@@ -141,7 +146,7 @@ public class Compilador {
 
     void reduce_(int i, Token w) {
         Produccion x = LISTADOOFPRODUCTIONS[i];
-        moves += "REDUCE{";
+        //movess += "REDUCE{";
         Token tkn = new Token(x.padre);
 
         if (!x.isLambda) {
@@ -162,31 +167,35 @@ public class Compilador {
                 }
             } catch (Exception ex) {
             }
-
+            int cnt=0;
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
                 int tm = this.pilaDetokens.size() - 1;
                 int tm2 = this.pilaDetransiciones.size() - 1;
-                moves += "\n    REMOVE TKS:" + this.pilaDetokens.get(tm).getToken();
-                moves += "\n    REMOVE TRANS:" + this.pilaDetransiciones.get(tm2);
+                
+                //movess += "\n    REMOVE TKS:" + this.pilaDetokens.get(tm).getToken();
+                //movess += "\n    REMOVE TRANS:" + this.pilaDetransiciones.get(tm2);
                 this.pilaDetokens.remove(tm);
                 this.pilaDetransiciones.remove(tm2);
+                cnt++;
             }
+            moves.add(cnt, x.padre);
         }
-        moves += "\n    ADD TKS:" + x.padre;
+        //movess += "\n    ADD TKS:" + x.padre;
 
         this.pilaDetokens.add(tkn);
         int y = this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1);
         Token z = this.pilaDetokens.get(this.pilaDetokens.size() - 1);
-        moves += "\n}\n";
+        //movess += "\n}\n";
         pila(y, z, w);
 
     }
 
     void goTo_(int i, Token tk) {
 
-        moves += "GO_TO{";
-        moves += "\n    ADD TRANS: " + i;
-        moves += "\n}\n";
+        /*movess += "GO_TO{";
+        movess += "\n    ADD TRANS: " + i;
+        movess += "\n}\n";*/
+        moves.add(i);
         this.pilaDetransiciones.add(i);
         pila(this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1), tk);
     }

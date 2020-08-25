@@ -138,7 +138,7 @@ parser code {:
 terminal String ASTERIS,QUESTION,PLUS,OR,ABREPAREN,CIERRAPAREN,ABRECOR,CIERRACOR,ERROR;
 terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID;
 terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT;
-terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR,GUIONBAJO,POINT;
+terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR,GUIONBAJO,POINT,AND;
 terminal Integer NUM;
 terminal Float FLOAT;
 
@@ -531,6 +531,13 @@ X3::= ID:e IGUAL
  this.parser.addExpresionReg(e,"",eleft,eright);
  this.parser.nameOfExpresion=e;
  RESULT=e;
+:}
+|AND:e IGUAL
+{:
+
+ this.parser.addExpresionReg(e,"",eleft,eright);
+ this.parser.nameOfExpresion=e;
+ RESULT=e;
 :};
 
 expr::= expr:e OR X1:e2
@@ -722,7 +729,8 @@ terms::= ASTERIS:e {:RESULT=e;:}
 
 terms::= ABRECOR:e {:RESULT=e;:}
 | CIERRACOR:e {:RESULT=e;:}
-| ERROR:e {:RESULT=e;:};
+| ERROR:e {:RESULT=e;:}
+| AND:e {:RESULT=e;:};
 
 terms::= UPC:e {:RESULT=e;:}
 | LWC:e {:RESULT=e;:}
