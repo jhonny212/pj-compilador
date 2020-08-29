@@ -114,7 +114,8 @@ public class crearEditor {
         try {
             return (Contenido) Content.getSelectedComponent();
 
-        } catch (NullPointerException ex) {
+        } catch (Exception ex) {
+          
         }
         return null;
     }
@@ -126,6 +127,7 @@ public class crearEditor {
         Content.add(titulo, tabla);
         
     }
+   
 
     File  obtenerRuta(String name, String texto) {
         JFileChooser chooser = new JFileChooser();
@@ -156,7 +158,11 @@ public class crearEditor {
             // Lectura del fichero
             String linea = "";
             while ((linea = br.readLine()) != null) {
-                retorno += linea;
+                if(retorno.isEmpty()){
+                retorno=linea;
+                }else{
+                retorno += "\n"+linea;
+                }
             }
         } catch (IOException e) {
         } finally {
@@ -173,6 +179,7 @@ public class crearEditor {
     public void saveAs(String name) {
         try {
             Contenido f = getCl();
+            f.name=name;
             File file=obtenerRuta(name, f.getTexto());
             f.f=file;
         } catch (Exception ex) {

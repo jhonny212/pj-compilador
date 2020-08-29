@@ -49,6 +49,9 @@ yybegin(STRING);}
 {
 return symbol(sym.AND,new String(yytext()));
 }
+"\\t"|"\\n"                                                                {return symbol(sym.SAL_TABL,new String(yytext()));}
+"\\b"                                                                      {return symbol(sym.SPACE,new String(" "));}
+
 "."                                                                         {return symbol(sym.POINT,new String(yytext()));}
 "_"                                                                         {return symbol(sym.GUIONBAJO,new String(yytext()));}
 "::"                                                                        {return symbol(sym.BOTHPOINT,new String(yytext()));}

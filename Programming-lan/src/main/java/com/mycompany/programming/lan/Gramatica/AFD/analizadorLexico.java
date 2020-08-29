@@ -24,7 +24,6 @@ public class analizadorLexico {
 
     public void init(String cadena) {
         this.tmp = cadena;
-     
     }
 
     Token analizar() {
@@ -44,12 +43,11 @@ public class analizadorLexico {
             }
         }
         if (refer != null) {
-            
             String tmps = "";
-            try{
-            tmps=tmp.replaceFirst(refer.getVal(), "");
-            }catch(java.util.regex.PatternSyntaxException ex){
-                tmps=tmp.replaceFirst("\\"+refer.getVal(), "");
+            try {
+                tmps = tmp.replaceFirst(refer.getVal(), "");
+            } catch (java.util.regex.PatternSyntaxException ex) {
+                tmps = tmp.replaceFirst("\\" + refer.getVal(), "");
             }
             this.tmp = tmps;
             try {
@@ -59,6 +57,7 @@ public class analizadorLexico {
             }
             return new Token(this.value, this.token);
         }
+        
         retorno = new Token(String.valueOf(this.tmp.charAt(0)), "Error");
         String cadena = tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
         this.tmp = cadena;
@@ -90,11 +89,11 @@ public class analizadorLexico {
         }
 
         if (refer != null) {
-            String tmps =""; 
-            try{
-            tmps=texto.replaceFirst(refer.getVal(), "");
-            }catch(java.util.regex.PatternSyntaxException ex){
-                tmps=texto.replaceFirst("\\"+refer.getVal(), "");
+            String tmps = "";
+            try {
+                tmps = texto.replaceFirst(refer.getVal(), "");
+            } catch (java.util.regex.PatternSyntaxException ex) {
+                tmps = texto.replaceFirst("\\" + refer.getVal(), "");
             }
             this.tmp = tmps;
             href += refer.getVal();
@@ -105,12 +104,12 @@ public class analizadorLexico {
             }
         }
     }
-    
+
     private String value, token;
 
     public Token nextToken() {
-        if(this.tmp.isEmpty()){
-            return new Token("$","$");
+        if (this.tmp.isEmpty()) {
+            return new Token("$", "$");
         }
         Token tkn = analizar();
         if (tkn.getToken().equals("Error")) {
@@ -118,12 +117,14 @@ public class analizadorLexico {
             String t = tmp.replaceFirst(String.valueOf(error), "");
             this.tmp = t;
         }
+        if(tkn.getToken().equals("&")){
+            return nextToken();
+        }
         return tkn;
     }
 
     private boolean hashMoreTokens() {
         return this.tmp.isEmpty();
     }
-    
-    
+
 }

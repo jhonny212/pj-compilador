@@ -137,7 +137,7 @@ parser code {:
 
 terminal String ASTERIS,QUESTION,PLUS,OR,ABREPAREN,CIERRAPAREN,ABRECOR,CIERRACOR,ERROR;
 terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID;
-terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT;
+terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT,SAL_TABL,SPACE;
 terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR,GUIONBAJO,POINT,AND;
 terminal Integer NUM;
 terminal Float FLOAT;
@@ -518,7 +518,9 @@ RESULT=e;
 reg::= X3:e1 expr:e
 {: 
 try{
-
+if(e==null){
+   this.parser.addError(1,eleft,eright,";","Se debe definir una expresion regular");
+}
 RESULT=e;
 }catch(Exception ex){
    this.parser.addError(1,eleft,eright,";","Se debe definir una expresion regular");
@@ -534,7 +536,6 @@ X3::= ID:e IGUAL
 :}
 |AND:e IGUAL
 {:
-
  this.parser.addExpresionReg(e,"",eleft,eright);
  this.parser.nameOfExpresion=e;
  RESULT=e;
@@ -667,8 +668,39 @@ this.parser.listadoDeNodos.add(x);
 this.parser.contador_____3++;
 RESULT=x;
 }catch(Exception ex){
+   
 }
 :}
+|SAL_TABL:e
+{:
+try{
+String xx="";
+if(e.equals("\\t")){
+   xx="\t";
+}else if(e.equals("\\n")){
+   xx="\n";
+}   
+Nodo x=new NodoVal(this.parser.contador_____3,xx);
+this.parser.listadoDeNodos.add(x);
+this.parser.contador_____3++;
+RESULT=x;
+}catch(Exception ex){
+   System.out.println("Excepcion");
+}
+:} 
+
+|SPACE:e 
+{:
+try{
+Nodo x=new NodoVal(this.parser.contador_____3,e);
+this.parser.listadoDeNodos.add(x);
+this.parser.contador_____3++;
+RESULT=x;
+}catch(Exception ex){
+   System.out.println("Excepcion");
+}
+:} 
+
 ;
 
 
@@ -725,7 +757,9 @@ terms::= ASTERIS:e {:RESULT=e;:}
 | PLUS:e {:RESULT=e;:}
 | OR:e {:RESULT=e;:}
 |ABREPAREN:e {:RESULT=e;:}
-| CIERRAPAREN:e {:RESULT=e;:};
+| CIERRAPAREN:e {:RESULT=e;:}
+| SAL_TABL:e {:RESULT=e;:}
+| SPACE:e {:RESULT=e;:};
 
 terms::= ABRECOR:e {:RESULT=e;:}
 | CIERRACOR:e {:RESULT=e;:}
@@ -819,6 +853,22 @@ RESULT=getInfos(3,e);
 info::= EXTENS  TWOPOINT ID:e 
 {:
 RESULT=getInfos(4,e);
+:}
+| EXT_ID:e 
+{:
+String vector[]=e.split(":");
+switch(vector[0]){
+   case "autor":
+   RESULT=getInfos(3,vector[1]);
+   break;
+   case "extension":
+   RESULT=getInfos(4,vector[1]);
+   break;
+   case "nombre":
+   RESULT=getInfos(1,vector[1]);
+   break;
+   
+}
 :};
 
 //Produccion para detectar la version del lenguaje

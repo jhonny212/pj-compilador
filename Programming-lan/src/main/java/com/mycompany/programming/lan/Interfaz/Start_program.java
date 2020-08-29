@@ -6,11 +6,7 @@
 package com.mycompany.programming.lan.Interfaz;
 
 import com.mycompany.programming.lan.Gramatica.AFD.analizadorLexico;
-import com.mycompany.programming.lan.Gramatica.AFD.generarAFD;
 import com.mycompany.programming.lan.Gramatica.TablaLALR.Compilador;
-import com.mycompany.programming.lan.Gramatica.TablaLALR.Produccion;
-import com.mycompany.programming.lan.Gramatica.TablaLALR.TablaLL1;
-import com.mycompany.programming.lan.Gramatica.TablaLALR.Transicion;
 import com.mycompany.programming.lan.Gramatica.lenguaje;
 import com.mycompany.programming.lan.Gramatica.lexer;
 import com.mycompany.programming.lan.Gramatica.parser;
@@ -22,8 +18,6 @@ import java.io.BufferedReader;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.StringReader;
@@ -261,7 +255,9 @@ public class Start_program extends javax.swing.JFrame {
                 edit.save(opc);
             }
         } catch (Exception ex) {
-
+            try{
+                this.Content.remove(this.Content.getSelectedComponent());
+            }catch(Exception exx){}
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -280,6 +276,7 @@ public class Start_program extends javax.swing.JFrame {
             }
 
         } catch (Exception ex) {
+           
         }
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -402,6 +399,7 @@ public class Start_program extends javax.swing.JFrame {
 
                 if (!cn.bool) {
                     String texto = cn.getTexto();
+
                     analizadorLexico lexer = new analizadorLexico(lenguaje.tablaAFD);
                     lexer.init(texto);
                     Compilador cmp = new Compilador(lexer, lenguaje);

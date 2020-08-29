@@ -7,7 +7,7 @@ package com.mycompany.programming.lan.Gramatica.AFD;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.HashMap;
 
 /**
@@ -102,7 +102,7 @@ public class generarAFD implements Serializable {
             }
         }
 
-        
+        //print();
         this.pila.clear();
         this.pila = null;
         listado.clear();
@@ -222,6 +222,9 @@ public class generarAFD implements Serializable {
                     return false;
                 }
             } else {
+                
+                
+               
                 return dato.startsWith(this.val);
             }
         }

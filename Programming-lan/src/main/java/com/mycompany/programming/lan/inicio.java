@@ -1,6 +1,9 @@
 package com.mycompany.programming.lan;
 
 import com.mycompany.programming.lan.Gramatica.lexer;
+import com.mycompany.programming.lan.Gramatica.parser;
+import com.mycompany.programming.lan.Interfaz.Start_program;
+
 import java.io.BufferedReader;
 import java.io.StringReader;
 
@@ -9,16 +12,20 @@ public class inicio {
     public static void main(String[] args) {
         //Start_program f = new Start_program();
         //f.setVisible(true);
-       
+        generarCompilador();
+        
+        
+        
+
     }
 
     private static void generarCompilador() {
         try {
             String ruta = "src/main/java/com/mycompany/programming/lan/Gramatica/"; //ruta donde tenemos los archivos con extension .jflex y .cup
             String opcFlex[] = {ruta + "lexer.Jflex", "-d", ruta};
-            jflex.Main.generate(opcFlex);
+            //jflex.Main.generate(opcFlex);
             String opcCUP[] = {"-destdir", ruta, "-parser", "parser", ruta + "parser.cup"};
-            //java_cup.Main.main(opcCUP);
+            java_cup.Main.main(opcCUP);
         } catch (Exception ex) {
         }
 
@@ -26,44 +33,54 @@ public class inicio {
 
     public static void probarCompilador() {
         try {
-            String texto = ""
-                    + "nombre: test ; \n"
-                    + "version: 2 ;\n"
-                    + "extension: com;\n"
-                    + "%%  "
+            String texto = "";
+
+            texto = "nombre: aritmetica ; "
+                    + "version : 2 ;\n"
+                    + "extension : com;\n"
+                    + "%% \n"
+                    + "   public class aritmetica{\n"
+                    + "    public int sumar(int x,int y){\n"
+                    + "        return x+y;\n"
+                    + "    }\n"
+                    + "\n"
+                    + "    public int mul(int x,int y){\n"
+                    + "        return x*y;\n"
+                    + "    }\n"
+                    + "  \n"
+                    + "}\n"
                     + "%%\n"
-                    + "num= [0-9]+;"
-                    + "sum= \"+\";"
-                    + "mul= \"*\";"
-                    + "&= \"(\";"
-                    + "cp= \")\";"
+                    + "num= [0-9]+;\n"
+                    + "sum= \"+\";\n"
+                    + "mul= \"*\";\n"
+                    + "ap= \"(\";\n"
+                    + "cp= \")\";\n"
+                    + "&= [\\n];\n"
                     + "%%\n"
-                    + "terminal sum,mul,ap,cp;"
+                    + "terminal sum,mul,ap,cp;\n"
                     + "terminal entero num;\n"
-                    + "no terminal entero S,E,T,F;"
+                    + "no terminal entero S,E,T,F;\n"
                     + "%%\n"
-                    + "S:: E:e {System.out.println(e);};"
-                    + "E:: T:e sum E:e1 {RESULT=e+e1;};"
-                    + "E:: T:e {RESULT=e;};"
-                    + "T:: F:e mul T:e1 {RESULT=e*e1;};"
-                    + "T:: F:e {RESULT=e;};"
-                    + "F:: num:e {RESULT=e;};"
-                    + "F:: ap E:e cp {RESULT=e;}; ";
-            
-            
-            var scan = new lexer(new BufferedReader(new StringReader(" ")));
+                    + "S:: E:e             {System.out.println(e);};\n"
+                    + "E:: T:e sum E:e1    {RESULT=sumar(e,e1);};\n"
+                    + "E:: T:e             {RESULT=e;};\n"
+                    + "T:: F:e mul T:e1    {RESULT=mul(e,e1);};\n"
+                    + "T:: F:e             {RESULT=e;};\n"
+                    + "F:: num:e           {RESULT=e;};\n"
+                    + "F:: ap E:e cp       {RESULT=e;};";
+            var scan = new lexer(new BufferedReader(new StringReader(texto)));
             scan.next_token();
-            /*var parser = new parser(scan);
+            var parser = new parser(scan);
+
             try {
-            parser.parse();
-            
+                parser.parse();
+
             } catch (Exception ex) {
-            System.out.println("ex" + ex.getMessage());
-            }*/
+                System.out.println("ex" + ex.getMessage());
+            }
         } catch (Exception ex) {
         }
 
     }
 
- 
 }

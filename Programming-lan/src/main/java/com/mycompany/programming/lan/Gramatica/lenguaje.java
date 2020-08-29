@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaFileManager;
@@ -184,14 +185,22 @@ public class lenguaje implements Serializable {
                 this.Name = package_ + "." + tmp;
             }
             String data = "";
-            boolean valid = false;
-            if (this.codjava.contains("public")) {
-                x = this.codjava.indexOf("public");
+            boolean valid = true;
+            if (this.codjava.contains("final")) {
+                x = this.codjava.indexOf("final");
                 data = this.codjava.substring(0, x) + imports;
-                if (x > ww) {
-                    valid = true;
+                if (x < ww) {
+                    valid = false;
                 }
             }
+            if (this.codjava.contains("public")&& valid) {
+                x = this.codjava.indexOf("public");
+                data = this.codjava.substring(0, x) + imports;
+                if (x < ww) {
+                    valid = false;
+                }
+            }
+            
             if (this.codjava.contains("class") && valid) {
                 x = ww;
                 data = this.codjava.substring(0, x) + imports;
@@ -200,7 +209,9 @@ public class lenguaje implements Serializable {
             clase = data + tmp + methods;
             tmp = this.codjava.substring(w + 1, this.codjava.length() - 1);
             clase += tmp;
-
+           
+            
+            
             return clase;
 
         }
@@ -226,9 +237,11 @@ public class lenguaje implements Serializable {
             Constructor ct = cl.getConstructor();
             claseCompilada = ct.newInstance();
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException | ClassNotFoundException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "La clase de codigo java no pudo ser compilada, "
+                    + "verifique la sintaxis y que sea de clase publica");
 
-        }catch(java.lang.IllegalArgumentException ex){}
+        } catch (java.lang.IllegalArgumentException ex) {
+        }
     }
 
 }
