@@ -103,7 +103,7 @@ public class Contenido extends javax.swing.JPanel {
     }
 
     public void initPrs(String [][] array) {
-           bool=true;
+        bool=true;
         String title[] = {"No", "produccion", "Regla de produccion"};
         tabla = new JTable(array, title);
         this.scroll.setViewportView(this.tabla);

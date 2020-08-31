@@ -12,7 +12,8 @@ public class SymToken implements Serializable{
    
       public SymToken(String tk){
         this.token=tk;
-        this.tipo=tipo;
+      
+      
     }
     public SymToken(String tk,String Id,int tipo){
         this.token=tk;
@@ -20,6 +21,7 @@ public class SymToken implements Serializable{
         this.tipo=tipo;
     }
 
+    
 
 }
 

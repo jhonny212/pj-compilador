@@ -39,30 +39,26 @@ public class Compilador {
         this.TRANSICIONES = lan.tablaLALR;
         this.lexer = lexer;
         this.claseCompilada = lan.claseCompilada;
-        moves=new pilaLALR();
+        moves = new pilaLALR();
     }
+
     //String movess="";
     public void init() {
-        
+
         Token tk = lexer.nextToken();
         this.pilaDetransiciones.add(0);
-        moves.add(tk.getValue(),0,0);
-        /*movess = "START{";
-        movess += "\nPILA_TOKENS ADD: empty";
-        movess += "\nPILA_TRANS  ADD: " + 0;
-        movess += "\nPILA_ENTRADA CHECK: " + tk.getToken();
-        movess += "\n}\n";*/
+        String dato = "Inicio: token de entrada " + tk.getToken() + "\n";
+        dato += "Añadir 0 en pila de transiciones";
+        moves.add(tk.getValue(), 0, 0, dato);
         try {
             pila(0, tk);
         } catch (Exception ex) {
-            //System.out.println(moves);
         }
-      
-        //System.out.println(movess);
+
     }
 
     private void pila(int i, Token tk) {
-        
+
         int busqueda[] = buscar(i, tk.getToken());
         if (busqueda != null) {
             switch (busqueda[1]) {
@@ -126,6 +122,8 @@ public class Compilador {
             }
 
         }
+        
+        
         return null;
     }
 
@@ -133,22 +131,19 @@ public class Compilador {
         this.pilaDetokens.add(tk);
         this.pilaDetransiciones.add(i);
         Token href = lexer.nextToken();
-        this.moves.add(href.getValue(),i,0,0,tk.getToken());
-        /*movess += "SWITCH{";
-        movess += "\n    ADD TKS: " + tk.getToken();
-        movess += "\n    ADD TRANS: " + i;
-        movess += "\n    PILA_ENTRADA CHECK: " + href.getToken();
-        movess += "\n}\n";*/
+        String dato = "Switch: \n"
+                + "Agregar a pila de tokens " + tk.getToken() + "\n"
+                + "Agregar a pila de transiciones " + i + "\n"
+                + "Leer token " + href.getToken();
 
+        this.moves.add(href.getValue(), i, 0, 0, tk.getToken(), dato);
         pila(i, href);
 
     }
 
     void reduce_(int i, Token w) {
         Produccion x = LISTADOOFPRODUCTIONS[i];
-        //movess += "REDUCE{";
         Token tkn = new Token(x.padre);
-
         if (!x.isLambda) {
             try {
                 switch (x.tipo) {
@@ -167,35 +162,29 @@ public class Compilador {
                 }
             } catch (Exception ex) {
             }
-            int cnt=0;
+            int cnt = 0;
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
                 int tm = this.pilaDetokens.size() - 1;
                 int tm2 = this.pilaDetransiciones.size() - 1;
-                
-                //movess += "\n    REMOVE TKS:" + this.pilaDetokens.get(tm).getToken();
-                //movess += "\n    REMOVE TRANS:" + this.pilaDetransiciones.get(tm2);
                 this.pilaDetokens.remove(tm);
                 this.pilaDetransiciones.remove(tm2);
                 cnt++;
             }
-            moves.add(cnt, x.padre);
+            moves.add(cnt, x.padre, "Reduce: \nremover de pila de tokens, " + cnt + " tokens \n"
+                    + "remover de la pila de transiciones  " + cnt + "transiciones  \n"
+                    + "agregar a pila de tokens " + x.padre);
         }
-        //movess += "\n    ADD TKS:" + x.padre;
 
         this.pilaDetokens.add(tkn);
         int y = this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1);
         Token z = this.pilaDetokens.get(this.pilaDetokens.size() - 1);
-        //movess += "\n}\n";
         pila(y, z, w);
 
     }
 
     void goTo_(int i, Token tk) {
 
-        /*movess += "GO_TO{";
-        movess += "\n    ADD TRANS: " + i;
-        movess += "\n}\n";*/
-        moves.add(i);
+        moves.add(i, "Go-to: \n Añadir a pila de transiciones " + i);
         this.pilaDetransiciones.add(i);
         pila(this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1), tk);
     }
@@ -205,7 +194,7 @@ public class Compilador {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
             obj[0] = this.pilaDetokens;
             return (int) m1.invoke(claseCompilada, obj);
@@ -220,7 +209,7 @@ public class Compilador {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
             obj[0] = this.pilaDetokens;
             return m1.invoke(claseCompilada, obj);
@@ -236,7 +225,7 @@ public class Compilador {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
             obj[0] = this.pilaDetokens;
             resultado = (double) m1.invoke(claseCompilada, obj);
@@ -252,7 +241,7 @@ public class Compilador {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
-            Method m1 = claseCompilada.getClass().getDeclaredMethod("method" + x, partypes);
+            Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
             obj[0] = this.pilaDetokens;
             resultado = (String) m1.invoke(claseCompilada, obj);

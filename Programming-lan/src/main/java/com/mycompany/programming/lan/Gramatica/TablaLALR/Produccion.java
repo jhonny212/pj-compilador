@@ -23,13 +23,14 @@ public class Produccion implements Serializable {
             this.SimbolosProduccion.add(new SymToken("LAMMBDAAAAA"));
             this.isLambda = true;
         }
+        this.ruls = rules;
         if (rules.isEmpty()) {
             this.reglasSemanticas = rules;
         } else {
             this.reglasSemanticas = getVars() + rules;
         }
         this.num = numero;
-    
+
     }
 
     public Produccion(ArrayList<SymToken> list, String rules) {
@@ -41,13 +42,17 @@ public class Produccion implements Serializable {
             this.SimbolosProduccion.add(new SymToken("LAMMBDAAAAA"));
             this.isLambda = true;
         }
+        this.ruls = rules;
         if (rules.isEmpty()) {
             this.reglasSemanticas = rules;
+
         } else {
             this.reglasSemanticas = getVars() + rules;
         }
         this.num = -1;
     }
+
+    public String ruls;
 
     public void setTipo(int x) {
         this.tipo = x;
@@ -103,7 +108,7 @@ public class Produccion implements Serializable {
         for (int i = this.SimbolosProduccion.size() - 1; i >= 0; i--) {
             SymToken tk = this.SimbolosProduccion.get(i);
             if (tk.IdToken != null) {
-               
+
                 switch (tk.tipo) {
                     case 0:
                         retorno += "Object " + tk.IdToken + " = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-" + cnt + ").getObj();\n";
@@ -118,7 +123,7 @@ public class Produccion implements Serializable {
                         retorno += "double " + tk.IdToken + " = pDeTkns_$_$_.get(pDeTkns_$_$_.size()-1-" + cnt + ").getReal();\n";
                         break;
                     default:
-                        System.out.println("************************+");
+                        //System.out.println("************************+");
                         break;
                 }
             }
@@ -127,5 +132,20 @@ public class Produccion implements Serializable {
 
         return retorno;
     }
-    
+
+    public String getPrs() {
+        String data = "";
+        for (int i = 0; i < this.SimbolosProduccion.size(); i++) {
+            SymToken tk = this.SimbolosProduccion.get(i);
+            
+            if (tk.IdToken == null) {
+                data += tk.token + " ";
+            } else {
+                data += tk.token + ":" + tk.IdToken + " ";
+            }
+
+        }
+        return data;
+    }
+
 }

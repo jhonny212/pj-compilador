@@ -5,7 +5,6 @@
  */
 package com.mycompany.programming.lan.Interfaz.Configs;
 
-
 import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 import com.mycompany.programming.lan.Gramatica.pilaLALR.movimiento;
 import com.mycompany.programming.lan.Interfaz.Contenido;
@@ -33,7 +32,6 @@ public class crearEditor {
         this.Content = Content;
     }
 
-    
     public void create(String title) {
         Contenido t = new Contenido();
         t.name = title;
@@ -108,28 +106,32 @@ public class crearEditor {
         return null;
     }
 
-   
     //Get selected component
     public Contenido getCl() {
         try {
             return (Contenido) Content.getSelectedComponent();
 
         } catch (Exception ex) {
-          
+
         }
         return null;
     }
 
-    public void addTable(String titulo,String path,String titles[]) {
+    public void addTable(String titulo, String path, String titles[]) {
         Contenido tabla = new Contenido();
-        Contenido producciones = new Contenido();
+
         tabla.initTable(path, titles);
         Content.add(titulo, tabla);
-        
-    }
-   
 
-    File  obtenerRuta(String name, String texto) {
+    }
+
+    public void addTable(String celdas[][]) {
+        Contenido tabla = new Contenido();
+        tabla.initPrs(celdas);
+        Content.add("Producciones", tabla);
+    }
+
+    File obtenerRuta(String name, String texto) {
         JFileChooser chooser = new JFileChooser();
         chooser.setCurrentDirectory(new java.io.File("."));
         chooser.setDialogTitle("select folder");
@@ -139,7 +141,7 @@ public class crearEditor {
         if (seleccion == JFileChooser.APPROVE_OPTION) {
             File f = chooser.getCurrentDirectory();
             String path = f.getAbsolutePath() + "/" + name;
-            File file=new File(path);
+            File file = new File(path);
             write(file, texto);
             return file;
         }
@@ -158,10 +160,10 @@ public class crearEditor {
             // Lectura del fichero
             String linea = "";
             while ((linea = br.readLine()) != null) {
-                if(retorno.isEmpty()){
-                retorno=linea;
-                }else{
-                retorno += "\n"+linea;
+                if (retorno.isEmpty()) {
+                    retorno = linea;
+                } else {
+                    retorno += "\n" + linea;
                 }
             }
         } catch (IOException e) {
@@ -179,22 +181,22 @@ public class crearEditor {
     public void saveAs(String name) {
         try {
             Contenido f = getCl();
-            f.name=name;
-            File file=obtenerRuta(name, f.getTexto());
-            f.f=file;
+            f.name = name;
+            File file = obtenerRuta(name, f.getTexto());
+            f.f = file;
         } catch (Exception ex) {
         }
 
     }
-    
-    public void addError(ArrayList<ErrorClass.errorProduced> listado,String name){
-     Contenido t=new Contenido();
-     t.addError(listado);
-     Content.add(name, t);
+
+    public void addError(ArrayList<ErrorClass.errorProduced> listado, String name) {
+        Contenido t = new Contenido();
+        t.addError(listado);
+        Content.add(name, t);
     }
-    
-    public void addPila(int tm,ArrayList<movimiento> mv){
-        Content_pila x=new Content_pila();
+
+    public void addPila(int tm, ArrayList<movimiento> mv) {
+        Content_pila x = new Content_pila();
         x.init(tm, mv);
         this.Content.add("Pila", x);
     }

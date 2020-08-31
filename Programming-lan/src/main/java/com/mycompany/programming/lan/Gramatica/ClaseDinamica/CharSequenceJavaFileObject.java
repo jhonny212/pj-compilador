@@ -24,6 +24,7 @@ public class CharSequenceJavaFileObject extends SimpleJavaFileObject {
     public CharSequenceJavaFileObject(String className, CharSequence content) {
         super(URI.create("string:///" + className.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);
         this.content = content;
+      
     }
 
     /**

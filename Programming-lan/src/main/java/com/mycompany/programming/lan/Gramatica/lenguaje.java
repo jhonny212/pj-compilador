@@ -102,28 +102,28 @@ public class lenguaje implements Serializable {
         for (Produccion x : producciones) {
             switch ((x.tipo())) {
                 case 0:
-                    methods += "public Object method" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
+                    methods += "public Object method_$" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
                             + "{\n"
                             + "Object RESULT=null;"
                             + "" + x.reglasSemanticas + "\n"
                             + "return RESULT;}\n";
                     break;
                 case 1:
-                    methods += "public String method" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
+                    methods += "public String method_$" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
                             + "{\n"
                             + "String RESULT=\"\";"
                             + "" + x.reglasSemanticas + "\n"
                             + "return RESULT;}\n";
                     break;
                 case 2:
-                    methods += "public int method" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
+                    methods += "public int method_$" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
                             + "{\n"
                             + "int RESULT=-1;"
                             + "" + x.reglasSemanticas + "\n"
                             + "return RESULT;}\n";
                     break;
                 case 3:
-                    methods += "public double method" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
+                    methods += "public double method_$" + x.num + " (ArrayList<Token> pDeTkns_$_$_)"
                             + "{\n"
                             + "double RESULT=0.0;"
                             + "" + x.reglasSemanticas + "\n"
@@ -133,10 +133,6 @@ public class lenguaje implements Serializable {
 
         }
 
-    }
-
-    public void testFila() {
-        System.out.println(Arrays.toString(fila));
     }
 
     public String createStringClass() {
@@ -193,14 +189,14 @@ public class lenguaje implements Serializable {
                     valid = false;
                 }
             }
-            if (this.codjava.contains("public")&& valid) {
+            if (this.codjava.contains("public") && valid) {
                 x = this.codjava.indexOf("public");
                 data = this.codjava.substring(0, x) + imports;
                 if (x < ww) {
                     valid = false;
                 }
             }
-            
+
             if (this.codjava.contains("class") && valid) {
                 x = ww;
                 data = this.codjava.substring(0, x) + imports;
@@ -209,9 +205,7 @@ public class lenguaje implements Serializable {
             clase = data + tmp + methods;
             tmp = this.codjava.substring(w + 1, this.codjava.length() - 1);
             clase += tmp;
-           
-            
-            
+
             return clase;
 
         }
@@ -244,4 +238,25 @@ public class lenguaje implements Serializable {
         }
     }
 
+    public String getInfo() {
+        String param = (this.extension.isEmpty() ? "None" : this.extension);
+        String data = "Extension: " + param + "\n"
+                + "Version: " + this.version + "\n";
+        param = (this.autor.isEmpty() ? "None" : this.autor);
+        data += "Autor: " + param + "\n";
+        data += "Nombre:" + this.Name;
+
+        return data;
+    }
+
+    public String[][] getProducciones() {
+        String vector[][] = new String[this.producciones.length + 1][3];
+        for (Produccion x : this.producciones) {
+            int i = x.num + 1;
+            vector[i][0] = String.valueOf((i-1));
+            vector[i][1] = x.getPrs();
+            vector[i][2] = x.ruls;
+        }
+        return vector;
+    }
 }

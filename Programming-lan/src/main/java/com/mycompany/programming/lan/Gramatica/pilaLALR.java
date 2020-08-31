@@ -22,29 +22,28 @@ public class pilaLALR {
     }
 
     public void add(String tk) {
-        moves.add(new movimiento(new movimiento_check(tk), null, null));
+        moves.add(new movimiento(new movimiento_check(tk), null, null,"dato"));
+        tm++;
+    }
+
+    public void add(String tk, int trans, int r,String dato) {
+        moves.add(new movimiento(new movimiento_check(tk), null, new movimiento_trans(trans, r),dato));
         tm++;
 
     }
 
-    public void add(String tk, int trans, int r) {
-        moves.add(new movimiento(new movimiento_check(tk), null, new movimiento_trans(trans, r)));
+    public void add(String tk, int trans, int r, int x, String ww,String dato) {
+        moves.add(new movimiento(new movimiento_check(tk), new movimiento_tokens(x, ww), new movimiento_trans(r, trans),dato));
         tm++;
 
     }
 
-    public void add(String tk, int trans, int r, int x, String ww) {
-        moves.add(new movimiento(new movimiento_check(tk), new movimiento_tokens(x, ww), new movimiento_trans(r, trans)));
-        tm++;
-
+    public void add(int trans, String add,String dato) {
+        moves.add(new movimiento(null, new movimiento_tokens(trans, add), new movimiento_trans(trans, -1),dato));
     }
 
-    public void add(int trans, String add) {
-        moves.add(new movimiento(null, new movimiento_tokens(trans, add), new movimiento_trans(trans, -1)));
-    }
-
-    public void add(int trans) {
-        moves.add(new movimiento(null, null, new movimiento_trans(0, trans)));
+    public void add(int trans,String dato) {
+        moves.add(new movimiento(null, null, new movimiento_trans(0, trans),dato));
     }
 
     public ArrayList<movimiento> getMoves() {
@@ -56,11 +55,13 @@ public class pilaLALR {
         public final movimiento_check p1;
         public final movimiento_tokens p3;
         public final movimiento_trans p2;
+        public final String dato;
 
-        public movimiento(movimiento_check p1, movimiento_tokens p3, movimiento_trans p2) {
+        public movimiento(movimiento_check p1, movimiento_tokens p3, movimiento_trans p2,String move) {
             this.p1 = p1;
             this.p3 = p3;
             this.p2 = p2;
+            this.dato=move;
         }
 
     }

@@ -120,16 +120,23 @@ parser code {:
    
     }
     public void syntax_error(Symbol s){
-       addError(1,s.left+1,s.right+1,s.value.toString());
+    try{
+          addError(1,s.left+1,s.right+1,s.value.toString());
+          }catch(Exception ex){
+                 addError(1,s.left+1,s.right+1,"");
+                 System.out.println("entro");
+          }
       System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
     }
-    public static void error(Symbol s){
-       //System.out.println("Error R de sintaxis: "+ s.value +" Linea "+(s.left+1)+" columna "+(s.right+1) );
-    }
-    
+   
   @Override
     public void unrecovered_syntax_error(Symbol s){
+          try{
           addError(1,s.left+1,s.right+1,s.value.toString());
+          }catch(Exception ex){
+                 addError(1,s.left+1,s.right+1,"");
+                  System.out.println("entro");
+          }
    
     System.out.println("La Cadena:" +s.value+" en la Linea:"+(s.right+1) +" ,Columna: "+s.left+"esta fuera de contexto." );
  }
@@ -168,6 +175,7 @@ start with begin;
 begin::= inicio:e1 SEPARATOR codJava:c regulares:e SEPARATOR gramatica
 {:
 try{
+ 
 NodoVal ac=new NodoVal(this.parser.contador_____3,"$");
 this.parser.listadoDeNodos.add(ac);
 NodoDAD dad=new NodoDAD(".",e,ac,false);
@@ -214,7 +222,6 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
 
 
 :}
-|error
  ;
 
 
@@ -224,6 +231,9 @@ gramatica::= Term NoTerm SEPARATOR A;
 
 //%%%%%%%%%%%%%%%
 Term::= Term TERM H terminales PNTCOMA;
+Term::= error PNTCOMA
+|error TERM H terminales
+;
 Term::= TERM H terminales PNTCOMA;
 terminales::= terminales COMA ID:e
 {:
@@ -238,8 +248,8 @@ this.parser.contador_____++;
 }catch(Exception ex){
 
 }
-
 :}
+
 ;
 terminales::= ID:e
 {:
@@ -258,7 +268,9 @@ this.parser.contador_____++;
 :}
 ;
 //------------------end of terminales
-NoTerm::= NoTerm NO TERM H non_terminales PNTCOMA;
+NoTerm::= NoTerm NO TERM H non_terminales PNTCOMA
+|error NO TERM H non_terminales
+|error PNTCOMA;
 NoTerm::= NO TERM H non_terminales PNTCOMA;
 non_terminales::= non_terminales COMA ID:e
 {:
@@ -335,7 +347,7 @@ if(href==null){
 
 
 :}
-| error ;
+| error G PNTCOMA ;
 A::= G:e PNTCOMA 
 {:
 try{
@@ -361,65 +373,82 @@ if(href==null){
 G::= ID:e BOTHPOINT B:e1 D:e2 E:e3
 {:
 
-Produccion tmp=new Produccion(e1,e2,this.parser.contador_____2);
-e3.add(tmp);
+
 try{
+Produccion tmp=new Produccion(e1,e2,this.parser.contador_____2);
+e3.add(tmp);   
 String vect[]=this.parser.tablaDeTerminales.get(e).split(":");
 int x=Integer.valueOf(vect[vect.length-1]);
 RESULT=new TablaDeProduccion(e3,e,x);
 this.parser.contador_____2++;
 }catch(Exception ex){
+   try{
      this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
+   }catch(Exception exx){}
 }
 
 :};
 G::=   ID:e BOTHPOINT B:e1 D:e2
 {:
 
+try{
 Produccion tmp=new Produccion(e1,e2,this.parser.contador_____2);
 ArrayList<Produccion> list=new ArrayList();
 list.add(tmp);
-try{
 String vect[]=this.parser.tablaDeTerminales.get(e).split(":");
 int x=Integer.valueOf(vect[vect.length-1]);
 RESULT=new TablaDeProduccion(list,e,x);
 this.parser.contador_____2++;
-}catch(Exception ex){
+}catch(Exception exx){
+   try{
         this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
+   }catch(Exception exxx){}
 }
 
 :};
 
 G::= ID:e BOTHPOINT D:e1
 {:
+
+
+try{
 Produccion tmp=new Produccion(null,e1,this.parser.contador_____2);
 ArrayList<Produccion> list=new ArrayList();
-list.add(tmp);
-try{
+list.add(tmp);   
 String vect[]=this.parser.tablaDeTerminales.get(e).split(":");
 int x=Integer.valueOf(vect[vect.length-1]);
 RESULT=new TablaDeProduccion(list,e,x);
 this.parser.contador_____2++;
 }catch(Exception ex){
+   try{
         this.parser.addError(2,eleft,eright,e,"La produccion no ha sido declarada ");
+   }catch(Exception exx){}
 }
+
 :};
 
 
 B::= B:list C:simbolo
 {:
+try{
 list.add(simbolo);
 RESULT=list;
+}catch(Exception exx){}
+
 :};
 B::= C:e 
 {:
+try{
 ArrayList<SymToken> listado=new ArrayList();
 listado.add(e);
 RESULT=listado;
+}catch(Exception exx){}
+
 :};
 
 C::= ID:e 
 {:
+try{
 if(e.equals(e.toLowerCase())){
 if(!this.parser.tablaDeTerminales.containsKey(e)){
    this.parser.addError(2,eleft,eright,e,"El token terminal no ha sido declarado");
@@ -430,6 +459,8 @@ if(!this.parser.tablaDeTerminales.containsKey(e)){
 }
 }
 RESULT=new SymToken(e);
+}catch(Exception exx){}
+
 :} 
 | EXT_ID:e 
 {:
@@ -811,7 +842,9 @@ RESULT=list;
 }catch(Exception ex){}
 
 :}
-|error;
+|error
+;
+
 informacion::=  informacion:list info:obj PNTCOMA
 {:
 try{
@@ -832,7 +865,8 @@ list.add(new dato(eleft,eright,e));
 RESULT=list;
 :}
 |error PNTCOMA
-|error TWOPOINT;
+
+;
 //--------------------------------------->
 info::= NAME TWOPOINT ID:e 
 {:
@@ -866,6 +900,9 @@ switch(vector[0]){
    break;
    case "nombre":
    RESULT=getInfos(1,vector[1]);
+   break;
+   default:
+     this.parser.addError(1,eleft,eright,e,"Token invalido, no forma parte de la informacion del lenguaje");
    break;
    
 }

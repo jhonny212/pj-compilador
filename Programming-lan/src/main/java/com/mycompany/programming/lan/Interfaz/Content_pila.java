@@ -46,6 +46,8 @@ public class Content_pila extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        acciones = new javax.swing.JTextArea();
 
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
         add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 50, -1, -1));
@@ -119,6 +121,12 @@ public class Content_pila extends javax.swing.JPanel {
             }
         });
         add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 560, -1, -1));
+
+        acciones.setColumns(20);
+        acciones.setRows(5);
+        jScrollPane5.setViewportView(acciones);
+
+        add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(960, 50, -1, 210));
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -127,6 +135,7 @@ public class Content_pila extends javax.swing.JPanel {
             return;
         }
         movimiento x = this.listado.get(contador);
+        this.acciones.setText(x.dato);
         if (x.p1 != null) {
             if (pos1 != 0) {
                 pila1[pos1 - 1].setBackground(null);
@@ -195,6 +204,7 @@ public class Content_pila extends javax.swing.JPanel {
         this.contador--;
 
         movimiento x = this.listado.get(contador);
+        this.acciones.setText(x.dato);
         if (x.p1 != null) {
             if (pos1 != 0) {
                 this.p1.remove(pila1[pos1 - 1]);
@@ -264,6 +274,7 @@ public class Content_pila extends javax.swing.JPanel {
     ArrayList<pilaLALR.movimiento> listado;
 
     public void init(int x, ArrayList<movimiento> mv) {
+        this.acciones.setEditable(false);
         this.listado = mv;
         pila1 = new JButton[x];
         pila2 = new JButton[x];
@@ -275,6 +286,7 @@ public class Content_pila extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea acciones;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -284,6 +296,7 @@ public class Content_pila extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JPanel p1;
     private javax.swing.JPanel p2;
     private javax.swing.JPanel p3;
