@@ -109,6 +109,23 @@ public class Contenido extends javax.swing.JPanel {
         this.scroll.setViewportView(this.tabla);
 
     }
+    public void initPrs(ArrayList<Object[]> list) {
+        bool=true;
+        tabla = new JTable();
+        DefaultTableModel tbl=new  DefaultTableModel();
+        tbl.addColumn("Produccion");
+        tbl.addColumn("Valor");
+        
+        for (int i = list.size()-1; i >=0; i--) {
+            Object object[] = list.get(i);
+            tbl.addRow(object);
+        }
+        this.tabla.setModel(tbl);
+        
+        this.scroll.setViewportView(this.tabla);
+
+    }
+    
     boolean bool=false;
     
     public void addError(ArrayList<ErrorClass.errorProduced> listado){

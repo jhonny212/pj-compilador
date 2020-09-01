@@ -14,6 +14,7 @@ public class inicio {
         f.setVisible(true);
         //generarCompilador();
         //probarCompilador();
+
     }
 
     private static void generarCompilador() {
@@ -30,11 +31,11 @@ public class inicio {
 
     public static void probarCompilador() {
         try {
-           var texto ="nombre : aritmetica ; \n"
+            var texto = "nombre : aritmetica ; \n"
                     + "version  : 2.0  ;\n"
                     + "extension : com ;\n"
                     + ""
-                   + "%% \n"
+                    + "%% \n"
                     + "   public class aritmetica{\n"
                     + "    public int sumar(int x,int y){\n"
                     + "        return x+y;\n"
@@ -60,11 +61,11 @@ public class inicio {
                     + "terminal cp ;\n"
                     + "terminal entero num;\n"
                     + "no terminal entero  S;"
-                   + "no terminal entero  E,T,F ;\n"
+                    + "no terminal entero  E,T,F ;\n"
                     + "%%\n"
                     + "S:: E:e   {} ;\n";
-           
-           texto+=  ""
+            
+            texto += ""
                     + "E:: T:e sum E:e1     {RESULT=sumar(e,e1);};\n"
                     + "E:: T:e             {RESULT=e;};\n"
                     + "T:: F:e  mul T:e1    {RESULT=mul(e,e1);};\n"
@@ -72,6 +73,7 @@ public class inicio {
                     + "F:: num:e           {RESULT=e;};\n"
                     + "F:: ap E:e cp       {RESULT=e;};";
             var scan = new lexer(new BufferedReader(new StringReader(texto)));
+
             var parser = new parser(scan);
 
             try {

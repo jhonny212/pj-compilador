@@ -412,6 +412,7 @@ public class Start_program extends javax.swing.JFrame {
                     this.pila = cmp.moves;
                     if (cmp.compilado) {
                         JOptionPane.showMessageDialog(this, "La cadena fue aceptada");
+                        edit.addTable(cmp.listado);
                     } else {
                         JOptionPane.showMessageDialog(this, "La cadena fue rechazada");
                     }

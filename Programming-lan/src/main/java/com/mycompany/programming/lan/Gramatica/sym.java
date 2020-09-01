@@ -8,46 +8,47 @@ package com.mycompany.programming.lan.Gramatica;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int SPACE = 26;
-  public static final int PNTCOMA = 28;
-  public static final int GUIONBAJO = 35;
+  public static final int SPACE = 27;
+  public static final int PNTCOMA = 29;
+  public static final int GUIONBAJO = 36;
   public static final int LWC = 12;
   public static final int ASTERIS = 2;
-  public static final int AND = 37;
+  public static final int AND = 38;
   public static final int IGUAL = 14;
-  public static final int TWOPOINT = 24;
+  public static final int TWOPOINT = 25;
   public static final int UPC = 11;
   public static final int NUMC = 13;
   public static final int OR = 5;
-  public static final int TIPO_VAR = 34;
+  public static final int TIPO_VAR = 35;
   public static final int SEPARATOR = 15;
-  public static final int BEGIN = 33;
-  public static final int NUM = 38;
+  public static final int BEGIN = 34;
+  public static final int NUM = 39;
   public static final int BOTHPOINT = 17;
   public static final int PLUS = 4;
   public static final int EXT_ID = 18;
-  public static final int ID = 30;
+  public static final int ID = 31;
   public static final int EOF = 0;
-  public static final int SAL_TABL = 25;
+  public static final int SAL_TABL = 26;
   public static final int error = 1;
-  public static final int COMA = 27;
-  public static final int CADENA = 29;
+  public static final int COMA = 28;
+  public static final int CADENA = 30;
   public static final int CIERRACOR = 9;
   public static final int ABREPAREN = 6;
   public static final int NAME = 16;
   public static final int ERROR = 10;
-  public static final int VER = 19;
-  public static final int EXTENS = 21;
+  public static final int VER = 20;
+  public static final int EXTENS = 22;
   public static final int ABRECOR = 8;
-  public static final int NO = 32;
-  public static final int POINT = 36;
-  public static final int AUTHOR = 20;
-  public static final int FLOAT = 39;
-  public static final int CIERRAKEY = 23;
+  public static final int NO = 33;
+  public static final int POINT = 37;
+  public static final int AUTHOR = 21;
+  public static final int FLOAT = 40;
+  public static final int CIERRAKEY = 24;
   public static final int QUESTION = 3;
-  public static final int TERM = 31;
+  public static final int TERM = 32;
+  public static final int LANZAMIENTO = 19;
   public static final int CIERRAPAREN = 7;
-  public static final int ABREKEY = 22;
+  public static final int ABREKEY = 23;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -68,6 +69,7 @@ public class sym {
   "NAME",
   "BOTHPOINT",
   "EXT_ID",
+  "LANZAMIENTO",
   "VER",
   "AUTHOR",
   "EXTENS",

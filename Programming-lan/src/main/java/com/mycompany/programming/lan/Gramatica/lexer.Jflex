@@ -70,10 +70,33 @@ return symbol(sym.AND,new String(yytext()));
 "["({numero}("-")({numero}))"]"                                             {return symbol(sym.NUMC,new String(yytext()));}
 "="                                                                         {return symbol(sym.IGUAL,new String(yytext()));} 
 "%%"                                                                        {return symbol(sym.SEPARATOR,new String(yytext()));} 
-"nombre"                                                                    {return symbol(sym.NAME,new String(yytext()));}   
-"version"                                                                   {return symbol(sym.VER,new String(yytext()));}
-"autor"                                                                     {return symbol(sym.AUTHOR,new String(yytext()));}       
-"extension"                                                                 {return symbol(sym.EXTENS,new String(yytext()));}
+("nombre"){WhiteSpace}*(":")({WhiteSpace}*{Identifier})
+{
+  
+  return symbol(sym.NAME,new String(yytext()));
+}   
+
+("version"){WhiteSpace}*(":")({WhiteSpace}*{numero}+)("."{numero})*       
+{
+ 
+  return symbol(sym.VER,new String(yytext()));
+}
+("autor"){WhiteSpace}*(":")({WhiteSpace}*{Identifier})({WhiteSpace}|{Identifier})*       
+{ 
+  
+  return symbol(sym.AUTHOR,new String(yytext()));
+}
+("extension"){WhiteSpace}*(":")({WhiteSpace}*{Identifier})       
+{
+  
+  return symbol(sym.EXTENS,new String(yytext()));
+}
+("lanzamiento")      
+{
+ 
+  return symbol(sym.LANZAMIENTO,new String(yytext()));
+}
+
 "{"                                                                         {return symbol(sym.ABREKEY,new String(yytext()));}
 "}"                                                                         {return symbol(sym.CIERRAKEY,new String(yytext()));}
 ":"                                                                         {return symbol(sym.TWOPOINT,new String(yytext()));}

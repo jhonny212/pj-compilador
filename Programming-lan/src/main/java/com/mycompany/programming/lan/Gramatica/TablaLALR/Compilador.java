@@ -20,7 +20,7 @@ import java.util.HashMap;
  * @author jhonny
  */
 public class Compilador {
-
+    public final ArrayList<Object[]> listado=new ArrayList<>();
     final Produccion LISTADOOFPRODUCTIONS[];
     final String FILA[];
     final HashMap<Integer, Transicion[]> TRANSICIONES;
@@ -42,7 +42,7 @@ public class Compilador {
         moves = new pilaLALR();
     }
 
-    //String movess="";
+  
     public void init() {
 
         Token tk = lexer.nextToken();
@@ -140,36 +140,46 @@ public class Compilador {
         pila(i, href);
 
     }
-
+   
     void reduce_(int i, Token w) {
         Produccion x = LISTADOOFPRODUCTIONS[i];
         Token tkn = new Token(x.padre);
-        acciones ac;
-        //if (!x.isLambda) {
+        Object ac[]=new Object[2];
             try {
                 switch (x.tipo) {
                     case 0:
                         Object obj=getObjReduc(x.num,x.isLambda);
                         tkn.addValue(obj);
-                        ac=new acciones(x.getPrs(), obj,x.padre);
+                        ac[0]=x.padre+"::"+x.getPrs();
+                        ac[1]= obj!=null ? obj: "{}";
+                        
+                        this.listado.add(ac);
                         break;
                     case 1:
                         String val=getStrReduc(x.num,x.isLambda);
                         tkn.addValue(val);
-                        ac=new acciones(x.getPrs(), val,x.padre);
-                        
+                        ac[0]=x.padre+"::"+x.getPrs();
+                        ac[1]=val;
+                        this.listado.add(ac);
+                      
                         break;
                     case 2:
                         int data=getIntReduc(x.num,x.isLambda);
                         tkn.addValue(data);
-                        ac=new acciones(x.getPrs(), data,x.padre);
+                        ac[0]=x.padre+"::"+x.getPrs();
+                        ac[1]=data;
                         
+                        this.listado.add(ac);
+                      
                         break;
                     case 3:
                         double db=getFloatReduc(x.num,x.isLambda);
                         tkn.addValue(db);
-                        ac=new acciones(x.getPrs(), db,x.padre);
-                        
+                        ac[0]=x.padre+"::"+x.getPrs();
+                        ac[1]=db;
+                       
+                        this.listado.add(ac);
+                      
                         break;
                 }
             } catch (Exception ex) {
@@ -223,7 +233,6 @@ public class Compilador {
             return (int) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println("error en el metodo");
         }
         return -1;
     }
@@ -242,7 +251,6 @@ public class Compilador {
             return m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println("error en el metodo");
         }
         return null;
     }
@@ -262,7 +270,6 @@ public class Compilador {
             resultado = (double) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println("error en el metodo");
         }
         return resultado;
     }
@@ -281,23 +288,10 @@ public class Compilador {
             }
             resultado = (String) m1.invoke(claseCompilada, obj);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            System.out.println("error en el metodo");
         }
         return resultado;
     }
     
-    public class acciones{
-        public final String produccion,dad;
-        public final Object valor;
-        
-        
-        public acciones(String pr,Object val,String dad){
-            this.produccion=pr;
-            this.valor=val;
-            this.dad=dad;
-            System.out.println(dad+"::"+pr+" "+val);
-           
-        }
-    }
+   
 
 }

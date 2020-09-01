@@ -86,7 +86,6 @@ parser code {:
                             int z = (int) y[0];
                             
                             if(c==z){
-                              //System.out.println("Se repite en fila: "+x.fila+"COL: "+x.columna +"con "+a.fila+" TK:"+b[1]);
                               addError(1,x.fila,x.columna,String.valueOf(b[1]),"Se repite con la fila: "+a.fila+" y columna "+a.columna);
       
                             }
@@ -107,9 +106,9 @@ parser code {:
       }
       tablaDeExpresionesRegulares.add(dato);
    }
-   private void create(String path, String autor, String extension, double version, generarAFD e,String c) {
+   private void create(String path, String autor, String extension, double version, generarAFD e,String c,String lanzamiento) {
    try{
-        lenguaje lan = new lenguaje(this.nameProgram, autor, extension, version, c);
+        lenguaje lan = new lenguaje(this.nameProgram, autor, extension, version, c,lanzamiento);
         this.tablaLALR = new TablaDeTransiciones(this.tablaDeProducciones, this.inicio);
         TablaLL1 tbl = new TablaLL1(this.tablaLALR, this.tablaDeTerminales, this.contador_____2);
         tbl.init(path, this.nameProgram);
@@ -143,7 +142,7 @@ parser code {:
 :}
 
 terminal String ASTERIS,QUESTION,PLUS,OR,ABREPAREN,CIERRAPAREN,ABRECOR,CIERRACOR,ERROR;
-terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID;
+terminal String UPC,LWC,NUMC,IGUAL,SEPARATOR,NAME,BOTHPOINT,EXT_ID,LANZAMIENTO;
 terminal String VER,AUTHOR,EXTENS,ABREKEY,CIERRAKEY,TWOPOINT,SAL_TABL,SPACE;
 terminal String COMA,PNTCOMA,CADENA,ID,TERM,NO,BEGIN,TIPO_VAR,GUIONBAJO,POINT,AND;
 terminal Integer NUM;
@@ -183,8 +182,9 @@ dad.addNext(this.parser.listadoDeNodos);
 generarAFD xx=new generarAFD(this.parser.listadoDeNodos,dad);
 xx.init();
 
-String extension="",autor="";
+String extension="",autor="",lanzamiento="";
 double version=0.0;
+
 for(dato x: e1){
    switch (x.tipo()){
       case 1:
@@ -199,6 +199,9 @@ for(dato x: e1){
       case 4:
        extension=x.getValue();
       break;
+      case 5:
+      lanzamiento=x.getValue();
+      break;
    }
 }
 
@@ -207,10 +210,10 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
    String path=f.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios/"+this.parser.nameProgram;
    f=new File(path);
    if(f.exists()){
-      this.parser.create(path, autor, extension, version,xx,c);
+      this.parser.create(path, autor, extension, version,xx,c,lanzamiento);
     }else{
    if(f.mkdir()){
-       this.parser.create(path, autor, extension, version,xx,c);
+       this.parser.create(path, autor, extension, version,xx,c,lanzamiento);
    }
    }
 }else if(this.parser.nameProgram.isEmpty()){
@@ -868,45 +871,62 @@ RESULT=list;
 
 ;
 //--------------------------------------->
-info::= NAME TWOPOINT ID:e 
+info::= NAME:e
 {:
-RESULT=getInfos(1,e);
+String vector[]=e.split(":");
+String tmp=vector[1];
+String x="";
+if(tmp.contains(" ")){
+x=tmp.replaceAll(" ", "");
+tmp=x;
+}
+if(tmp.contains("\n")){
+x=tmp.replaceAll("\n", "");
+tmp=x;
+}
+if(tmp.contains("\t")){
+x=tmp.replaceAll("\t", "");
+}
+RESULT=getInfos(1,x);
 :}
 ;
 
-info::= VER TWOPOINT ver:e 
-{:
-RESULT=getInfos(2,e);
-:};
-
-info::= AUTHOR  TWOPOINT ID:e 
-{:
-RESULT=getInfos(3,e);
-:};
-
-info::= EXTENS  TWOPOINT ID:e 
-{:
-RESULT=getInfos(4,e);
-:}
-| EXT_ID:e 
+info::= VER:e 
 {:
 String vector[]=e.split(":");
-switch(vector[0]){
-   case "autor":
-   RESULT=getInfos(3,vector[1]);
-   break;
-   case "extension":
-   RESULT=getInfos(4,vector[1]);
-   break;
-   case "nombre":
-   RESULT=getInfos(1,vector[1]);
-   break;
-   default:
-     this.parser.addError(1,eleft,eright,e,"Token invalido, no forma parte de la informacion del lenguaje");
-   break;
-   
-}
+RESULT=getInfos(2,vector[1]);
 :};
+
+info::= AUTHOR:e 
+{:
+String vector[]=e.split(":");
+RESULT=getInfos(3,vector[1]);
+:};
+
+info::= EXTENS:e 
+{:
+String vector[]=e.split(":");
+String tmp=vector[1];
+String x="";
+if(tmp.contains(" ")){
+x=tmp.replaceAll(" ", "");
+tmp=x;
+}
+if(tmp.contains("\n")){
+x=tmp.replaceAll("\n", "");
+tmp=x;
+}
+if(tmp.contains("\t")){
+x=tmp.replaceAll("\t", "");
+}
+
+RESULT=getInfos(4,x);
+:}
+| LANZAMIENTO TWOPOINT NUM:e
+{:
+RESULT=getInfos(5,String.valueOf(e));
+:}
+;
 
 //Produccion para detectar la version del lenguaje
 ver::= NUM:e 

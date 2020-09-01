@@ -130,6 +130,12 @@ public class crearEditor {
         tabla.initPrs(celdas);
         Content.add("Producciones", tabla);
     }
+    public void addTable(ArrayList<Object[]> list) {
+        Contenido tabla = new Contenido();
+        tabla.initPrs(list);
+        Content.add("Producciones", tabla);
+    }
+    
 
     File obtenerRuta(String name, String texto) {
         JFileChooser chooser = new JFileChooser();

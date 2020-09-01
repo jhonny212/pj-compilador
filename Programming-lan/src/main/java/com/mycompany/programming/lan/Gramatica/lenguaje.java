@@ -38,16 +38,17 @@ public class lenguaje implements Serializable {
     private static final long serialversionUID
             = 129348938L;
 
-    public String nombre, autor, extension, codjava;
+    public String nombre, autor, extension, codjava,lanzamiento;
     public double version;
     public boolean exito = true;
 
-    public lenguaje(String name, String autor, String ext, double vers, String cod) {
+    public lenguaje(String name, String autor, String ext, double vers, String cod,String ls) {
         this.nombre = name;
         this.autor = autor;
         this.extension = ext;
         this.version = vers;
         this.codjava = cod;
+        this.lanzamiento=ls;
     }
     public HashMap<Integer, Transicion[]> tablaLALR = null;
     public generarAFD tablaAFD = null;
@@ -244,7 +245,11 @@ public class lenguaje implements Serializable {
                 + "Version: " + this.version + "\n";
         param = (this.autor.isEmpty() ? "None" : this.autor);
         data += "Autor: " + param + "\n";
-        data += "Nombre:" + this.Name;
+        data += "Nombre:" + this.Name+"\n";
+        param = (this.lanzamiento.isEmpty() ? "None" : this.lanzamiento);
+        data += "Lanzamiento:" + this.lanzamiento;
+        
+       
 
         return data;
     }
