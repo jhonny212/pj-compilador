@@ -148,6 +148,8 @@ public class Content_pila extends javax.swing.JPanel {
             this.p1.revalidate();
         }
         if (x.p2 != null) {
+            if(x.p2.reduce==-15){
+            }else{
             if (x.p2.reduce <= 0) {
                 if (pos2 != 0) {
                     pila2[pos2 - 1].setBackground(null);
@@ -165,12 +167,13 @@ public class Content_pila extends javax.swing.JPanel {
                 if (pos2 != 0) {
                     pila2[pos2 - 1].setBackground(Color.YELLOW);
                 }
-            }
+            }}
 
             this.p2.repaint();
             this.p2.revalidate();
         }
         if (x.p3 != null) {
+           {
             if (x.p3.reduce <= 0) {
                 if (pos3 != 0) {
                     pila3[pos3 - 1].setBackground(null);
@@ -180,6 +183,7 @@ public class Content_pila extends javax.swing.JPanel {
                 pila3[pos3].setBackground(Color.GREEN);
                 pos3++;
             } else {
+                try{
                 for (int i = 0; i < x.p3.reduce; i++) {
                     this.p3.remove(pila3[pos3 - 1]);
                     x.p3.add(pila3[pos3 - 1].getText());
@@ -189,7 +193,11 @@ public class Content_pila extends javax.swing.JPanel {
                 pila3[pos3].setBackground(Color.GREEN);
                 this.p3.add(pila3[pos3]);
                 pos3++;
+                }catch(Exception ex){}
+                
             }
+            }
+            
 
             this.p3.repaint();
             this.p3.revalidate();
@@ -218,7 +226,8 @@ public class Content_pila extends javax.swing.JPanel {
         }
 
         if (x.p2 != null && pos2 != 0) {
-
+            if(x.p2.reduce==-15){
+            }else{
             if (x.p2.reduce <= 0) {
                 this.p2.remove(pila2[pos2 - 1]);
                 pos2--;
@@ -237,6 +246,8 @@ public class Content_pila extends javax.swing.JPanel {
                 }
                 pila2[pos2 - 1].setBackground(Color.YELLOW);
             }
+            }
+            
 
             this.p2.repaint();
             this.p2.revalidate();

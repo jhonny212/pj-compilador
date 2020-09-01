@@ -18,6 +18,7 @@ public class Token {
         this.token = tkn;
     }
 
+    
     public Token(String tkn) {
 
         this.token = tkn;

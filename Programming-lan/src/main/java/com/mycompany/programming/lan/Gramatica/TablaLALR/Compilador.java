@@ -144,25 +144,41 @@ public class Compilador {
     void reduce_(int i, Token w) {
         Produccion x = LISTADOOFPRODUCTIONS[i];
         Token tkn = new Token(x.padre);
-        if (!x.isLambda) {
+        acciones ac;
+        //if (!x.isLambda) {
             try {
                 switch (x.tipo) {
                     case 0:
-                        tkn.addValue(getObjReduc(x.num));
+                        Object obj=getObjReduc(x.num,x.isLambda);
+                        tkn.addValue(obj);
+                        ac=new acciones(x.getPrs(), obj,x.padre);
                         break;
                     case 1:
-                        tkn.addValue(getStrReduc(x.num));
+                        String val=getStrReduc(x.num,x.isLambda);
+                        tkn.addValue(val);
+                        ac=new acciones(x.getPrs(), val,x.padre);
+                        
                         break;
                     case 2:
-                        tkn.addValue(getIntReduc(x.num));
+                        int data=getIntReduc(x.num,x.isLambda);
+                        tkn.addValue(data);
+                        ac=new acciones(x.getPrs(), data,x.padre);
+                        
                         break;
                     case 3:
-                        tkn.addValue(getFloatReduc(x.num));
+                        double db=getFloatReduc(x.num,x.isLambda);
+                        tkn.addValue(db);
+                        ac=new acciones(x.getPrs(), db,x.padre);
+                        
                         break;
                 }
             } catch (Exception ex) {
+                if(claseCompilada!=null){
+                }
             }
+            
             int cnt = 0;
+            if(!x.isLambda){
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
                 int tm = this.pilaDetokens.size() - 1;
                 int tm2 = this.pilaDetransiciones.size() - 1;
@@ -173,7 +189,11 @@ public class Compilador {
             moves.add(cnt, x.padre, "Reduce: \nremover de pila de tokens, " + cnt + " tokens \n"
                     + "remover de la pila de transiciones  " + cnt + "transiciones  \n"
                     + "agregar a pila de tokens " + x.padre);
-        }
+            }else{
+                moves.add(-15,x.padre,"Agregar a pila de tokens "+x.padre);
+            }
+           
+        //}
 
         this.pilaDetokens.add(tkn);
         int y = this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1);
@@ -183,72 +203,101 @@ public class Compilador {
     }
 
     void goTo_(int i, Token tk) {
-
         moves.add(i, "Go-to: \n Añadir a pila de transiciones " + i);
         this.pilaDetransiciones.add(i);
         pila(this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1), tk);
     }
 
-    int getIntReduc(int x) {
+    int getIntReduc(int x,boolean isLambda) {
 
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
+            if(isLambda){
+            obj[0] = new ArrayList<Token>();
+            }else{
             obj[0] = this.pilaDetokens;
+            }
             return (int) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-
+            System.out.println("error en el metodo");
         }
         return -1;
     }
 
-    Object getObjReduc(int x) {
+    Object getObjReduc(int x,boolean isLambda) {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
+            if(isLambda){
+            obj[0] = new ArrayList<Token>();
+            }else{
             obj[0] = this.pilaDetokens;
+            }
             return m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-
+            System.out.println("error en el metodo");
         }
         return null;
     }
 
-    double getFloatReduc(int x) {
+    double getFloatReduc(int x,boolean isLambda) {
         double resultado = 0.0;
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
+            if(isLambda){
+            obj[0] = new ArrayList<Token>();
+            }else{
             obj[0] = this.pilaDetokens;
+            }
             resultado = (double) m1.invoke(claseCompilada, obj);
 
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-
+            System.out.println("error en el metodo");
         }
         return resultado;
     }
 
-    String getStrReduc(int x) {
+    String getStrReduc(int x,boolean isLambda) {
         String resultado = "";
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
+            if(isLambda){
+            obj[0] = new ArrayList<Token>();
+            }else{
             obj[0] = this.pilaDetokens;
+            }
             resultado = (String) m1.invoke(claseCompilada, obj);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            ex.printStackTrace();
+            System.out.println("error en el metodo");
         }
         return resultado;
+    }
+    
+    public class acciones{
+        public final String produccion,dad;
+        public final Object valor;
+        
+        
+        public acciones(String pr,Object val,String dad){
+            this.produccion=pr;
+            this.valor=val;
+            this.dad=dad;
+            System.out.println(dad+"::"+pr+" "+val);
+           
+        }
     }
 
 }

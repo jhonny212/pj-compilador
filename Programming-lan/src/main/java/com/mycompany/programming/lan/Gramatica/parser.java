@@ -757,7 +757,9 @@ public class parser extends java_cup.runtime.lr_parser {
         tbl.clean();
         tbl.saveDatas(lan, path, this.nameProgram + ".bin");
         tbl.saveDatas(e, path, this.nameProgram + "_AFD.bin");
-        }catch(Exception ex){}
+        }catch(Exception ex){
+          
+        }
    
     }
     public void syntax_error(Symbol s){

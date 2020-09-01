@@ -365,24 +365,20 @@ public class Start_program extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
-    void existe(String name) {
+    boolean existe(String name) {
         int x = this.lans.getComponentCount();
-
-        try {
-            for (int i = 0; i <= x; i++) {
-                try {
-                    JMenuItem m = this.lans.getItem(i);
-                    if (m.getText().equals(name)) {
-                        return;
+         for (int i = 0; i <= x+1; i++) {
+             try{
+             JMenuItem m = this.lans.getItem(i);
+             if (m.getText().equals(name)) {
+                        return true;
                     }
-                } catch (NullPointerException ex) {
-                }
-
-            }
-        } catch (ArrayIndexOutOfBoundsException ex) {
-        }
-
+             }catch(Exception ex){}
+             
+         }
+      
         addMenu(name);
+        return false;
     }
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
 
@@ -409,7 +405,6 @@ public class Start_program extends javax.swing.JFrame {
 
                 if (!cn.bool) {
                     String texto = cn.getTexto();
-
                     analizadorLexico lexer = new analizadorLexico(lenguaje.tablaAFD);
                     lexer.init(texto);
                     Compilador cmp = new Compilador(lexer, lenguaje);
@@ -424,6 +419,7 @@ public class Start_program extends javax.swing.JFrame {
 
             }
         } catch (Exception ex) {
+            System.out.println(ex.getMessage());
 
         }
 

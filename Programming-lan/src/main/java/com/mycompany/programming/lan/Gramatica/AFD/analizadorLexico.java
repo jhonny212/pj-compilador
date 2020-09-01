@@ -18,12 +18,37 @@ public class analizadorLexico {
 
     public analizadorLexico(generarAFD afd) {
         this.afd = afd;
+
     }
 
     String tmp;
 
     public void init(String cadena) {
         this.tmp = cadena;
+
+    }
+
+    public Token nextToken() {
+        Token tk = nextTkn();
+        if (tk.getToken().equals("Error") && !tk.getValue().equals("\n")
+                && !tk.getValue().equals(" ")
+                && !tk.getValue().equals("\t")) {
+            String error = "";
+            while (tk.getToken().equals("Error")) {
+                error += tk.getValue();
+                tk = nextTkn();
+                if (tk.getValue().equals("\n") || tk.getValue().equals("\t")
+                        || tk.getValue().equals(" ")) {
+                    break;
+                }
+            }
+            if (!tk.getToken().equals("$")) {
+                this.tmp = tk.getValue() + tmp;
+            }
+            return new Token(error, "Error");
+
+        }
+        return tk;
     }
 
     Token analizar() {
@@ -57,9 +82,15 @@ public class analizadorLexico {
             }
             return new Token(this.value, this.token);
         }
-        
+
         retorno = new Token(String.valueOf(this.tmp.charAt(0)), "Error");
-        String cadena = tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
+        String cadena = "";
+        try {
+            cadena = tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
+        } catch (java.util.regex.PatternSyntaxException ex) {
+            cadena = tmp.replaceFirst("\\" + String.valueOf(this.tmp.charAt(0)), "");
+        }
+
         this.tmp = cadena;
         return retorno;
     }
@@ -107,24 +138,30 @@ public class analizadorLexico {
 
     private String value, token;
 
-    public Token nextToken() {
+    Token nextTkn() {
         if (this.tmp.isEmpty()) {
             return new Token("$", "$");
         }
         Token tkn = analizar();
-        if (tkn.getToken().equals("Error")) {
-            char error = this.tmp.charAt(0);
-            String t = tmp.replaceFirst(String.valueOf(error), "");
+        /*if (tkn.getToken().equals("Error")) {
+            /*char error = this.tmp.charAt(0);
+            String t;
+            try {
+                t = tmp.replaceFirst(String.valueOf(error), "");
+            } catch (java.util.regex.PatternSyntaxException ex) {
+                t = tmp.replaceFirst("\\" + String.valueOf(error), "");
+            }
+
             this.tmp = t;
-        }
-        if(tkn.getToken().equals("&")){
+        }*/
+        if (tkn.getToken().equals("&")) {
             return nextToken();
         }
+        errorText = "";
         return tkn;
     }
 
-    private boolean hashMoreTokens() {
-        return this.tmp.isEmpty();
-    }
+    private String errorText = "";
+    private int columna = 0, fila = 0;
 
 }
