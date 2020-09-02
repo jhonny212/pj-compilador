@@ -367,16 +367,17 @@ public class Start_program extends javax.swing.JFrame {
 
     boolean existe(String name) {
         int x = this.lans.getComponentCount();
-         for (int i = 0; i <= x+1; i++) {
-             try{
-             JMenuItem m = this.lans.getItem(i);
-             if (m.getText().equals(name)) {
-                        return true;
-                    }
-             }catch(Exception ex){}
-             
-         }
-      
+        for (int i = 0; i <= x + 1; i++) {
+            try {
+                JMenuItem m = this.lans.getItem(i);
+                if (m.getText().equals(name)) {
+                    return true;
+                }
+            } catch (Exception ex) {
+            }
+
+        }
+
         addMenu(name);
         return false;
     }
@@ -410,10 +411,16 @@ public class Start_program extends javax.swing.JFrame {
                     Compilador cmp = new Compilador(lexer, lenguaje);
                     cmp.init();
                     this.pila = cmp.moves;
-                    if (cmp.compilado) {
+                    if (cmp.compilado && lexer.errorList.haveErrors()) {
                         JOptionPane.showMessageDialog(this, "La cadena fue aceptada");
                         edit.addTable(cmp.listado);
                     } else {
+                        if (!lexer.errorList.lexico.isEmpty()) {
+                            edit.addError(lexer.errorList.lexico, "Errores lexico");
+                        }
+                        if (!lexer.errorList.sintactico.isEmpty()) {
+                            edit.addError(lexer.errorList.sintactico, "Errores Sintactico");
+                        }
                         JOptionPane.showMessageDialog(this, "La cadena fue rechazada");
                     }
                 }
@@ -452,13 +459,14 @@ public class Start_program extends javax.swing.JFrame {
                 JMenuItem m = this.lans.getItem(y);
                 this.lans.remove(y);
                 File carpeta = new File(path + "/" + m.getText());
-                try{
-                File[] files = carpeta.listFiles();
-                for (File x : files) {
-                    x.delete();
+                try {
+                    File[] files = carpeta.listFiles();
+                    for (File x : files) {
+                        x.delete();
+                    }
+                } catch (Exception ex) {
                 }
-                }catch(Exception ex){}
-                
+
                 carpeta.delete();
                 if (m.getText().equals(this.Lanselected.getText())) {
                     this.lenguaje = null;

@@ -20,7 +20,8 @@ import java.util.HashMap;
  * @author jhonny
  */
 public class Compilador {
-    public final ArrayList<Object[]> listado=new ArrayList<>();
+
+    public final ArrayList<Object[]> listado = new ArrayList<>();
     final Produccion LISTADOOFPRODUCTIONS[];
     final String FILA[];
     final HashMap<Integer, Transicion[]> TRANSICIONES;
@@ -42,7 +43,6 @@ public class Compilador {
         moves = new pilaLALR();
     }
 
-  
     public void init() {
 
         Token tk = lexer.nextToken();
@@ -60,10 +60,13 @@ public class Compilador {
     private void pila(int i, Token tk) {
 
         int busqueda[] = buscar(i, tk.getToken());
-        /*while(busqueda==null && !this.lexer.hashMore() && !tk.getToken().equals("$")){
-            tk=this.lexer.nextToken();
-            busqueda=buscar(i, tk.getValue());
-        }*/
+        if (busqueda == null && !tk.getToken().equals("$")) {
+            this.lexer.errorList.AddError(1, tk.getF(), tk.getC()+1, tk.getValue());
+            while(busqueda==null && !lexer.hashMore()){
+            tk=lexer.nextToken();
+            busqueda=buscar(i, tk.getToken());
+            }
+        }
         if (busqueda != null) {
             switch (busqueda[1]) {
                 case 0:
@@ -81,11 +84,15 @@ public class Compilador {
 
     private void pila(int i, Token tk, Token prev) {
         int busqueda[] = null;
-        busqueda=buscar(i, tk.getToken());
-         /*while(busqueda==null && !this.lexer.hashMore() && !tk.getToken().equals("$")){
-            tk=this.lexer.nextToken();
-            busqueda=buscar(i, tk.getValue());
-        }*/
+        busqueda = buscar(i, tk.getToken());
+      
+        if (busqueda == null && !tk.getToken().equals("$")) {
+            this.lexer.errorList.AddError(1, tk.getF(), tk.getC()+1, tk.getValue());
+            while(busqueda==null && !lexer.hashMore()){
+            tk=lexer.nextToken();
+            busqueda=buscar(i, tk.getToken());
+            }
+        }
         if (busqueda != null) {
             switch (busqueda[1]) {
                 case 0:
@@ -131,8 +138,7 @@ public class Compilador {
             }
 
         }
-        
-        
+
         return null;
     }
 
@@ -149,54 +155,54 @@ public class Compilador {
         pila(i, href);
 
     }
-   
+
     void reduce_(int i, Token w) {
         Produccion x = LISTADOOFPRODUCTIONS[i];
         Token tkn = new Token(x.padre);
-        Object ac[]=new Object[2];
-            try {
-                switch (x.tipo) {
-                    case 0:
-                        Object obj=getObjReduc(x.num,x.isLambda);
-                        tkn.addValue(obj);
-                        ac[0]=x.padre+"::"+x.getPrs();
-                        ac[1]= obj!=null ? obj: "{}";
-                        
-                        this.listado.add(ac);
-                        break;
-                    case 1:
-                        String val=getStrReduc(x.num,x.isLambda);
-                        tkn.addValue(val);
-                        ac[0]=x.padre+"::"+x.getPrs();
-                        ac[1]=val;
-                        this.listado.add(ac);
-                      
-                        break;
-                    case 2:
-                        int data=getIntReduc(x.num,x.isLambda);
-                        tkn.addValue(data);
-                        ac[0]=x.padre+"::"+x.getPrs();
-                        ac[1]=data;
-                        
-                        this.listado.add(ac);
-                      
-                        break;
-                    case 3:
-                        double db=getFloatReduc(x.num,x.isLambda);
-                        tkn.addValue(db);
-                        ac[0]=x.padre+"::"+x.getPrs();
-                        ac[1]=db;
-                       
-                        this.listado.add(ac);
-                      
-                        break;
-                }
-            } catch (Exception ex) {
-                if(claseCompilada!=null){
-                }
+        Object ac[] = new Object[2];
+        try {
+            switch (x.tipo) {
+                case 0:
+                    Object obj = getObjReduc(x.num, x.isLambda);
+                    tkn.addValue(obj);
+                    ac[0] = x.padre + "::" + x.getPrs();
+                    ac[1] = obj != null ? obj : "{}";
+
+                    this.listado.add(ac);
+                    break;
+                case 1:
+                    String val = getStrReduc(x.num, x.isLambda);
+                    tkn.addValue(val);
+                    ac[0] = x.padre + "::" + x.getPrs();
+                    ac[1] = val;
+                    this.listado.add(ac);
+
+                    break;
+                case 2:
+                    int data = getIntReduc(x.num, x.isLambda);
+                    tkn.addValue(data);
+                    ac[0] = x.padre + "::" + x.getPrs();
+                    ac[1] = data;
+
+                    this.listado.add(ac);
+
+                    break;
+                case 3:
+                    double db = getFloatReduc(x.num, x.isLambda);
+                    tkn.addValue(db);
+                    ac[0] = x.padre + "::" + x.getPrs();
+                    ac[1] = db;
+
+                    this.listado.add(ac);
+
+                    break;
             }
-            int cnt = 0;
-            if(!x.isLambda){
+        } catch (Exception ex) {
+            if (claseCompilada != null) {
+            }
+        }
+        int cnt = 0;
+        if (!x.isLambda) {
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
                 int tm = this.pilaDetokens.size() - 1;
                 int tm2 = this.pilaDetransiciones.size() - 1;
@@ -207,9 +213,9 @@ public class Compilador {
             moves.add(cnt, x.padre, "Reduce: \nremover de pila de tokens, " + cnt + " tokens \n"
                     + "remover de la pila de transiciones  " + cnt + "transiciones  \n"
                     + "agregar a pila de tokens " + x.padre);
-            }else{
-                moves.add(-15,x.padre,"Agregar a pila de tokens "+x.padre);
-            }
+        } else {
+            moves.add(-15, x.padre, "Agregar a pila de tokens " + x.padre);
+        }
         this.pilaDetokens.add(tkn);
         int y = this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1);
         Token z = this.pilaDetokens.get(this.pilaDetokens.size() - 1);
@@ -223,17 +229,17 @@ public class Compilador {
         pila(this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1), tk);
     }
 
-    int getIntReduc(int x,boolean isLambda) {
+    int getIntReduc(int x, boolean isLambda) {
 
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
-            if(isLambda){
-            obj[0] = new ArrayList<Token>();
-            }else{
-            obj[0] = this.pilaDetokens;
+            if (isLambda) {
+                obj[0] = new ArrayList<Token>();
+            } else {
+                obj[0] = this.pilaDetokens;
             }
             return (int) m1.invoke(claseCompilada, obj);
 
@@ -242,16 +248,16 @@ public class Compilador {
         return -1;
     }
 
-    Object getObjReduc(int x,boolean isLambda) {
+    Object getObjReduc(int x, boolean isLambda) {
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
-            if(isLambda){
-            obj[0] = new ArrayList<Token>();
-            }else{
-            obj[0] = this.pilaDetokens;
+            if (isLambda) {
+                obj[0] = new ArrayList<Token>();
+            } else {
+                obj[0] = this.pilaDetokens;
             }
             return m1.invoke(claseCompilada, obj);
 
@@ -260,17 +266,17 @@ public class Compilador {
         return null;
     }
 
-    double getFloatReduc(int x,boolean isLambda) {
+    double getFloatReduc(int x, boolean isLambda) {
         double resultado = 0.0;
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
-            if(isLambda){
-            obj[0] = new ArrayList<Token>();
-            }else{
-            obj[0] = this.pilaDetokens;
+            if (isLambda) {
+                obj[0] = new ArrayList<Token>();
+            } else {
+                obj[0] = this.pilaDetokens;
             }
             resultado = (double) m1.invoke(claseCompilada, obj);
 
@@ -279,27 +285,26 @@ public class Compilador {
         return resultado;
     }
 
-    String getStrReduc(int x,boolean isLambda) {
+    String getStrReduc(int x, boolean isLambda) {
         String resultado = "";
         try {
             Class partypes[] = new Class[1];
             partypes[0] = ArrayList.class;
             Method m1 = claseCompilada.getClass().getDeclaredMethod("method_$" + x, partypes);
             Object obj[] = new Object[1];
-            if(isLambda){
-            obj[0] = new ArrayList<Token>();
-            }else{
-            obj[0] = this.pilaDetokens;
+            if (isLambda) {
+                obj[0] = new ArrayList<Token>();
+            } else {
+                obj[0] = this.pilaDetokens;
             }
             resultado = (String) m1.invoke(claseCompilada, obj);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
         }
         return resultado;
     }
-    
-    void recuperarDeError(){
-        
+
+    void recuperarDeError() {
+
     }
-   
 
 }

@@ -7,6 +7,7 @@ package com.mycompany.programming.lan.Gramatica.AFD;
 
 import com.mycompany.programming.lan.Gramatica.AFD.generarAFD.estado;
 import com.mycompany.programming.lan.Gramatica.AFD.generarAFD.referencia;
+import com.mycompany.programming.lan.Gramatica.Errores.ErrorClass;
 
 /**
  *
@@ -18,7 +19,7 @@ public class analizadorLexico {
 
     public analizadorLexico(generarAFD afd) {
         this.afd = afd;
-
+        errorList=new ErrorClass();
     }
 
     String tmp;
@@ -49,12 +50,13 @@ public class analizadorLexico {
             }
             tk=new Token(error, "Error");
             tk.add(fila, columna-tk.getValue().length());
+            this.errorList.AddError(0, tk.getF()-1, tk.getC(), tk.getValue());
             return tk;
 
         }
         if (tk.getValue().contains("\n")) {
             this.fila++;
-            this.columna = 0;
+            this.columna = 1;
         }else{
             this.columna+=tk.getValue().length();
         }
@@ -159,7 +161,6 @@ public class analizadorLexico {
     private String value, token;
 
     Token nextTkn() {
-
         if (this.tmp.isEmpty()) {
             return new Token("$", "$");
         }
@@ -167,8 +168,9 @@ public class analizadorLexico {
         return tkn;
     }
 
-    private int columna = 0, fila = 1;
+    private int columna = 1, fila = 1;
     public boolean hashMore(){
     return this.tmp.isEmpty();
     }
+    public final ErrorClass errorList;
 }
