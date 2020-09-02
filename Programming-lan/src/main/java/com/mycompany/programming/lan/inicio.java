@@ -10,10 +10,10 @@ import java.io.StringReader;
 public class inicio {
 
     public static void main(String[] args) {
-        //Start_program f = new Start_program();
-        //f.setVisible(true);
+        Start_program f = new Start_program();
+        f.setVisible(true);
+
         //probarCompilador();
-      
     }
 
     private static void generarCompilador() {
@@ -56,33 +56,46 @@ public class inicio {
                     + "bool= \"true\"|\"false\";\n"
                     + "op= \">\";\n"
                     + "and= \"&\";\n"
-                    + "or= \"||\";\n"
+                    + "or= \"|\";\n"
                     + "id= [a-z]+;\n"
                     + "&= [\\n|\\t|\\b] ;\n"
                     + "%%\n"
-                    + "terminal sum,mul,and,or,bool,id,op;"
+                    + "terminal sum,mul,and,or,id,op;"
+                    + "terminal cadena bool;"
                     + "terminal ap  ;"
                     + "terminal cp ;\n"
-                    + "terminal  num;\n"
-                    + "no terminal  E,T,F,S,X,Y,Z;"
-            
+                    + "terminal entero num;\n"
+                    + "no terminal cadena E,T,F,Z;"
+                    + "no terminal entero S,X,Y;"
                     + "%%\n";
-            
-            texto +=  "E:: E and T;"
-                    + "E:: T;"
-                    + "T:: T or F;"
-                    + "T:: F;"
-                    + "F:: bool;"
-                    + "F:: ap E cp;"
-                    + "F:: S op S;"
-                    + "S:: S sum X;"
-                    + "S:: X;"
-                    + "X:: X mul Y;"
-                    + "X:: Y;"
-                    + "Y:: num;"
-                    + "Y:: id;"
-                    + "Y:: ap S cp;";
-            
+
+            texto += "Z:: E:e {System.out.println(\"valor \"+e);};\n"
+                    + "E:: E:e and T:e1 \n"
+                    + "{"
+                    + "boolean x1=Boolean.valueOf(e);\n"
+                    + "boolean x2=Boolean.valueOf(e1);\n"
+                    + "RESULT=String.valueOf((x1&&x2));\n"
+                    + "}"
+                    + ";\n"
+                    + "E:: T:e {RESULT=e;};\n"
+                    + "T:: T:e or F:e1 \n"
+                    + "{"
+                    + "boolean x1=Boolean.valueOf(e);\n"
+                    + "boolean x2=Boolean.valueOf(e1);\n"
+                    + "RESULT=String.valueOf((x1||x2));\n"
+                    + "}\n"
+                    + "; "
+                    + "T:: F:e {RESULT=e;};\n"
+                    + "F:: bool:e {RESULT=e;} ;\n "
+                    + "F:: ap E:e cp {RESULT=e;} ;\n"
+                    + "F:: S:e op S:e1 {RESULT=String.valueOf((e>e1));} ;\n"
+                    + "S:: S:e sum X:e1 {RESULT=e+e1;};\n"
+                    + "S:: X:e {RESULT=e;};\n"
+                    + "X:: X:e mul Y:e1 {RESULT=e*e1;};\n"
+                    + "X:: Y:e {RESULT=e;};\n"
+                    + "Y:: num:e {RESULT=e;};\n"
+                    + "Y:: ap S:e cp {RESULT=e;};\n";
+
             var scan = new lexer(new BufferedReader(new StringReader(texto)));
 
             var parser = new parser(scan);

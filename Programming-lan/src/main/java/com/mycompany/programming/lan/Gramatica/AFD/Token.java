@@ -17,6 +17,18 @@ public class Token {
         this.value = val;
         this.token = tkn;
     }
+    public void add(int f,int c){
+        this.fila=f;
+        this.columna=c;
+    }
+    public int getF(){
+    return this.fila;
+    }
+    public int getC(){
+    return this.columna;
+    }
+    
+    private int fila,columna;
 
     
     public Token(String tkn) {

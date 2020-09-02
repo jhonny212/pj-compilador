@@ -25,10 +25,7 @@ public class analizadorLexico {
 
     public void init(String cadena) {
         this.tmp = cadena;
-        while(!this.tmp.isEmpty()){
-            Token tk=nextToken();
-            System.out.println(tk.getToken()+" "+tk.getValue());
-        }
+        
         
     }
 
@@ -50,7 +47,9 @@ public class analizadorLexico {
             if (!tk.getToken().equals("$")) {
                 this.tmp = tk.getValue() + tmp;
             }
-            return new Token(error, "Error");
+            tk=new Token(error, "Error");
+            tk.add(fila, columna-tk.getValue().length());
+            return tk;
 
         }
         if (tk.getValue().contains("\n")) {
@@ -62,7 +61,7 @@ public class analizadorLexico {
         if (tk.getToken().equals("&")) {
             return nextToken();
         }
-
+         tk.add(fila, columna-tk.getValue().length());
         return tk;
     }
 
@@ -86,6 +85,9 @@ public class analizadorLexico {
             String tmps = "";
             try {
                 tmps = tmp.replaceFirst(refer.getVal(), "");
+                if(tmp.equals(tmps)){
+                tmps=tmp.replaceFirst("\\"+refer.getVal(), "");
+                }
             } catch (java.util.regex.PatternSyntaxException ex) {
                 tmps = tmp.replaceFirst("\\" + refer.getVal(), "");
             }
@@ -166,5 +168,7 @@ public class analizadorLexico {
     }
 
     private int columna = 0, fila = 1;
-
+    public boolean hashMore(){
+    return this.tmp.isEmpty();
+    }
 }

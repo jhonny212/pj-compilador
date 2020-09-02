@@ -60,6 +60,10 @@ public class Compilador {
     private void pila(int i, Token tk) {
 
         int busqueda[] = buscar(i, tk.getToken());
+        /*while(busqueda==null && !this.lexer.hashMore() && !tk.getToken().equals("$")){
+            tk=this.lexer.nextToken();
+            busqueda=buscar(i, tk.getValue());
+        }*/
         if (busqueda != null) {
             switch (busqueda[1]) {
                 case 0:
@@ -78,7 +82,7 @@ public class Compilador {
     private void pila(int i, Token tk, Token prev) {
         int busqueda[] = null;
         busqueda=buscar(i, tk.getToken());
-        /*while(busqueda==null){
+         /*while(busqueda==null && !this.lexer.hashMore() && !tk.getToken().equals("$")){
             tk=this.lexer.nextToken();
             busqueda=buscar(i, tk.getValue());
         }*/

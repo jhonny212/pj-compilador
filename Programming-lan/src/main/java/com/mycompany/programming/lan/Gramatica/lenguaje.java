@@ -217,9 +217,8 @@ public class lenguaje implements Serializable {
     String Name = "";
 
     public void compilar() {
-
         String clase = createStringClass();
-
+        
         try {
 
             JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

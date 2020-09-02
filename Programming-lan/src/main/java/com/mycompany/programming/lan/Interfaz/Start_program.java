@@ -407,7 +407,7 @@ public class Start_program extends javax.swing.JFrame {
                     String texto = cn.getTexto();
                     analizadorLexico lexer = new analizadorLexico(lenguaje.tablaAFD);
                     lexer.init(texto);
-                    /*Compilador cmp = new Compilador(lexer, lenguaje);
+                    Compilador cmp = new Compilador(lexer, lenguaje);
                     cmp.init();
                     this.pila = cmp.moves;
                     if (cmp.compilado) {
@@ -415,7 +415,7 @@ public class Start_program extends javax.swing.JFrame {
                         edit.addTable(cmp.listado);
                     } else {
                         JOptionPane.showMessageDialog(this, "La cadena fue rechazada");
-                    }*/
+                    }
                 }
 
             }
