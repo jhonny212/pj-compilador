@@ -53,16 +53,17 @@ public class crearEditor {
             if (opc == 0) {
                 if (cnt.f == null) {
                     if (!cnt.name.isBlank()) {
-                        obtenerRuta(cnt.name, cnt.getTexto());
+                        File file=obtenerRuta(cnt.name, cnt.getTexto());
+                        if(file==null){
+                            return;
+                        }
                     } else {
                         JOptionPane.showMessageDialog(Content.getParent(), "No se pudo guardar, intente de nuevo");
                     }
                 } else {
                     write(cnt.f, cnt.getTexto());
                 }
-            } else {
-
-            }
+            } 
             Content.remove(Content.getSelectedIndex());
 
         } catch (IndexOutOfBoundsException ex) {

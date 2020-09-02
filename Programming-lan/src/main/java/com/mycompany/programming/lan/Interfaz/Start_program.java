@@ -407,7 +407,7 @@ public class Start_program extends javax.swing.JFrame {
                     String texto = cn.getTexto();
                     analizadorLexico lexer = new analizadorLexico(lenguaje.tablaAFD);
                     lexer.init(texto);
-                    Compilador cmp = new Compilador(lexer, lenguaje);
+                    /*Compilador cmp = new Compilador(lexer, lenguaje);
                     cmp.init();
                     this.pila = cmp.moves;
                     if (cmp.compilado) {
@@ -415,7 +415,7 @@ public class Start_program extends javax.swing.JFrame {
                         edit.addTable(cmp.listado);
                     } else {
                         JOptionPane.showMessageDialog(this, "La cadena fue rechazada");
-                    }
+                    }*/
                 }
 
             }
@@ -452,10 +452,13 @@ public class Start_program extends javax.swing.JFrame {
                 JMenuItem m = this.lans.getItem(y);
                 this.lans.remove(y);
                 File carpeta = new File(path + "/" + m.getText());
+                try{
                 File[] files = carpeta.listFiles();
                 for (File x : files) {
                     x.delete();
                 }
+                }catch(Exception ex){}
+                
                 carpeta.delete();
                 if (m.getText().equals(this.Lanselected.getText())) {
                     this.lenguaje = null;

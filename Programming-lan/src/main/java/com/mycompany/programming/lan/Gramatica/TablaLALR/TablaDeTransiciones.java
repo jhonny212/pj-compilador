@@ -28,13 +28,13 @@ public final class TablaDeTransiciones {
 
     void GenerarPrimeros() {
         for (TablaDeProduccion x : href.values()) {
-            if(x!=null){
-            if (!Contains(x.produccion)) {
-                isLambda = false;
-                first(x, x);
-                x.isLambda = isLambda;
-                pila.clear();
-            }
+            if (x != null) {
+                if (!Contains(x.produccion)) {
+                    isLambda = false;
+                    first(x, x);
+                    x.isLambda = isLambda;
+                    pila.clear();
+                }
             }
         }
 
@@ -78,7 +78,7 @@ public final class TablaDeTransiciones {
                                 } else {
                                     contador++;
                                     generarSubtabla(x, contador, nextoken);
-                                     this.tablasLL1.get(contador).hrefTablas = this.posicionHref;
+                                    this.tablasLL1.get(contador).hrefTablas = this.posicionHref;
 
                                 }
                             } else {
@@ -88,13 +88,16 @@ public final class TablaDeTransiciones {
                         } else {
                             int f = ingresados.get(nextoken);
                             x.transicion = f;
-                            boolean v = this.tablasLL1.get(f).checkeado;
+
+                            Subtabla subt = this.tablasLL1.get(f);
+
+                            boolean v = subt.checkeado;
                             if (!v) {
                                 FilaSub tmp = new FilaSub(x.producionData, x.padre);
                                 tmp.siguientes = x.siguientes;
                                 tmp.posPunto = x.posPunto + 1;
-                                this.tablasLL1.get(f).listado.add(tmp);
-                                generar(this.tablasLL1.get(f), tmp);
+                                subt.listado.add(tmp);
+                                generar(subt, tmp);
                             }
                         }
                     }
@@ -126,16 +129,16 @@ public final class TablaDeTransiciones {
     int existSub(String key, String sig) {
         int retorno = -1;
         posicionHref = 0;
-        boolean v=true;
-        for (int i = this.tablasLL1.size()-1; i >=0 ; i--) {
+        boolean v = true;
+        for (int i = this.tablasLL1.size() - 1; i >= 0; i--) {
             if (this.tablasLL1.get(i).getLLave().equals(key)) {
                 Subtabla w = this.tablasLL1.get(i);
                 if (w.listado.get(0).siguientes.equals(sig)) {
                     return i;
                 } else {
-                    if(v){
-                    posicionHref = i;
-                    v=false;
+                    if (v) {
+                        posicionHref = i;
+                        v = false;
                     }
                     retorno = -2;
                 }
@@ -202,6 +205,7 @@ public final class TablaDeTransiciones {
 
     //Crear el inicio de la tabla
     void generar(Subtabla sub, FilaSub x) {
+
         if (x.haveNext()) {
             String dd = x.getNext();
             if (!dd.equals("$")) {

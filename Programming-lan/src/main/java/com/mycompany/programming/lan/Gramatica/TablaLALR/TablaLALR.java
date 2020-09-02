@@ -15,7 +15,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
 /**
  *
  * @author jhonny
@@ -26,16 +25,17 @@ public class TablaLALR {
     private ArrayList<Subtabla> tablasLL1 = null;
     final int columnas;
     final int filas;
-    boolean exit=true;
-    TablaLALR(Transicion[][] trans, ArrayList<Subtabla> tablasLL1, int columnas, int filas,boolean exit) {
+    boolean exit = true;
+
+    TablaLALR(Transicion[][] trans, ArrayList<Subtabla> tablasLL1, int columnas, int filas, boolean exit) {
         this.trans = trans;
         this.tablasLL1 = tablasLL1;
         this.columnas = columnas;
         this.filas = filas;
-        this.exit=exit;
+        this.exit = exit;
     }
 
-    public void init(String path,String nombre) {
+    public void init(String path, String nombre) {
         // print(path,"tablaLL1.csv");
         for (int i = tablasLL1.size() - 1; i >= 0; i--) {
             Subtabla sub = tablasLL1.get(i);
@@ -50,17 +50,17 @@ public class TablaLALR {
                 }
             }
         }
-        
-        saveDatas(print(path,nombre),path, nombre+"_tablaLALR.bin");
+
+        saveDatas(print(path, nombre), path, nombre + "_tablaLALR.bin");
         this.tablasLL1.clear();
         this.tablasLL1 = null;
 
     }
-   
+
     boolean unirTablas(int i, int j, int k) {
         Transicion t1 = trans[i][k];
         Transicion t2 = trans[j][k];
-        //System.out.println("COMPARANDO TABLAS I1 "+i+" I2 "+j);
+
         if (t1 == null && t2 == null) {
             if (unirCeldas(k + 1)) {
                 return unirTablas(i, j, k + 1);
@@ -70,6 +70,7 @@ public class TablaLALR {
             }
 
         } else if (t1 == null && t2 != null) {
+
             if (unirCeldas(k + 1)) {
                 boolean v = unirTablas(i, j, k + 1);
                 if (v) {
@@ -78,6 +79,7 @@ public class TablaLALR {
                 return v;
 
             } else {
+                 trans[i][k] = new Transicion(t2.tk, t2.tipo, t2.transicion);
                 return true;
             }
 
@@ -92,8 +94,8 @@ public class TablaLALR {
             if (t1.tipo.equals(t2.tipo)) {
                 int x1 = t1.transicion;
                 int x2 = t2.transicion;
-                
-                if ((x1 == x2 || (x1==i && x2==j))) {
+
+                if ((x1 == x2 || (x1 == i && x2 == j))) {
                     if (unirCeldas(k + 1)) {
                         return unirTablas(i, j, k + 1);
                     } else {
@@ -120,14 +122,14 @@ public class TablaLALR {
                             //System.out.println(":"+i+":"+j+"ENTRO en "+x1+" "+x2+ "en pos "+this.tablasLL1.get(x2).numOfColumn);
                             this.tablasLL1.get(j).numOfColumn=k+1;
                             boolean v = unirTablas(x1, x2, this.tablasLL1.get(x2).numOfColumn);
-                            if(v){
+                            if (v) {
                                 if (unirCeldas(k + 1)) {
                                     return unirTablas(i, j, k + 1);
                                 } else {
                                     return true;
                                 }
-                            }else{
-                            return v;
+                            } else {
+                                return v;
                             }
                         }
                     }
@@ -162,7 +164,7 @@ public class TablaLALR {
 
     }
 
-    HashMap<Integer, Transicion[]> print(String path,String nombre) {
+    HashMap<Integer, Transicion[]> print(String path, String nombre) {
         HashMap<Integer, Transicion[]> transicions = new HashMap<>();
         String csv = "";
         for (int i = 0; i < filas; i++) {
@@ -186,23 +188,23 @@ public class TablaLALR {
             transicions.put(i, x);
             csv += datas + "\n";
         }
-        write(new File(path+"/"+nombre+"_LALR.csv"), csv);
+        write(new File(path + "/" + nombre + "_LALR.csv"), csv);
         return transicions;
     }
 
-    public void saveDatas(Object obj,String path, String name) {
-        if(exit){
-        try {
-            FileOutputStream file = new FileOutputStream(path+"/"+name);
-            ObjectOutputStream out = new ObjectOutputStream(file);
-            out.writeObject(obj);
-            out.close();
-            file.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println("no");
-        } catch (IOException ex) {
-            System.out.println("no");
-        }
+    public void saveDatas(Object obj, String path, String name) {
+        if (exit) {
+            try {
+                FileOutputStream file = new FileOutputStream(path + "/" + name);
+                ObjectOutputStream out = new ObjectOutputStream(file);
+                out.writeObject(obj);
+                out.close();
+                file.close();
+            } catch (FileNotFoundException ex) {
+                System.out.println("no");
+            } catch (IOException ex) {
+                System.out.println("no");
+            }
         }
     }
 

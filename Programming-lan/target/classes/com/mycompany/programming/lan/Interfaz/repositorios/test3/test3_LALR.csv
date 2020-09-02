@@ -1,0 +1,26 @@
+No.0,Switch:3, , , , , , , , ,Go-to:1,Go-to:2, , , , , , , 
+No.1, , , , , , , , , , , , , , , , , ,ACEPTACION:-1
+No.2, , , , , , , , , , , , , , , , , ,reduce:0
+No.3, , ,Switch:4, , , , , , , , , , , , , , , 
+No.4, , , ,Switch:9,Switch:8, , , ,Switch:7, , ,Go-to:5,Go-to:6, , , , , 
+No.5, , , , , , , , , , , , , , , , , ,reduce:1
+No.6, , , , , ,Switch:10, , , , , , , , , , , , 
+No.7, , , , , ,Switch:11, , , , , , , , , , , , 
+No.8, , , , , ,reduce:4, , , , , , , , , , , , 
+No.9, , , , , ,reduce:5, , , , , , , , , , , , 
+No.10, ,Switch:15, ,Switch:9,Switch:8, , , ,Switch:7, , ,Go-to:14,Go-to:6,Go-to:12,Go-to:13, , , 
+No.11, ,Switch:19, ,Switch:9,Switch:8, , , ,Switch:7, , ,Go-to:20,Go-to:6, , ,Go-to:18, , 
+No.12, , , , , , ,Switch:23, , , , , , , , , , , 
+No.13, , , , , , ,reduce:11,Switch:25, , , , , , , , ,Go-to:24, 
+No.14, , , , , , ,reduce:7,reduce:7, , , , , , , , , , 
+No.15, , , , , , ,reduce:8,reduce:8, , , , , , , , , , 
+No.18, , , , , , , ,Switch:28, , , , , , , , , , 
+No.19, , , , , , ,reduce:9,reduce:9, , , , , , , , , , 
+No.20, , , , , , ,reduce:10,reduce:10, , , , , , , , , , 
+No.23, , , , , , ,reduce:2,reduce:2, , , , , , , , , ,reduce:2
+No.24, , , , , , ,reduce:6, , , , , , , , , , , 
+No.25, ,Switch:15, ,Switch:9,Switch:8, , , ,Switch:7, , ,Go-to:14,Go-to:6,Go-to:31,Go-to:13, , , 
+No.28, ,Switch:19, ,Switch:9,Switch:8, , , ,Switch:7, , ,Go-to:20,Go-to:6, , ,Go-to:34, , 
+No.31, , , , , , ,reduce:12, , , , , , , , , , , 
+No.34, , , , , , ,Switch:43, , , , , , , , , , , 
+No.43, , , , , , ,reduce:3,reduce:3, , , , , , , , , ,reduce:3

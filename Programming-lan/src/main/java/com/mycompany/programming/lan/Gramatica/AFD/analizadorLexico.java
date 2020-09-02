@@ -25,7 +25,11 @@ public class analizadorLexico {
 
     public void init(String cadena) {
         this.tmp = cadena;
-
+        while(!this.tmp.isEmpty()){
+            Token tk=nextToken();
+            System.out.println(tk.getToken()+" "+tk.getValue());
+        }
+        
     }
 
     public Token nextToken() {
@@ -42,12 +46,23 @@ public class analizadorLexico {
                     break;
                 }
             }
+
             if (!tk.getToken().equals("$")) {
                 this.tmp = tk.getValue() + tmp;
             }
             return new Token(error, "Error");
 
         }
+        if (tk.getValue().contains("\n")) {
+            this.fila++;
+            this.columna = 0;
+        }else{
+            this.columna+=tk.getValue().length();
+        }
+        if (tk.getToken().equals("&")) {
+            return nextToken();
+        }
+
         return tk;
     }
 
@@ -86,7 +101,10 @@ public class analizadorLexico {
         retorno = new Token(String.valueOf(this.tmp.charAt(0)), "Error");
         String cadena = "";
         try {
-            cadena = tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
+            cadena = this.tmp.replaceFirst(String.valueOf(this.tmp.charAt(0)), "");
+            if (cadena.equals(this.tmp)) {
+                cadena = this.tmp.replaceFirst(String.valueOf("\\" + this.tmp.charAt(0)), "");
+            }
         } catch (java.util.regex.PatternSyntaxException ex) {
             cadena = tmp.replaceFirst("\\" + String.valueOf(this.tmp.charAt(0)), "");
         }
@@ -139,29 +157,14 @@ public class analizadorLexico {
     private String value, token;
 
     Token nextTkn() {
+
         if (this.tmp.isEmpty()) {
             return new Token("$", "$");
         }
         Token tkn = analizar();
-        /*if (tkn.getToken().equals("Error")) {
-            /*char error = this.tmp.charAt(0);
-            String t;
-            try {
-                t = tmp.replaceFirst(String.valueOf(error), "");
-            } catch (java.util.regex.PatternSyntaxException ex) {
-                t = tmp.replaceFirst("\\" + String.valueOf(error), "");
-            }
-
-            this.tmp = t;
-        }*/
-        if (tkn.getToken().equals("&")) {
-            return nextToken();
-        }
-        errorText = "";
         return tkn;
     }
 
-    private String errorText = "";
-    private int columna = 0, fila = 0;
+    private int columna = 0, fila = 1;
 
 }

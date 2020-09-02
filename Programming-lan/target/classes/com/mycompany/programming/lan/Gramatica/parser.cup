@@ -175,7 +175,7 @@ begin::= inicio:e1 SEPARATOR codJava:c regulares:e SEPARATOR gramatica
 {:
 try{
  
-NodoVal ac=new NodoVal(this.parser.contador_____3,"$");
+NodoVal ac=new NodoVal(this.parser.contador_____3,"$_parserLexer_$$$_$$$_%");
 this.parser.listadoDeNodos.add(ac);
 NodoDAD dad=new NodoDAD(".",e,ac,false);
 dad.addNext(this.parser.listadoDeNodos);
@@ -210,6 +210,12 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
    String path=f.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios/"+this.parser.nameProgram;
    f=new File(path);
    if(f.exists()){
+      try{
+         File[] files = f.listFiles();
+         for (File x : files) {
+                    x.delete();
+                }
+      }catch(Exception exxx){}
       this.parser.create(path, autor, extension, version,xx,c,lanzamiento);
     }else{
    if(f.mkdir()){

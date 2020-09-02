@@ -28,7 +28,6 @@ public class generarAFD implements Serializable {
     public generarAFD(ArrayList<Nodo> listado, Nodo inicio) {
         this.listado = listado;
         this.estadoInicial = inicio.getFirst();
-
         AFD.put(inicio.getFirst(), new estado(inicio.getFirst(), "inicio", numState, inicio.getFirst().contains(String.valueOf((this.listado.size() - 1))), getToken(inicio.getFirst())));
         this.numState++;
         pila.add(this.estadoInicial);
@@ -49,7 +48,7 @@ public class generarAFD implements Serializable {
                     max = ((NodoSPS) x).getMax();
                 }
                 if (!x.check()) {
-                    if (!x.getValue().equals("$")) {
+                    if (!x.getValue().equals("$_parserLexer_$$$_$$$_%")) {
                         String estado = x.getSiguientes();
                         for (int j = k + 1; j < refs.length; j++) {
                             String ref = refs[j];
@@ -222,9 +221,6 @@ public class generarAFD implements Serializable {
                     return false;
                 }
             } else {
-                
-                
-               
                 return dato.startsWith(this.val);
             }
         }

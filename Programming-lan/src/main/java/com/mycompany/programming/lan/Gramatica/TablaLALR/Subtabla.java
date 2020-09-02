@@ -52,12 +52,13 @@ public class Subtabla {
         }
     }
 
-    private int exists(String key) {
+    public int exists(String key) {
         if (this.listado.isEmpty()) {
             return -1;
         }
         for (int i = 0; i < this.listado.size(); i++) {
             FilaSub t = this.listado.get(i);
+            
             if (t.getLLave(t.posPunto).equals(key)) {
                 return i;
             }
@@ -72,6 +73,9 @@ public class Subtabla {
     public void printTable() {
         for (FilaSub w : listado) {
             String data = w.getPrint();
+            if(w.transicion==74){
+            System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            }
             System.out.println(w.padre + "-> " + data + "  SIG:" + w.siguientes+" MOVER A: "+w.transicion+" HREFS"+ this.hrefTablas);
         }
     }
@@ -104,5 +108,14 @@ public class Subtabla {
         return this.listado.get(0).getLLave(this.listado.get(0).posPunto);
     }
     
+    public void clean(){
+        for (int i = 0; i < this.listado.size(); i++) {
+            FilaSub x=this.listado.get(i);
+            int y=exists(x.getLLave(x.posPunto));
+            if(y!=-1){
+                this.listado.remove(y);
+            }
+        }
+    }
    
 }

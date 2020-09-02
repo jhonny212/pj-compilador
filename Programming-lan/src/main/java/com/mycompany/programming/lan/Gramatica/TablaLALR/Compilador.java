@@ -76,7 +76,12 @@ public class Compilador {
     }
 
     private void pila(int i, Token tk, Token prev) {
-        int busqueda[] = buscar(i, tk.getToken());
+        int busqueda[] = null;
+        busqueda=buscar(i, tk.getToken());
+        /*while(busqueda==null){
+            tk=this.lexer.nextToken();
+            busqueda=buscar(i, tk.getValue());
+        }*/
         if (busqueda != null) {
             switch (busqueda[1]) {
                 case 0:
@@ -186,7 +191,6 @@ public class Compilador {
                 if(claseCompilada!=null){
                 }
             }
-            
             int cnt = 0;
             if(!x.isLambda){
             for (int j = 0; j < x.SimbolosProduccion.size(); j++) {
@@ -202,9 +206,6 @@ public class Compilador {
             }else{
                 moves.add(-15,x.padre,"Agregar a pila de tokens "+x.padre);
             }
-           
-        //}
-
         this.pilaDetokens.add(tkn);
         int y = this.pilaDetransiciones.get(this.pilaDetransiciones.size() - 1);
         Token z = this.pilaDetokens.get(this.pilaDetokens.size() - 1);
@@ -292,6 +293,9 @@ public class Compilador {
         return resultado;
     }
     
+    void recuperarDeError(){
+        
+    }
    
 
 }

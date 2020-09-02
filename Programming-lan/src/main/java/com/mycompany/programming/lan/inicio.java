@@ -10,11 +10,10 @@ import java.io.StringReader;
 public class inicio {
 
     public static void main(String[] args) {
-        Start_program f = new Start_program();
-        f.setVisible(true);
-        //generarCompilador();
+        //Start_program f = new Start_program();
+        //f.setVisible(true);
         //probarCompilador();
-
+      
     }
 
     private static void generarCompilador() {
@@ -31,7 +30,7 @@ public class inicio {
 
     public static void probarCompilador() {
         try {
-            var texto = "nombre : aritmetica ; \n"
+            var texto = "nombre : testBool ; \n"
                     + "version  : 2.0  ;\n"
                     + "extension : com ;\n"
                     + ""
@@ -54,24 +53,36 @@ public class inicio {
                     + "mul= \"*\";\n"
                     + "ap= \"(\";\n"
                     + "cp= \")\";\n"
+                    + "bool= \"true\"|\"false\";\n"
+                    + "op= \">\";\n"
+                    + "and= \"&\";\n"
+                    + "or= \"||\";\n"
+                    + "id= [a-z]+;\n"
                     + "&= [\\n|\\t|\\b] ;\n"
                     + "%%\n"
-                    + "terminal  sum,mul ;"
-                    + "terminal  ap  ;"
+                    + "terminal sum,mul,and,or,bool,id,op;"
+                    + "terminal ap  ;"
                     + "terminal cp ;\n"
-                    + "terminal entero num;\n"
-                    + "no terminal entero  S;"
-                    + "no terminal entero  E,T,F ;\n"
-                    + "%%\n"
-                    + "S:: E:e   {} ;\n";
+                    + "terminal  num;\n"
+                    + "no terminal  E,T,F,S,X,Y,Z;"
             
-            texto += ""
-                    + "E:: T:e sum E:e1     {RESULT=sumar(e,e1);};\n"
-                    + "E:: T:e             {RESULT=e;};\n"
-                    + "T:: F:e  mul T:e1    {RESULT=mul(e,e1);};\n"
-                    + "T::  F:e             {RESULT=e;};\n"
-                    + "F:: num:e           {RESULT=e;};\n"
-                    + "F:: ap E:e cp       {RESULT=e;};";
+                    + "%%\n";
+            
+            texto +=  "E:: E and T;"
+                    + "E:: T;"
+                    + "T:: T or F;"
+                    + "T:: F;"
+                    + "F:: bool;"
+                    + "F:: ap E cp;"
+                    + "F:: S op S;"
+                    + "S:: S sum X;"
+                    + "S:: X;"
+                    + "X:: X mul Y;"
+                    + "X:: Y;"
+                    + "Y:: num;"
+                    + "Y:: id;"
+                    + "Y:: ap S cp;";
+            
             var scan = new lexer(new BufferedReader(new StringReader(texto)));
 
             var parser = new parser(scan);

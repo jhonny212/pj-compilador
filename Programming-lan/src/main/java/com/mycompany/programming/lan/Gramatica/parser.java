@@ -828,7 +828,7 @@ class CUP$parser$actions {
 		
 try{
  
-NodoVal ac=new NodoVal(this.parser.contador_____3,"$");
+NodoVal ac=new NodoVal(this.parser.contador_____3,"$_parserLexer_$$$_$$$_%");
 this.parser.listadoDeNodos.add(ac);
 NodoDAD dad=new NodoDAD(".",e,ac,false);
 dad.addNext(this.parser.listadoDeNodos);
@@ -863,12 +863,19 @@ if(this.parser.listadoDeErrores.haveErrors() && !this.parser.nameProgram.isEmpty
    String path=f.getAbsolutePath()+"/src/main/java/com/mycompany/programming/lan/Interfaz/repositorios/"+this.parser.nameProgram;
    f=new File(path);
    if(f.exists()){
+      try{
+         File[] files = f.listFiles();
+         for (File x : files) {
+                    x.delete();
+                }
+      }catch(Exception exxx){}
       this.parser.create(path, autor, extension, version,xx,c,lanzamiento);
     }else{
    if(f.mkdir()){
        this.parser.create(path, autor, extension, version,xx,c,lanzamiento);
    }
    }
+   
 }else if(this.parser.nameProgram.isEmpty()){
     this.parser.addError(1, -1,-1, "El nombre no ha sido declarado", "Declarar el nombre del lenguaje");
 }

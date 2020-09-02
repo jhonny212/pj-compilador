@@ -13,7 +13,9 @@ public class Produccion implements Serializable {
     String padre;
     int tipo = -1;
     final public boolean isLambda;
-
+    public String getDad(){
+        return this.padre;
+    }
     public Produccion(ArrayList<SymToken> list, String rules, int numero) {
         if (list != null) {
             this.SimbolosProduccion = list;

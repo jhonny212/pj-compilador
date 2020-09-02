@@ -247,7 +247,7 @@ public class lenguaje implements Serializable {
         data += "Autor: " + param + "\n";
         data += "Nombre:" + this.Name+"\n";
         param = (this.lanzamiento.isEmpty() ? "None" : this.lanzamiento);
-        data += "Lanzamiento:" + this.lanzamiento;
+        data += "Lanzamiento:" + param;
         
        
 
@@ -259,7 +259,7 @@ public class lenguaje implements Serializable {
         for (Produccion x : this.producciones) {
             int i = x.num + 1;
             vector[i][0] = String.valueOf((i-1));
-            vector[i][1] = x.getPrs();
+            vector[i][1] = x.getDad()+"->"+x.getPrs();
             vector[i][2] = x.ruls;
         }
         return vector;
