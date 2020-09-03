@@ -16,6 +16,6 @@
     <orderEntry type="library" name="Maven: com.github.vbmacher:java-cup-runtime:11b-20160615" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant:1.10.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.10.5" level="project" />
-    <orderEntry type="library" name="Maven: unknown.binary:AbsoluteLayout:SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.netbeans.external:AbsoluteLayout:RELEASE802" level="project" />
   </component>
 </module>

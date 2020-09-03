@@ -30,7 +30,7 @@ public class inicio {
 
     public static void probarCompilador() {
         try {
-            var texto = "nombre : testBool ; \n"
+            String texto = "nombre : testBool ; \n"
                     + "version  : 2.0  ;\n"
                     + "extension : com ;\n"
                     + ""
@@ -96,9 +96,9 @@ public class inicio {
                     + "Y:: num:e {RESULT=e;};\n"
                     + "Y:: ap S:e cp {RESULT=e;};\n";
 
-            var scan = new lexer(new BufferedReader(new StringReader(texto)));
+            lexer scan = new lexer(new BufferedReader(new StringReader(texto)));
 
-            var parser = new parser(scan);
+            parser parser = new parser(scan);
 
             try {
                 parser.parse();
