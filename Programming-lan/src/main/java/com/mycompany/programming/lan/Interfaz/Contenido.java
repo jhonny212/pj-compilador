@@ -14,13 +14,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JSplitPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 /**
  *
@@ -33,6 +29,7 @@ public class Contenido extends javax.swing.JPanel {
      */
     public File f = null;
     public String name;
+
     public Contenido() {
         initComponents();
         TextLineNumber tln1 = new TextLineNumber(this._txt);
@@ -42,37 +39,37 @@ public class Contenido extends javax.swing.JPanel {
     public String getTexto() {
         return _txt.getText().isBlank() ? "" : _txt.getText();
     }
-    public void setTexto(String t){
+
+    public void setTexto(String t) {
         _txt.setText(t);
     }
 
     JTable tabla;
 
-    public void initTable(String path,String[]titulos) {
-           bool=true;
-          
-        this.tabla = new JTable(getCeldas(path,titulos.length), titulos);
+    public void initTable(String path, String[] titulos) {
+        bool = true;
+
+        this.tabla = new JTable(getCeldas(path, titulos.length), titulos);
         this.scroll.setRowHeader(null);
         this.scroll.setViewportView(this.tabla);
-       
+        showMsj();
     }
-    
-    Object[][] getCeldas(String path,int x){
-        String texto=read(new File(path));
-        String vect[]=texto.split("\n");
-        Object [][] celdas = new String[vect.length][x];
+
+    Object[][] getCeldas(String path, int x) {
+        String texto = read(new File(path));
+        String vect[] = texto.split("\n");
+        Object[][] celdas = new String[vect.length][x];
         for (int i = 0; i < vect.length; i++) {
             String celda[] = vect[i].split(",");
             for (int j = 0; j < celda.length; j++) {
-                 celdas[i][j]=celda[j];
+                celdas[i][j] = celda[j];
             }
         }
         
         return celdas;
     }
-    
-    
-     String read(File file) {
+
+    String read(File file) {
         FileReader fr = null;
         String retorno = "";
         BufferedReader br = null;
@@ -83,11 +80,11 @@ public class Contenido extends javax.swing.JPanel {
             // Lectura del fichero
             String linea = "";
             while ((linea = br.readLine()) != null) {
-                if(retorno.isEmpty()){
+                if (retorno.isEmpty()) {
                     retorno = linea;
-                }else{
-                    retorno +="\n"+linea;
-            
+                } else {
+                    retorno += "\n" + linea;
+
                 }
             }
         } catch (IOException e) {
@@ -102,47 +99,65 @@ public class Contenido extends javax.swing.JPanel {
         return retorno;
     }
 
-    public void initPrs(String [][] array) {
-        bool=true;
+    public void initPrs(String[][] array) {
+        bool = true;
         String title[] = {"No", "produccion", "Regla de produccion"};
         tabla = new JTable(array, title);
         this.scroll.setViewportView(this.tabla);
-
+        showMsj();
     }
+
     public void initPrs(ArrayList<Object[]> list) {
-        bool=true;
+        bool = true;
         tabla = new JTable();
-        DefaultTableModel tbl=new  DefaultTableModel();
+        DefaultTableModel tbl = new DefaultTableModel();
         tbl.addColumn("Produccion");
         tbl.addColumn("Valor");
-        
-        for (int i = list.size()-1; i >=0; i--) {
+
+        for (int i = list.size() - 1; i >= 0; i--) {
             Object object[] = list.get(i);
             tbl.addRow(object);
         }
         this.tabla.setModel(tbl);
-        
+
         this.scroll.setViewportView(this.tabla);
+        showMsj();
+    }
+
+    void showMsj() {
+        this.tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tabla.rowAtPoint(evt.getPoint());
+                int col = tabla.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col >= 0) {
+                    try{
+                        String msj=tabla.getModel().getValueAt(row, col).toString();
+                        String tmp=msj.replaceAll(";", ";\n");
+                        JOptionPane.showMessageDialog(null, tmp);
+                    }catch(Exception ex){}
+                }
+            }
+        });
 
     }
-    
-    boolean bool=false;
-    
-    public void addError(ArrayList<ErrorClass.errorProduced> listado){
-       
-        bool=true;
-        DefaultTableModel model=new DefaultTableModel();
+    boolean bool = false;
+
+    public void addError(ArrayList<ErrorClass.errorProduced> listado) {
+
+        bool = true;
+        DefaultTableModel model = new DefaultTableModel();
         model.addColumn("Fila");
         model.addColumn("Columna");
         model.addColumn("Token");
         model.addColumn("Extra");
-        
-        for(ErrorClass.errorProduced x: listado){
-            Object vector[]={x.fila,x.columna,x.token,x.dato};
+
+        for (ErrorClass.errorProduced x : listado) {
+            Object vector[] = {x.fila, x.columna, x.token, x.dato};
             model.addRow(vector);
         }
-        
-        tabla =new JTable();
+
+        tabla = new JTable();
         this.tabla.setModel(model);
         this.scroll.setRowHeader(null);
         this.scroll.setViewportView(this.tabla);

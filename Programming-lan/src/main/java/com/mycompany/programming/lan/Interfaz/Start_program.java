@@ -410,11 +410,12 @@ public class Start_program extends javax.swing.JFrame {
                     lexer.init(texto);
                     Compilador cmp = new Compilador(lexer, lenguaje);
                     cmp.init();
-                    this.pila = cmp.moves;
-                    if (cmp.compilado && lexer.errorList.haveErrors()) {
+                     if (cmp.compilado && lexer.errorList.haveErrors()) {
+                        this.pila = cmp.moves;
                         JOptionPane.showMessageDialog(this, "La cadena fue aceptada");
                         edit.addTable(cmp.listado);
                     } else {
+                        
                         if (!lexer.errorList.lexico.isEmpty()) {
                             edit.addError(lexer.errorList.lexico, "Errores lexico");
                         }
@@ -471,6 +472,7 @@ public class Start_program extends javax.swing.JFrame {
                 if (m.getText().equals(this.Lanselected.getText())) {
                     this.lenguaje = null;
                     this.pila = null;
+                    this.pila=null;
                     this.Lanselected.setText("Lenguaje seleccionano none");
                 }
                 m = null;
